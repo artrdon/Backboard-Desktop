@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { spawnSync } from 'child_process';
-import { constants, statSync } from 'fs';
+import { constants, mkdtempSync, readFileSync, rmSync, statSync } from 'fs';
 import { tmpdir } from 'os';
 import path from 'path';
 import manifests from '../../../cgmanifest.json' with { type: 'json' };
@@ -16,6 +16,62 @@ export function generatePackageDeps(files: string[], arch: DebianArchString, chr
 	const additionalDepsSet = new Set(additionalDeps);
 	dependencies.push(additionalDepsSet);
 	return dependencies;
+}
+
+let dpkgShlibdepsScript: string | undefined;
+
+function getDpkgShlibdepsScript(): string {
+    if (dpkgShlibdepsScript) {
+        return dpkgShlibdepsScript;
+    }
+
+    const chromiumManifest = manifests.registrations.find(registration => {
+        return registration.component.type === 'git' && registration.component.git!.name === 'chromium';
+    });
+
+    if (!chromiumManifest) {
+        throw new Error('Cannot find the chromium registration in cgmanifest.json');
+    }
+
+    const url = `https://raw.githubusercontent.com/chromium/chromium/${chromiumManifest.version}/third_party/dpkg-shlibdeps/dpkg-shlibdeps.pl`;
+
+    const location = path.join(mkdtempSync(path.join(tmpdir(), 'dpkg-shlibdeps-')), 'dpkg-shlibdeps.pl');
+
+    const token = process.env['GITHUB_TOKEN'];
+    const maxAttempts = 5;
+    let lastError = '';
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        const useToken = !!token && attempt % 2 === 1;
+        const config = useToken
+            ? `header = "Authorization: Bearer ${token}"\n`
+            : '';
+
+        rmSync(location, { force: true });
+
+        const result = spawnSync(
+            'curl',
+            ['-fsSL', '--config', '-', '-o', location, url],
+            { input: config }
+        );
+
+        if (result.status === 0 && readFileSync(location, 'utf8').startsWith('#!')) {
+            dpkgShlibdepsScript = location;
+            return location;
+        }
+
+        lastError = result.status === 0
+            ? 'Downloaded file is not a Perl script'
+            : result.stderr?.toString('utf8') ?? 'Unknown curl error';
+
+        console.error(`Attempt ${attempt}/${maxAttempts} failed: ${lastError}`);
+
+        if (attempt < maxAttempts) {
+            Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, attempt * 5000);
+        }
+    }
+
+    throw new Error(`Cannot retrieve dpkg-shlibdeps: ${lastError}`);
 }
 
 // Based on https://source.chromium.org/chromium/chromium/src/+/main:chrome/installer/linux/debian/calculate_package_deps.py.
@@ -30,16 +86,11 @@ function calculatePackageDeps(binaryPath: string, arch: DebianArchString, chromi
 	}
 
 	// Get the Chromium dpkg-shlibdeps file.
-	const chromiumManifest = manifests.registrations.filter(registration => {
-		return registration.component.type === 'git' && registration.component.git!.name === 'chromium';
-	});
-	const dpkgShlibdepsUrl = `https://raw.githubusercontent.com/chromium/chromium/${chromiumManifest[0].version}/third_party/dpkg-shlibdeps/dpkg-shlibdeps.pl`;
-	const dpkgShlibdepsScriptLocation = `${tmpdir()}/dpkg-shlibdeps.pl`;
-	const result = spawnSync('curl', [dpkgShlibdepsUrl, '-o', dpkgShlibdepsScriptLocation]);
-	if (result.status !== 0) {
-		throw new Error('Cannot retrieve dpkg-shlibdeps. Stderr:\n' + result.stderr);
-	}
-	const cmd = [dpkgShlibdepsScriptLocation, '--ignore-weak-undefined'];
+	const dpkgShlibdepsScriptLocation = getDpkgShlibdepsScript();
+	const cmd = [
+			dpkgShlibdepsScriptLocation,
+			'--ignore-weak-undefined'
+	];
 	switch (arch) {
 		case 'amd64':
 			cmd.push(`-l${chromiumSysroot}/usr/lib/x86_64-linux-gnu`,
