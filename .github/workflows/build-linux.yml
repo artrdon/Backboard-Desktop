@@ -1,0 +1,97 @@
+
+name: Build Backboard Desktop Linux
+
+on:
+  workflow_dispatch:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+
+    env:
+      BACKBOARD_KEEP_COPILOT_SHIM_MARKER: "1"
+
+    steps:
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          df -h
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential pkg-config python3 \
+            fakeroot dpkg-dev \
+            libx11-dev libxkbfile-dev \
+            libsecret-1-dev libkrb5-dev \
+            libgtk-3-dev libnss3 libasound2t64 \
+            libxss1 libu2f-udev dbus-x11 \
+            xdg-utils libxrandr2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24.15.0"
+          cache: npm
+          cache-dependency-path: backboard/package-lock.json
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install Backboard dependencies
+        working-directory: backboard
+        run: npm ci --no-audit --no-fund
+
+      - name: Install CLI dependencies
+        working-directory: backboard/cli-ts
+        run: bun install
+
+      - name: Build Linux application
+        working-directory: backboard
+        run: |
+          node --max-old-space-size=8192 \
+            --experimental-strip-types \
+            ./node_modules/gulp/bin/gulp.js \
+            vscode-linux-x64
+
+      - name: Prepare Debian package
+        working-directory: backboard
+        run: |
+          node --max-old-space-size=8192 \
+            --experimental-strip-types \
+            ./node_modules/gulp/bin/gulp.js \
+            vscode-linux-x64-prepare-deb
+
+      - name: Build Debian package
+        working-directory: backboard
+        run: |
+          node --max-old-space-size=8192 \
+            --experimental-strip-types \
+            ./node_modules/gulp/bin/gulp.js \
+            vscode-linux-x64-build-deb
+
+      - name: Find generated package
+        working-directory: backboard
+        run: |
+          find .build/linux/deb -type f -name "*.deb" -print
+          du -sh .build/linux/deb
+
+      - name: Upload Debian package
+        uses: actions/upload-artifact@v4
+        with:
+          name: backboard-linux-deb
+          path: backboard/.build/linux/deb/amd64/deb/*.deb
+          if-no-files-found: error
+          retention-days: 3
