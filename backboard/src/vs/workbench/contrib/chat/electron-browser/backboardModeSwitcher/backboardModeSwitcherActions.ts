@@ -36,7 +36,7 @@ export class BackboardModeSwitcherAction extends Action2 {
 	constructor() {
 		super({
 			id: BACKBOARD_MODE_SWITCHER_COMMAND_ID,
-			title: localize2('backboardModeSwitcher', "Backboard Mode Switcher"),
+			title: localize2('backboardModeSwitcher', "DQuant Lab Mode Switcher"),
 			category: CHAT_CATEGORY,
 			precondition: OPEN_AGENTS_WINDOW_PRECONDITION,
 			f1: false,
@@ -59,7 +59,7 @@ export class ToggleBackboardModeSwitcherTitleBarAction extends ToggleTitleBarCon
 	constructor() {
 		super(
 			ChatConfiguration.TitleBarOpenInAgentsWindowEnabled,
-			localize('toggle.backboardModeSwitcher', 'Backboard Switcher'),
+			localize('toggle.backboardModeSwitcher', 'DQuant Lab Switcher'),
 			localize('toggle.backboardModeSwitcherDescription', "Toggle visibility of the Editor / Agents switcher in the title bar"),
 			6,
 			OPEN_AGENTS_WINDOW_PRECONDITION,
@@ -98,7 +98,7 @@ class BackboardModeTitleBarWidget extends BaseActionViewItem {
 
 		container.classList.add('backboard-mode-titlebar-widget');
 
-		const hoverText = this.keybindingService.appendKeybinding(localize('backboardModeSwitcherHover', "Switch Backboard mode"), BACKBOARD_MODE_SWITCHER_COMMAND_ID);
+		const hoverText = this.keybindingService.appendKeybinding(localize('backboardModeSwitcherHover', "Switch DQuant Lab mode"), BACKBOARD_MODE_SWITCHER_COMMAND_ID);
 		container.setAttribute('aria-label', hoverText);
 		this._register(this.hoverService.setupManagedHover(getDefaultHoverDelegate('element'), container, hoverText));
 

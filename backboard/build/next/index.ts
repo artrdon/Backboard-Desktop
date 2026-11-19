@@ -317,6 +317,10 @@ const desktopResourcePatterns = [
 	// Sessions - built-in prompts and skills
 	'vs/sessions/prompts/*.prompt.md',
 	'vs/sessions/skills/**/SKILL.md',
+
+	// DQuant Lab - language instructions (the agent host reads them offline from
+	// `<appRoot>/out/...`; the documentation itself is online, see the prompts).
+	'vs/workbench/contrib/dquant/prompts/*.md',
 ];
 
 // Resources for server target (minimal - no UI)
@@ -344,6 +348,10 @@ const serverResourcePatterns = [
 	'vs/workbench/contrib/terminal/common/scripts/psreadline/*.ps1xml',
 	'vs/workbench/contrib/terminal/common/scripts/psreadline/net6plus/*.dll',
 	'vs/workbench/contrib/terminal/common/scripts/psreadline/netstd/*.dll',
+
+	// DQuant Lab - language instructions (agent host reads them offline; the
+	// server bundle can host the agent too).
+	'vs/workbench/contrib/dquant/prompts/*.md',
 ];
 
 // Resources for server-web target (server + web UI)

@@ -1,6 +1,6 @@
 {
 	"$schema": "vscode://schemas/color-theme",
-	"name": "Backboard Aubergine",
+	"name": "DQuant Aubergine",
 	"include": "./backboard-obsidian.json",
 	"type": "dark",
 	"colors": {

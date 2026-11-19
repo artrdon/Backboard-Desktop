@@ -64,7 +64,7 @@ export const ONBOARDING_EXPERIENCE_OPTIONS: readonly IOnboardingExperienceOption
 export function getOnboardingStepTitle(stepId: OnboardingStepId): string {
 	switch (stepId) {
 		case OnboardingStepId.Welcome:
-			return localize('onboarding.backboard.step.welcome', "Backboard Studio");
+			return localize('onboarding.backboard.step.welcome', "DQuant Lab");
 		case OnboardingStepId.ConnectAI:
 			return localize('onboarding.connectAI.title', "Connect Your AI");
 		case OnboardingStepId.Experience:
@@ -74,7 +74,7 @@ export function getOnboardingStepTitle(stepId: OnboardingStepId): string {
 		case OnboardingStepId.ImportSettings:
 			return localize('onboarding.backboard.step.importSettings', "Bring Your Setup");
 		case OnboardingStepId.SignIn:
-			return localize('onboarding.backboard.step.signIn', "Sign In to Backboard");
+			return localize('onboarding.backboard.step.signIn', "Sign In to DQuant Lab");
 		case OnboardingStepId.ApiKey:
 			return localize('onboarding.backboard.step.apiKey', "Set Up Your API Key");
 		case OnboardingStepId.Billing:
@@ -98,9 +98,9 @@ export function getOnboardingStepSubtitle(stepId: OnboardingStepId): string {
 		case OnboardingStepId.ImportSettings:
 			return localize('onboarding.backboard.step.importSettings.subtitle', "One click. Skip it if you want a fresh start.");
 		case OnboardingStepId.SignIn:
-			return localize('onboarding.backboard.step.signIn.subtitle', "Connect your Backboard account before you start building.");
+			return localize('onboarding.backboard.step.signIn.subtitle', "Connect your DQuant Lab account before you start building.");
 		case OnboardingStepId.ApiKey:
-			return localize('onboarding.backboard.step.apiKey.subtitle', "Create a key in Backboard, then import it here.");
+			return localize('onboarding.backboard.step.apiKey.subtitle', "Create an API key, then import it here.");
 		case OnboardingStepId.Billing:
 			return localize('onboarding.backboard.step.billing.subtitle', "Subscribe now or continue on Free.");
 	}

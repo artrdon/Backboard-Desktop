@@ -34,6 +34,9 @@ import { applySessionBarThemeColors } from './sessionBarStyles.js';
 import { IContextKeyService } from '../../../platform/contextkey/common/contextkey.js';
 import { isAgentHostProviderId } from '../../common/agentHostSessionsProvider.js';
 import { onUnexpectedError } from '../../../base/common/errors.js';
+import { IQuickInputService } from '../../../platform/quickinput/common/quickInput.js';
+import { IDquantSessionLanguageService } from '../../services/dquant/browser/dquantSessionLanguageService.js';
+import { DQUANT_LANGUAGE_PRESENTATION } from '../../common/dquant/dquantPresentation.js';
 
 /**
  * Removes inline Markdown syntax from a session title.
@@ -106,6 +109,8 @@ export class SessionHeader extends Disposable {
 	private readonly _metaSeparatorEl: HTMLElement;
 	private readonly _metaToolbar: MenuWorkbenchToolBar;
 	private readonly _titleActionsEl: HTMLElement;
+	/** DQuant language chip shown next to the session title. */
+	private readonly _languageChip: HTMLButtonElement;
 
 	private readonly _sessionDisposables = this._register(new MutableDisposable<DisposableStore>());
 	private readonly _editingDisposables = this._register(new MutableDisposable<DisposableStore>());
@@ -124,6 +129,7 @@ export class SessionHeader extends Disposable {
 
 	private readonly _readStateSignal: IObservable<void>;
 	private readonly _metaActionsSignal: IObservable<void>;
+	private readonly _dquantProfileSignal: IObservable<void>;
 
 	get element(): HTMLElement {
 		return this._container;
@@ -146,6 +152,8 @@ export class SessionHeader extends Disposable {
 		@ISessionsListModelService private readonly _sessionsListModelService: ISessionsListModelService,
 		@ISessionsService private readonly _sessionsService: ISessionsService,
 		@IHoverService private readonly _hoverService: IHoverService,
+		@IQuickInputService private readonly _quickInputService: IQuickInputService,
+		@IDquantSessionLanguageService private readonly _dquantLanguageService: IDquantSessionLanguageService,
 	) {
 		super();
 
@@ -178,6 +186,20 @@ export class SessionHeader extends Disposable {
 		this._register(addDisposableListener(this._titleEl, EventType.CLICK, () => {
 			this.startTitleEditing();
 		}));
+
+		// DQuant language chip: shows which language the session is bound to and
+		// lets the user bind a legacy session on demand. It never appears for
+		// non-agent-host sessions, which cannot carry a DQuant profile.
+		this._languageChip = $('button.dquant-session-language-chip') as HTMLButtonElement;
+		this._languageChip.type = 'button';
+		this._languageChip.style.display = 'none';
+		this._register(addDisposableListener(this._languageChip, EventType.CLICK, event => {
+			event.preventDefault();
+			event.stopPropagation();
+			void this._pickLanguage();
+		}));
+		titleRow.appendChild(this._languageChip);
+		this._dquantProfileSignal = observableSignalFromEvent(this, this._dquantLanguageService.onDidChange);
 
 		// The meta row sits inline on the title line (title · workspace pill ·
 		// diff stats … actions) so the header reads as one compact line rather
@@ -340,6 +362,11 @@ export class SessionHeader extends Disposable {
 		this._titleTextEl.textContent = stripInlineMarkdown(session.title.read(reader)) || localize('agentSessions.newSession', "New Session");
 		this._titleEl.classList.toggle('editable', this._isTitleEditable());
 
+		// DQuant language profile (per session, read from the session's own
+		// config bag through the profile service).
+		this._dquantProfileSignal.read(reader);
+		this._updateLanguageChip(session);
+
 		// Meta row: workspace · diff stats
 		const workspace = session.workspace.read(reader);
 
@@ -399,6 +426,60 @@ export class SessionHeader extends Disposable {
 		}
 
 		return { markdown: md, markdownNotSupportedFallback: branch ? `${path} · ${branch}` : path };
+	}
+
+	/**
+	 * Mirrors the session's DQuant language profile in the header. Agent-host
+	 * sessions without a profile (legacy sessions) get a subtle "MQL" affordance
+	 * instead of a language, so the user can bind one when MQL functionality is
+	 * actually needed — nothing is assigned automatically.
+	 */
+	private _updateLanguageChip(session: IActiveSession): void {
+		if (!isAgentHostProviderId(session.providerId)) {
+			this._languageChip.style.display = 'none';
+			return;
+		}
+
+		const language = this._dquantLanguageService.getLanguage(session.sessionId);
+		const projectName = this._dquantLanguageService.getProjectName(session.sessionId);
+		this._languageChip.style.display = '';
+		this._languageChip.classList.toggle('unset', !language);
+
+		if (language) {
+			const presentation = DQUANT_LANGUAGE_PRESENTATION[language];
+			this._languageChip.textContent = presentation.label;
+			this._languageChip.title = projectName
+				? `${projectName} · ${presentation.description}`
+				: presentation.description;
+			this._languageChip.setAttribute('aria-label', localize('dquant.sessionLanguage.assigned', "Язык сессии: {0}. Нажмите, чтобы изменить.", presentation.label));
+		} else {
+			this._languageChip.textContent = localize('dquant.sessionLanguage.unset', "MQL");
+			this._languageChip.title = localize('dquant.sessionLanguage.unsetTitle', "Привязать эту сессию к MQL4 или MQL5");
+			this._languageChip.setAttribute('aria-label', this._languageChip.title);
+		}
+	}
+
+	/** Lets the user bind or change the language of the current session. */
+	private async _pickLanguage(): Promise<void> {
+		const session = this._session;
+		if (!session) {
+			return;
+		}
+
+		const current = this._dquantLanguageService.getLanguage(session.sessionId);
+		const picks = (Object.keys(DQUANT_LANGUAGE_PRESENTATION) as Array<keyof typeof DQUANT_LANGUAGE_PRESENTATION>).map(language => ({
+			label: DQUANT_LANGUAGE_PRESENTATION[language].label,
+			description: DQUANT_LANGUAGE_PRESENTATION[language].description,
+			picked: current === language,
+			language,
+		}));
+
+		const selected = await this._quickInputService.pick(picks, {
+			placeHolder: localize('dquant.sessionLanguage.pick', "Язык программирования для этой сессии"),
+		});
+		if (selected) {
+			this._dquantLanguageService.setLanguage(session.sessionId, selected.language);
+		}
 	}
 
 	private _setVisible(visible: boolean): void {

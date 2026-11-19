@@ -1,6 +1,6 @@
 {
 	"$schema": "vscode://schemas/color-theme",
-	"name": "Backboard Midnight",
+	"name": "DQuant Midnight",
 	"include": "./backboard-obsidian.json",
 	"type": "dark",
 	"colors": {

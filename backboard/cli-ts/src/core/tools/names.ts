@@ -20,7 +20,6 @@ const BUILTIN_AGENT_NAMES: Record<string, string> = {
 	AgentWait: "agent_wait",
 	FindSkill: "find_skill",
 	FindMcp: "find_mcp",
-	GenerateVideo: "generate_video",
 };
 
 const BUILTIN_DISPLAY_NAMES = new Map(

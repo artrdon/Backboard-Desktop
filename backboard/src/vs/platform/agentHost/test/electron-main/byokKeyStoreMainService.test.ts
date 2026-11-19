@@ -294,4 +294,30 @@ suite('ByokKeyStoreMainService', () => {
 		await service.add('openai', KEY_1);
 		assert.strictEqual(JSON.stringify(await service.list()).includes(KEY_1), false);
 	});
+
+	test('stores and activates Custom API endpoint settings beside the key', async () => {
+		const { service, storage, commands } = createFixture();
+
+		const outcome = await service.add('custom', KEY_1, {
+			baseUrl: 'https://api.deepseek.com/v1',
+			model: 'deepseek-chat',
+		});
+		const status = (await service.list()).find(entry => entry.provider === 'custom')!;
+
+		const meta = JSON.parse(storage.items.get('backboard.byok.meta.custom')!);
+		assert.deepStrictEqual({
+			outcome,
+			stored: storage.items.get('secret://backboard.byok.custom'),
+			meta: { masked: meta.masked, baseUrl: meta.baseUrl, model: meta.model, hasAddedAt: typeof meta.addedAt === 'number' },
+			status: { configured: status.configured, baseUrl: status.baseUrl, model: status.model },
+			commands: commands.map(command => [command.command, command.key]),
+		}, {
+			outcome: { ok: true },
+			stored: `enc:${KEY_1}`,
+			meta: { masked: 'sk-test…7890', baseUrl: 'https://api.deepseek.com/v1', model: 'deepseek-chat', hasAddedAt: true },
+			status: { configured: true, baseUrl: 'https://api.deepseek.com/v1', model: 'deepseek-chat' },
+			commands: [['providerKeys.validate', KEY_1], ['providerKeys.set', KEY_1]],
+		});
+	});
+
 });

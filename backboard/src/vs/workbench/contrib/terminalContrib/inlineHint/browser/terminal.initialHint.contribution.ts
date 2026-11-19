@@ -305,13 +305,13 @@ class TerminalInitialHintWidget extends Disposable {
 					comment: [
 						'Preserve double-square brackets and their order',
 					]
-				}, "Type [[backboard]] to use Backboard CLI.");
+				}, "Type [[backboard]] to use DQuant Lab CLI.");
 				const copilotCliHintHandler: IContentActionHandler = {
 					callback: () => handleCopilotCliClick(),
 					disposables: this._toDispose
 				};
 				hintElement.appendChild(renderFormattedText(copilotCliHint, { actionHandler: copilotCliHintHandler }));
-				ariaLabelParts.push(localize('copilotCliHintAriaLabel', "Type backboard to use Backboard CLI."));
+				ariaLabelParts.push(localize('copilotCliHintAriaLabel', "Type backboard to use DQuant Lab CLI."));
 			} else {
 				const keybindingHint = this._keybindingService.lookupKeybinding(TerminalChatCommandId.Start);
 				const keybindingHintLabel = keybindingHint?.getLabel();

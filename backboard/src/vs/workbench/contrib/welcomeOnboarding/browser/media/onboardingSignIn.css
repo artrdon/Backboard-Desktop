@@ -610,6 +610,22 @@
 	animation: onboarding-signin-in .4s cubic-bezier(.16, 1, .3, 1) both;
 }
 
+.onboarding-a-overlay-launch .onboarding-provider-custom {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.onboarding-a-overlay-launch .onboarding-provider-custom[hidden],
+.onboarding-a-overlay-launch .onboarding-provider-test[hidden] {
+	display: none;
+}
+
+.onboarding-a-overlay-launch .onboarding-provider-custom input {
+	width: 100%;
+	box-sizing: border-box;
+}
+
 .onboarding-a-overlay-launch .onboarding-provider-setup .onboarding-backboard-title {
 	color: var(--vscode-foreground);
 	font-size: 18px;

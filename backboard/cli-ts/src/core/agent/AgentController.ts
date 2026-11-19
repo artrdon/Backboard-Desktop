@@ -1,26 +1,15 @@
-import { existsSync, readFileSync } from "node:fs";
-import { join } from "node:path";
 import type { Config } from "../../config/Config.ts";
 import type { ModelRef } from "../../config/defaults.ts";
 import { qSessionDir } from "../../config/paths.ts";
 import { fingerprint, PROMPT_VERSION } from "../../config/runtimeIdentity.ts";
 import { createRuntimeThinkingResolver } from "../../config/thinkingRuntime.ts";
 import { toPromptProfileId } from "../../prompts/profiles/ids.ts";
-import {
-	buildGenerativeMediaPrompt,
-	CANVAS_PROJECT_FILE,
-	type CanvasProjectSettings,
-	parseCanvasProjectSettings,
-} from "../../prompts/system/generativeMedia.ts";
 import { getSystemPrompt } from "../../prompts/system/index.tsx";
 import { TODO_NOT_CALLED_REMINDER } from "../../prompts/todoReminders.ts";
 import type { AgentClient } from "../../providers/AgentClient.ts";
 import { BackboardError } from "../../providers/backboard/errors.ts";
 import { normalizeSelectableModels } from "../../providers/backboard/modelCatalog.ts";
-import type {
-	ModelRoute,
-	ModelSource,
-} from "../../providers/backboard/types.ts";
+import type { ModelRoute } from "../../providers/backboard/types.ts";
 import { errorMessage } from "../../utils/errors.ts";
 import { shortId } from "../../utils/id.ts";
 import type { EventBus } from "../bus/EventBus.ts";
@@ -476,16 +465,6 @@ export class AgentController {
 				promptProfile,
 			);
 			const enabledTools = tools.map((tool) => tool.function.name);
-			// Backboard's hosted media tools only run on Backboard-billed turns. A
-			// key or subscription turn never reaches them, so it must not promise
-			// them, send their fields, or hold its answer back for them.
-			const mediaRoute = {
-				source: billingSource(
-					route.source ?? this.deps.client.sourceFor?.(route),
-				),
-				provider: route.provider,
-			};
-			const backboardMedia = mediaRoute.source === "backboard";
 			const todoWriteAvailable = enabledTools.some(
 				(name) => canonicalToolName(name) === "todo_write",
 			);
@@ -499,17 +478,6 @@ export class AgentController {
 					...skillPromptContext,
 					computerUseEnabled: config.isComputerUseEnabled,
 					browserUseEnabled: config.isBrowserUseEnabled,
-					mediaGenerationPrompt: buildGenerativeMediaPrompt({
-						...(backboardMedia
-							? {
-									imageModel: config.selectedImageModel,
-									videoModel: config.selectedVideoModel,
-									askBeforeGenerating: config.isAskBeforeGeneratingEnabled,
-								}
-							: {}),
-						route: mediaRoute,
-						...readCanvasProject(config.cwd),
-					}),
 					clientToolsEnabled: this.deps.registry
 						.list()
 						.some((tool) => tool instanceof ClientProxyTool),
@@ -589,13 +557,7 @@ export class AgentController {
 				memoryProfile: config.memoryProfile,
 				workspaceId:
 					config.memory === "off" ? undefined : config.getWorkspaceId(),
-				imageGeneration: backboardMedia && config.isImageGenerationEnabled,
-				imageModel: backboardMedia ? config.selectedImageModel : undefined,
-				videoGeneration: backboardMedia && config.isVideoGenerationEnabled,
-				videoModel: backboardMedia ? config.selectedVideoModel : undefined,
 				openRouterProvider: config.selectedOpenRouterProvider,
-				generatedMediaDir: join(config.cwd, "generated-images"),
-				generatedVideoDir: join(config.cwd, "generated-videos"),
 				thinking: undefined,
 				thinkingResolver,
 				requestKind: "user",
@@ -1066,29 +1028,3 @@ function formatSubmitError(err: unknown): string {
 	return errorMessage(err);
 }
 
-/** A client's route name as a billing source; unknown names are Backboard's. */
-function billingSource(source: string | undefined): ModelSource {
-	return source === "byok" || source === "subscription" ? source : "backboard";
-}
-
-/** Whether `cwd` is a Canvas project, and the media defaults its board file holds. */
-function readCanvasProject(cwd: string): {
-	canvasProject: boolean;
-	canvasSettings?: CanvasProjectSettings;
-} {
-	const file = join(cwd, CANVAS_PROJECT_FILE);
-	if (!existsSync(file)) {
-		return { canvasProject: false };
-	}
-	try {
-		const canvasSettings = parseCanvasProjectSettings(
-			readFileSync(file, "utf8"),
-		);
-		return {
-			canvasProject: true,
-			...(canvasSettings ? { canvasSettings } : {}),
-		};
-	} catch {
-		return { canvasProject: true };
-	}
-}

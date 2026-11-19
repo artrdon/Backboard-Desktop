@@ -46,8 +46,8 @@ configurationRegistry.registerConfiguration({
 			type: 'string',
 			enum: ['backboardAh', 'local'],
 			enumDescriptions: [
-				nls.localize('chat.editor.defaultProvider.backboardAh', "Use Backboard"),
-				nls.localize('chat.editor.defaultProvider.local', "Use the built-in Backboard IDE local chat harness"),
+				nls.localize('chat.editor.defaultProvider.backboardAh', "Use DQuant Lab"),
+				nls.localize('chat.editor.defaultProvider.local', "Use the built-in DQuant Lab local chat harness"),
 			],
 			description: nls.localize('chat.editor.defaultProvider', "Controls which provider is used as the default for new editor chat sessions."),
 			default: 'backboardAh',
@@ -56,7 +56,7 @@ configurationRegistry.registerConfiguration({
 		},
 		'chat.editor.localAgent.enabled': {
 			type: 'boolean',
-			description: nls.localize('chat.editor.localAgent.enabled', "When enabled, shows the Backboard IDE local chat harness in the chat picker."),
+			description: nls.localize('chat.editor.localAgent.enabled', "When enabled, shows the DQuant Lab local chat harness in the chat picker."),
 			default: true,
 			tags: ['experimental'],
 			experiment: { mode: 'startup' },

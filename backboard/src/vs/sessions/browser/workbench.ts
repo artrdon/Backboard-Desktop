@@ -1135,7 +1135,7 @@ export class Workbench extends Disposable implements IAgentWorkbenchLayoutServic
 		} else {
 			// Safety net for the simple window: the main editor area must
 			// never be visible while it holds no editors, or the empty-editor
-			// watermark ("Backboard Desktop") shows next to the chat.
+			// watermark ("DQuant Lab") shows next to the chat.
 			// This catches any path that reveals it empty (restored state, a
 			// transient layout reveal) as well as closing the last editor after
 			// an explicit "Open in Editor Area".
@@ -2098,7 +2098,7 @@ export class Workbench extends Disposable implements IAgentWorkbenchLayoutServic
 	/**
 	 * Keeps the invariant that, in the simple Sessions window, the main editor
 	 * area is never visible while it holds no editors. An empty visible editor
-	 * part renders the workbench watermark ("Backboard Desktop") next
+	 * part renders the workbench watermark ("DQuant Lab") next
 	 * to the chat, which must never appear in simple mode. The advanced
 	 * (Optimus) window is a full workbench and is exempt.
 	 */

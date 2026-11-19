@@ -43,18 +43,18 @@ export namespace BackboardAuthContextKeys {
 	export const providerKeyConfigured = new RawContextKey<boolean>('backboard.providerKeyConfigured', false);
 	export const enabled = new RawContextKey<boolean>('backboard.authGateEnabled', false, {
 		type: 'boolean',
-		description: localize('backboard.authGateEnabled', "True when Backboard authentication gates are enabled."),
+		description: localize('backboard.authGateEnabled', "True when DQuant Lab authentication gates are enabled."),
 	});
 
 	/** Auth gates wait until the startup credential probe has produced an answer. */
 	export const resolved = new RawContextKey<boolean>('backboard.authResolved', false, {
 		type: 'boolean',
-		description: localize('backboard.authResolved', "True when Backboard credential state has been determined."),
+		description: localize('backboard.authResolved', "True when DQuant Lab credential state has been determined."),
 	});
 
 	export const signedIn = new RawContextKey<boolean>('backboard.signedIn', false, {
 		type: 'boolean',
-		description: localize('backboard.signedIn', "True when Backboard credentials are available on this machine."),
+		description: localize('backboard.signedIn', "True when DQuant Lab credentials are available on this machine."),
 	});
 }
 

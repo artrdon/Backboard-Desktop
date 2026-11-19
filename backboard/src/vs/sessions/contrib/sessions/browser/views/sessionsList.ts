@@ -158,7 +158,7 @@ function providerPresentationForSession(session: ISession, sessionsProvidersServ
 		return { icon: Codicon.openai, label: localize('sessionProvider.openAI', "OpenAI") };
 	}
 	if (sessionType === 'local' || sessionType.includes('backboard') || sessionType.includes('copilot')) {
-		return { icon: ThemeIcon.fromId('backboard-logo'), label: localize('sessionProvider.backboard', "Backboard"), showInSimple: false };
+		return { icon: ThemeIcon.fromId('backboard-logo'), label: localize('sessionProvider.backboard', "DQuant Lab"), showInSimple: false };
 	}
 
 	const provider = sessionsProvidersService.getProvider(session.providerId);

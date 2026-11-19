@@ -104,7 +104,7 @@ echo relaunch > "${directory}/relaunched"
 test('staging reports progress, records the installer, and requests a relaunch only once ready', { skip: process.platform === 'win32' }, async () => {
 	const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'backboard-windows-stage-test-'));
 	try {
-		const installDirectory = path.join(directory, 'Backboard Studio');
+		const installDirectory = path.join(directory, 'DQuant Lab');
 		fs.mkdirSync(installDirectory);
 		fs.writeFileSync(path.join(installDirectory, 'updating_version'), 'stale marker from an interrupted run');
 		const lock = { directory, ownerPath: path.join(directory, 'owner.json') };
@@ -137,7 +137,7 @@ test('staging reports progress, records the installer, and requests a relaunch o
 test('a setup failure before staging finishes surfaces its log and keeps the app running', { skip: process.platform === 'win32' }, async () => {
 	const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'backboard-windows-stage-fail-test-'));
 	try {
-		const installDirectory = path.join(directory, 'Backboard Studio');
+		const installDirectory = path.join(directory, 'DQuant Lab');
 		fs.mkdirSync(installDirectory);
 		const lock = { directory, ownerPath: path.join(directory, 'owner.json') };
 		await assert.rejects(loadStage(directory)(writeFakeSetup(directory, installDirectory, 1), installDirectory, '1.0.0', lock, { report: () => { } }), {

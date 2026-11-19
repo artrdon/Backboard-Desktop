@@ -116,7 +116,6 @@ export interface PanelOptions {
 	readonly model?: string;
 	readonly mode?: string;
 	readonly intensity?: string;
-	readonly imageGeneration?: string;
 	readonly voiceMode?: string;
 	readonly mcpFigma?: boolean;
 	readonly mcpNotion?: boolean;

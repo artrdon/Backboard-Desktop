@@ -227,7 +227,7 @@ export class ChatSetupContribution extends Disposable implements IWorkbenchContr
 
 		class ChatSetupTriggerAction extends Action2 {
 
-			static CHAT_SETUP_ACTION_LABEL = localize2('triggerChatSetup', "Use AI Features with Backboard...");
+			static CHAT_SETUP_ACTION_LABEL = localize2('triggerChatSetup', "Use AI Features with DQuant Lab...");
 
 			constructor() {
 				super({
@@ -334,7 +334,7 @@ export class ChatSetupContribution extends Disposable implements IWorkbenchContr
 			constructor() {
 				super({
 					id: 'workbench.action.chat.triggerSetupForceSignIn',
-					title: localize2('forceSignIn', "Sign in to use Backboard")
+					title: localize2('forceSignIn', "Sign in to use DQuant Lab")
 				});
 			}
 
@@ -372,7 +372,7 @@ export class ChatSetupContribution extends Disposable implements IWorkbenchContr
 			constructor() {
 				super({
 					id: 'workbench.action.chat.triggerSetupFromAccounts',
-					title: localize2('triggerChatSetupFromAccounts', "Sign in to use Backboard..."),
+					title: localize2('triggerChatSetupFromAccounts', "Sign in to use DQuant Lab..."),
 					menu: {
 						id: MenuId.AccountsContext,
 						group: '2_copilot',
@@ -422,8 +422,8 @@ export class ChatSetupContribution extends Disposable implements IWorkbenchContr
 			constructor() {
 				super(
 					ChatConfiguration.TitleBarSignInEnabled,
-					localize('toggle.chatSignIn', 'Backboard Sign In'),
-					localize('toggle.chatSignInDescription', "Toggle visibility of the Backboard Sign In button in title bar"),
+					localize('toggle.chatSignIn', 'DQuant Lab Sign In'),
+					localize('toggle.chatSignInDescription', "Toggle visibility of the DQuant Lab Sign In button in title bar"),
 					3,
 					ContextKeyExpr.and(
 						IsWebContext.negate(),
@@ -440,7 +440,7 @@ export class ChatSetupContribution extends Disposable implements IWorkbenchContr
 			constructor() {
 				super({
 					id: 'workbench.action.chat.upgradePlan',
-					title: localize2('managePlan', "Upgrade Backboard Plan"),
+					title: localize2('managePlan', "Upgrade DQuant Lab Plan"),
 					category: localize2('chat.category', 'Chat'),
 					f1: true,
 					precondition: ContextKeyExpr.and(
@@ -505,7 +505,7 @@ export class ChatSetupContribution extends Disposable implements IWorkbenchContr
 			constructor() {
 				super({
 					id: 'workbench.action.chat.manageAdditionalSpend',
-					title: localize2('manageAdditionalSpend', "Manage Backboard Budget"),
+					title: localize2('manageAdditionalSpend', "Manage DQuant Lab Budget"),
 					category: localize2('chat.category', 'Chat'),
 					f1: true,
 					precondition: ContextKeyExpr.and(

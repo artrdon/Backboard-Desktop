@@ -32,6 +32,7 @@ export function unexpectedStreamEndMessage(provider: ByokProviderId): string {
 		google: "Google",
 		xai: "xAI",
 		openrouter: "OpenRouter",
+		custom: "Custom API",
 	};
 	const label = labels[provider];
 	return `${label} stream closed unexpectedly before a terminal event.`;

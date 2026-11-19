@@ -36,6 +36,11 @@ class TestStore implements IByokKeyStore {
 		return this.outcomes.get(`add:${provider}`) ?? { ok: true };
 	}
 
+	async validate(provider: ByokProviderId, key: string): Promise<ByokKeyOperationOutcome> {
+		this.calls.push(`validate:${provider}:${key}`);
+		return this.outcomes.get(`validate:${provider}`) ?? { ok: true };
+	}
+
 	async remove(provider: ByokProviderId): Promise<ByokKeyOperationOutcome> {
 		this.calls.push(`remove:${provider}`);
 		return this.outcomes.get(`remove:${provider}`) ?? { ok: true };
@@ -78,7 +83,7 @@ suite('ByokKeysService', () => {
 		await new Promise<void>(resolve => store.add(service.onDidChange(() => resolve())));
 
 		assert.deepStrictEqual({ immediate, adopted: service.list().map(entry => [entry.provider, entry.configured, entry.masked]) }, {
-			immediate: [['openai', false], ['anthropic', false], ['google', false], ['openrouter', false], ['xai', false]],
+			immediate: [['openai', false], ['anthropic', false], ['google', false], ['openrouter', false], ['xai', false], ['custom', false]],
 			adopted: [['openai', true, 'sk-test…cdef'], ['anthropic', false, undefined]],
 		});
 	});

@@ -28,7 +28,6 @@ import { CommandsRegistry, ICommandService } from '../../../../../platform/comma
 import { ITelemetryService } from '../../../../../platform/telemetry/common/telemetry.js';
 import { IConfigurationService } from '../../../../../platform/configuration/common/configuration.js';
 import { IStorageService, StorageScope, StorageTarget } from '../../../../../platform/storage/common/storage.js';
-import { OPEN_CANVAS_IN_SIMPLE_COMMAND_ID } from '../../browser/widget/chatGeneratedImageGallery.js';
 
 /**
  * Records the folder this editor window is on so that switching back to Editor
@@ -118,8 +117,8 @@ export class OpenOptimusWindowAction extends Action2 {
 	constructor() {
 		super({
 			id: OpenOptimusWindowAction.ID,
-			title: localize2('openCanvasWindow', "Open Canvas"),
-			category: localize2('canvas', "Canvas"),
+			title: localize2('openAgentsAdvancedWindow', "Open Agents Window"),
+			category: localize2('agents', "Agents"),
 			f1: false, // Canvas is hidden for now.
 		});
 	}
@@ -183,39 +182,6 @@ export class OpenChatSessionInAgentsWindowAction extends Action2 {
 		await nativeHostService.openAgentsWindow({
 			folderUri: folderUri?.scheme === Schemas.file ? folderUri.toJSON() : undefined,
 			sessionResource: sessionResource && !isUntitledChatSession(sessionResource) ? sessionResource.toJSON() : undefined,
-		});
-	}
-}
-
-/**
- * The Editor window's "Canvas" button on a generated image: switches to the
- * Simple window on the same chat and opens its Canvas on that image.
- */
-export class OpenImageInSimpleCanvasAction extends Action2 {
-
-	static readonly ID = OPEN_CANVAS_IN_SIMPLE_COMMAND_ID;
-
-	constructor() {
-		super({
-			id: OpenImageInSimpleCanvasAction.ID,
-			title: localize2('openImageInSimpleCanvas', "Open Image in Canvas"),
-			category: CHAT_CATEGORY,
-			precondition: OPEN_AGENTS_WINDOW_PRECONDITION,
-			f1: false,
-		});
-	}
-
-	async run(accessor: ServicesAccessor, arg?: { readonly imageUrl?: string }): Promise<void> {
-		const imageUrl = arg?.imageUrl;
-		if (typeof imageUrl !== 'string' || !imageUrl) {
-			return;
-		}
-		const sessionResource = accessor.get(IChatWidgetService).lastFocusedWidget?.viewModel?.sessionResource;
-		const folderUri = rememberEditorFolder(accessor);
-		await accessor.get(INativeHostService).openAgentsWindow({
-			folderUri: folderUri?.scheme === Schemas.file ? folderUri.toJSON() : undefined,
-			sessionResource: sessionResource && !isUntitledChatSession(sessionResource) ? sessionResource.toJSON() : undefined,
-			canvasImageUrl: imageUrl,
 		});
 	}
 }
@@ -438,10 +404,10 @@ export class AgentsHandoffInputTipContribution extends Disposable implements IWo
 		// than a generic "continue in agents" upsell.
 		const useEmptyWorkspaceCopy = emptyWorkspaceEligible && !eligible;
 		const message = useEmptyWorkspaceCopy
-			? localize('chat.agentsHandoff.tip.emptyWorkspace.message', "Backboard isn't available without an open folder")
+			? localize('chat.agentsHandoff.tip.emptyWorkspace.message', "DQuant Lab isn't available without an open folder")
 			: localize('chat.agentsHandoff.tip.message', "Continue this session in Agents");
 		const description = useEmptyWorkspaceCopy
-			? localize('chat.agentsHandoff.tip.emptyWorkspace.description', "Open Agents to start a Backboard session.")
+			? localize('chat.agentsHandoff.tip.emptyWorkspace.description', "Open Agents to start a DQuant Lab session.")
 			: mode === AgentsHandoffTipMode.Custom
 				? localize('chat.agentsHandoff.tip.description.copilot', "Get a dedicated, multi-pane view alongside your workspace.")
 				: localize('chat.agentsHandoff.tip.description', "Get a dedicated, multi-pane view alongside your workspace.");

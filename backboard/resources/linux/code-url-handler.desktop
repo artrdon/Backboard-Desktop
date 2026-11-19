@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=@@NAME_LONG@@ - URL Handler
-Comment=Backboard IDE
+Comment=DQuant Lab - AI IDE for MQL4 and MQL5
 GenericName=Text Editor
 Exec=@@EXEC@@ --open-url %U
 Icon=@@ICON@@
@@ -9,4 +9,4 @@ NoDisplay=true
 StartupNotify=true
 Categories=Utility;TextEditor;Development;IDE;
 MimeType=x-scheme-handler/@@URLPROTOCOL@@;
-Keywords=backboard;ide;
+Keywords=dquant;mql4;mql5;ide;

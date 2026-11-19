@@ -1,6 +1,6 @@
 {
 	"$schema": "vscode://schemas/color-theme",
-	"name": "Backboard Ember",
+	"name": "DQuant Ember",
 	"include": "./backboard-obsidian.json",
 	"type": "dark",
 	"colors": {

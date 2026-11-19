@@ -25,7 +25,7 @@ import { ChatEntitlementContextKeys, IChatEntitlementService } from '../../../..
 import { BackboardAuthContextKeys, IBackboardAuthService } from '../../common/backboardAuth.js';
 
 
-const backboardCategory = localize2('backboard.category', "Backboard");
+const backboardCategory = localize2('backboard.category', "DQuant Lab");
 
 export function registerBackboardSsoActions(): void {
 	if (!isWindows) {
@@ -64,7 +64,7 @@ export function registerBackboardSsoActions(): void {
 		constructor() {
 			super({
 				id: 'backboard.signIn',
-				title: localize2('backboard.signIn', "Backboard: Sign In"),
+				title: localize2('backboard.signIn', "DQuant Lab: Sign In"),
 				category: backboardCategory,
 				f1: true,
 			});
@@ -113,8 +113,8 @@ export function registerBackboardSsoActions(): void {
 			const authService = accessor.get(IBackboardAuthService);
 			const notificationService = accessor.get(INotificationService);
 			const { confirmed } = await dialogService.confirm({
-				message: localize('backboard.signOut.confirm', "Sign out of Backboard?"),
-				detail: localize('backboard.signOut.detail', "This removes your Backboard API key and disconnects ChatGPT and Claude subscriptions from Backboard. ChatGPT and Claude Code stay signed in on their own."),
+				message: localize('backboard.signOut.confirm', "Sign out of DQuant Lab?"),
+				detail: localize('backboard.signOut.detail', "This removes your DQuant Lab API key and disconnects ChatGPT and Claude subscriptions from DQuant Lab. ChatGPT and Claude Code stay signed in on their own."),
 				primaryButton: localize({ key: 'backboard.signOut.button', comment: ['&& denotes a mnemonic'] }, "&&Sign Out"),
 			});
 			if (!confirmed) {
@@ -170,7 +170,7 @@ export class BackboardCredentialsContribution extends Disposable implements IWor
 				markReady();
 			}
 		}));
-		void authService.refresh().then(markReady, error => logService.error('[Backboard] Failed to check credentials', error));
+		void authService.refresh().then(markReady, error => logService.error('[DQuant Lab] Failed to check credentials', error));
 	}
 
 }

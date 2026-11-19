@@ -26,7 +26,7 @@ class BackboardBillingUrlContribution extends Disposable implements IWorkbenchCo
 				const result = billingReturn(uri);
 				if (!result) { return false; }
 				await commandService.executeCommand(OPEN_BILLING_COMMAND_ID);
-				void billing.refresh(result.sessionId).catch(() => logService.warn('[Backboard Billing] Could not refresh after checkout.'));
+				void billing.refresh(result.sessionId).catch(() => logService.warn('[DQuant Lab Billing] Could not refresh after checkout.'));
 				return true;
 			}
 		}));

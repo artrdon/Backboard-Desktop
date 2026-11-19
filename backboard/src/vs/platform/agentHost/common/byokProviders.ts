@@ -26,7 +26,18 @@ export interface ModelRoute {
 }
 
 /** Vendors a user can bring a key for in this release. */
-export type ByokProviderId = 'openai' | 'anthropic' | 'google' | 'openrouter' | 'xai';
+export type ByokProviderId = 'openai' | 'anthropic' | 'google' | 'openrouter' | 'xai' | 'custom';
+
+/** The provider id used by any OpenAI-compatible endpoint the user configures. */
+export const CUSTOM_PROVIDER_ID = 'custom' as const;
+
+/** Non-secret endpoint settings for the Custom API provider. */
+export interface ICustomProviderConfig {
+	/** Base URL without the trailing `/chat/completions`; e.g. `https://api.deepseek.com/v1`. */
+	readonly baseUrl: string;
+	/** Vendor model id sent verbatim to the endpoint; e.g. `deepseek-chat`. */
+	readonly model: string;
+}
 
 export interface IByokProviderDefinition {
 	readonly id: ByokProviderId;
@@ -34,6 +45,8 @@ export interface IByokProviderDefinition {
 	/** Expected key shape, shown as the input placeholder. */
 	readonly keyHint: string;
 	readonly consoleUrl: string;
+	/** True when the provider also needs a base URL and model id. */
+	readonly requiresEndpoint?: boolean;
 	/** Cheap local shape check, mirrored from the cli-ts adapter, run before any network call. */
 	looksLikeKey(key: string): boolean;
 }
@@ -68,6 +81,16 @@ export const BYOK_PROVIDERS: readonly IByokProviderDefinition[] = [
 		consoleUrl: 'https://console.x.ai/',
 		looksLikeKey: key => /^xai-[\w-]{20,}$/.test(key.trim()),
 	},
+	{
+		id: CUSTOM_PROVIDER_ID,
+		label: 'Custom API',
+		keyHint: 'Your API key',
+		consoleUrl: '',
+		requiresEndpoint: true,
+		// Any non-empty secret is accepted: OpenAI-compatible endpoints use
+		// everything from `sk-…` keys to local placeholder tokens.
+		looksLikeKey: key => key.trim().length > 0,
+	},
 ];
 
 export const BYOK_KEY_PROVIDER_SUFFIX = '-key';
@@ -84,6 +107,9 @@ export const BYOK_COMMANDS = {
 /** Command argument names. The value under {@link BYOK_KEY_ARG} is a secret and is redacted from every log. */
 export const BYOK_PROVIDER_ARG = 'provider';
 export const BYOK_KEY_ARG = 'key';
+/** Non-secret Custom API settings; only meaningful with {@link CUSTOM_PROVIDER_ID}. */
+export const BYOK_BASE_URL_ARG = 'baseUrl';
+export const BYOK_MODEL_ARG = 'model';
 /**
  * Monotonic per-provider counter the key store attaches to `set` and `remove`.
  * The agent host applies a change only when its generation is at least as new
@@ -91,22 +117,80 @@ export const BYOK_KEY_ARG = 'key';
  */
 export const BYOK_GENERATION_ARG = 'generation';
 
-/** Session settings for Backboard's hosted image and video generation. */
-const BACKBOARD_MEDIA_SESSION_CONFIG_KEYS: ReadonlySet<string> = new Set(['imageGeneration', 'imageModel', 'videoModel', 'askBeforeGenerating']);
+/** Maximum accepted base URL length, generous but bounded for storage and UI. */
+const CUSTOM_BASE_URL_MAX_LENGTH = 2048;
+/** Model ids are vendor strings; whitespace would corrupt the `provider/model` wire form. */
+const CUSTOM_MODEL_MAX_LENGTH = 256;
+const CUSTOM_MODEL_PATTERN = /^[^\s]+$/;
+
+/**
+ * Validates and normalizes the non-secret Custom API settings. The runtime
+ * repeats these checks because the agent host is not the only caller.
+ */
+export function normalizeCustomProviderConfig(config: Partial<ICustomProviderConfig> | undefined): { readonly config?: ICustomProviderConfig; readonly error?: string } {
+	const rawBaseUrl = typeof config?.baseUrl === 'string' ? config.baseUrl.trim() : '';
+	const model = typeof config?.model === 'string' ? config.model.trim() : '';
+	if (!rawBaseUrl) {
+		return { error: 'Enter the API base URL (for example https://api.deepseek.com/v1).' };
+	}
+	if (rawBaseUrl.length > CUSTOM_BASE_URL_MAX_LENGTH) {
+		return { error: 'That API base URL is too long.' };
+	}
+	let url: URL;
+	try {
+		url = new URL(rawBaseUrl);
+	} catch {
+		return { error: 'Enter a valid API base URL, including http:// or https://.' };
+	}
+	if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+		return { error: 'The API base URL must start with http:// or https://.' };
+	}
+	if (url.username || url.password) {
+		return { error: 'Do not put credentials in the API base URL. Use the API key field instead.' };
+	}
+	if (url.search || url.hash) {
+		return { error: 'The API base URL cannot include a query string or fragment.' };
+	}
+	const pathname = url.pathname.replace(/\/+$/, '');
+	if (/\/chat\/completions$/i.test(pathname)) {
+		return { error: 'Enter the base URL without /chat/completions.' };
+	}
+	if (!model) {
+		return { error: 'Enter the model ID (for example deepseek-chat).' };
+	}
+	if (model.length > CUSTOM_MODEL_MAX_LENGTH || !CUSTOM_MODEL_PATTERN.test(model)) {
+		return { error: 'Enter a model ID without spaces.' };
+	}
+	return {
+		config: {
+			baseUrl: `${url.origin}${pathname}`,
+			model,
+		},
+	};
+}
+
+/** Non-secret endpoint settings carried alongside a provider key. */
+export type IByokProviderConfig = Partial<ICustomProviderConfig>;
+
+/**
+ * Validates the optional endpoint settings for a provider. Only Custom API
+ * needs them; every other vendor must not carry a stale Custom API endpoint.
+ */
+export function validateProviderConfig(provider: ByokProviderId, config: IByokProviderConfig | undefined): { readonly config?: ICustomProviderConfig; readonly error?: string } {
+	if (provider !== CUSTOM_PROVIDER_ID) {
+		return config === undefined ? {} : { error: 'Endpoint settings are only supported for Custom API.' };
+	}
+	return normalizeCustomProviderConfig(config);
+}
 
 /**
  * Whether a session setting applies to a model selection, given as a model id
- * or a `vendor:provider/model` language-model identifier. Backboard's hosted
- * media only runs on Backboard-billed requests: a key or subscription request
- * never reaches it, and routing media through Backboard anyway would bill a
- * second account. Memory is a Backboard service too, but subscriptions keep
- * their own local memory, so only key-billed selections lose it.
+ * or a `vendor:provider/model` language-model identifier. Backboard's memory
+ * service only runs on Backboard-billed requests; subscriptions keep their own
+ * local memory, so only key-billed selections lose it.
  */
 export function isConfigPropertyAvailableForModel(property: string, modelId: string | undefined): boolean {
 	const source = parseBillingRoute(modelId?.replace(/^[^/]*:/, ''))?.source;
-	if (BACKBOARD_MEDIA_SESSION_CONFIG_KEYS.has(property)) {
-		return source !== 'byok' && source !== 'subscription';
-	}
 	return property !== 'memory' || source !== 'byok';
 }
 

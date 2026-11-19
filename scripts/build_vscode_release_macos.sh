@@ -205,12 +205,14 @@ fi
 echo "Building standalone ${GULP_TARGET} app"
 BACKBOARD_KEEP_COPILOT_SHIM_MARKER=1 npm run gulp -- "${GULP_TARGET}"
 
-if [[ -d "${VSAPP_DIR}/Backboard IDE.app" ]]; then
-  VSAPP="${VSAPP_DIR}/Backboard IDE.app"
+if [[ -d "${VSAPP_DIR}/DQuant Lab.app" ]]; then
+  VSAPP="${VSAPP_DIR}/DQuant Lab.app"
+elif [[ -d "${VSAPP_DIR}/DQuant Lab Sandbox.app" ]]; then
+  VSAPP="${VSAPP_DIR}/DQuant Lab Sandbox.app"
+elif [[ -d "${VSAPP_DIR}/Code - OSS.app" ]]; then
+  VSAPP="${VSAPP_DIR}/Code - OSS.app"
 elif [[ -d "${VSAPP_DIR}/Backboard Studio.app" ]]; then
   VSAPP="${VSAPP_DIR}/Backboard Studio.app"
-elif [[ -d "${VSAPP_DIR}/Backboard Studio Dev.app" ]]; then
-  VSAPP="${VSAPP_DIR}/Backboard Studio Dev.app"
 else
   echo "Missing packaged app in ${VSAPP_DIR}" >&2
   exit 1
@@ -219,11 +221,11 @@ fi
 cd "${REPO_ROOT}"
 
 if [[ "${SKIP_SIGNING:-0}" == "1" ]]; then
-  echo "Packaging Backboard Studio ${VERSION} (${ARCH}, ${CHANNEL}) without signing or notarization"
+  echo "Packaging DQuant Lab ${VERSION} (${ARCH}, ${CHANNEL}) without signing or notarization"
 elif [[ "${SKIP_NOTARIZATION:-0}" == "1" ]]; then
-  echo "Packaging Backboard Studio ${VERSION} (${ARCH}, ${CHANNEL}) without notarization"
+  echo "Packaging DQuant Lab ${VERSION} (${ARCH}, ${CHANNEL}) without notarization"
 else
-  echo "Packaging and notarizing Backboard Studio ${VERSION} (${ARCH}, ${CHANNEL})"
+  echo "Packaging and notarizing DQuant Lab ${VERSION} (${ARCH}, ${CHANNEL})"
 fi
 SKIP_BACKBOARD_REBUILD=1 \
 VERSION="${VERSION}" \

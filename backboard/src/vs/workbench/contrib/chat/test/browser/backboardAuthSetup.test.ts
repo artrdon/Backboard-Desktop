@@ -71,6 +71,42 @@ suite('Backboard auth setup', () => {
 		assert.strictEqual(parent.querySelector('.backboard-connect-key-form'), null);
 	});
 
+	test('Custom API collects an endpoint and tests it before saving', async () => {
+		const { calls, parent, row } = setup(async () => undefined);
+		row('key').click();
+		const customPill = [...parent.querySelectorAll<HTMLButtonElement>('.backboard-connect-key-provider')]
+			.find(pill => pill.textContent === 'Custom API')!;
+		customPill.click();
+		const baseUrl = parent.querySelector<HTMLInputElement>('.backboard-connect-key-base-url')!;
+		const model = parent.querySelector<HTMLInputElement>('.backboard-connect-key-model')!;
+		const key = parent.querySelector<HTMLInputElement>('.backboard-connect-key-input')!;
+		baseUrl.value = 'https://api.deepseek.com/v1/';
+		model.value = 'deepseek-chat';
+		key.value = 'custom-secret';
+		for (const input of [baseUrl, model, key]) {
+			input.dispatchEvent(new Event('input'));
+		}
+		parent.querySelector<HTMLButtonElement>('.backboard-connect-key-test')!.click();
+		await settle();
+		const retryBaseUrl = parent.querySelector<HTMLInputElement>('.backboard-connect-key-base-url')!;
+		const retryModel = parent.querySelector<HTMLInputElement>('.backboard-connect-key-model')!;
+		const retryKey = parent.querySelector<HTMLInputElement>('.backboard-connect-key-input')!;
+		retryBaseUrl.value = 'https://api.deepseek.com/v1';
+		retryModel.value = 'deepseek-chat';
+		retryKey.value = 'custom-secret';
+		for (const input of [retryBaseUrl, retryModel, retryKey]) {
+			input.dispatchEvent(new Event('input'));
+		}
+		parent.querySelector<HTMLButtonElement>('.backboard-connect-key-save')!.click();
+		await settle();
+		assert.deepStrictEqual(calls, [
+			['backboard.testProviderKey', 'custom', 'custom-secret', { baseUrl: 'https://api.deepseek.com/v1', model: 'deepseek-chat' }],
+			['backboard.addProviderKey', 'custom', 'custom-secret', { baseUrl: 'https://api.deepseek.com/v1', model: 'deepseek-chat' }],
+			['refresh'],
+		]);
+	});
+
+
 	test('a rejected key keeps the form open with the reason and never refreshes', async () => {
 		const { calls, parent, row } = setup(async () => { throw new Error('OpenAI rejected the key.'); });
 		row('key').click();

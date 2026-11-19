@@ -994,7 +994,7 @@ export class SettingsEditor2 extends EditorPane {
 		const account = DOM.append(sidebarHeader, $('.settings-account'));
 		DOM.append(account, $('.settings-account-avatar', {}, 'B'));
 		const accountText = DOM.append(account, $('.settings-account-text'));
-		DOM.append(accountText, $('.settings-account-name', {}, localize('settingsAccountName', "Backboard")));
+		DOM.append(accountText, $('.settings-account-name', {}, localize('settingsAccountName', "DQuant Lab")));
 		if (this.searchContainer) {
 			DOM.append(sidebarHeader, this.searchContainer);
 			const searchIcon = $(`span.backboard-settings-search-icon.codicon.codicon-${Codicon.search.id}`);

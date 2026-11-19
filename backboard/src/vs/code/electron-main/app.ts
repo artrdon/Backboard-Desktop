@@ -196,7 +196,7 @@ export class CodeApplication extends Disposable {
 		// !!! DO NOT CHANGE without consulting the documentation !!!
 		//
 
-		const isUrlFromWindow = (requestingUrl?: string | undefined) => requestingUrl?.startsWith(`${Schemas.vscodeFileResource}://${VSCODE_AUTHORITY}`);
+		const isUrlFromWindow = (requestingUrl?: string | undefined) => requestingUrl?.startsWith(`${Schemas.vscodeFileResource}://${VSCODE_AUTHORITY}/`);
 		const isUrlFromWebview = (requestingUrl: string | undefined) => requestingUrl?.startsWith(`${Schemas.vscodeWebview}://`);
 
 		const alwaysAllowedPermissions = new Set(['pointerLock', 'notifications']);
@@ -320,6 +320,18 @@ export class CodeApplication extends Disposable {
 		};
 
 		const isAllowedVsCodeFileRequest = (details: Electron.OnBeforeRequestListenerDetails) => {
+			// A renderer reload can replace the process while requests from the
+			// previous frame are still in flight, so process ids alone are not a
+			// stable identity. Trust the owning web contents when its top-level
+			// document is one of our app windows; webviews and browser views keep
+			// their own origins and remain excluded.
+			const owningUrl = details.webContents && !details.webContents.isDestroyed()
+				? details.webContents.getURL()
+				: details.frame?.url;
+			if (isUrlFromWindow(owningUrl)) {
+				return true;
+			}
+
 			const frame = details.frame;
 			if (!frame || !this.windowsMainService) {
 				return false;
@@ -1819,7 +1831,7 @@ export class CodeApplication extends Disposable {
 		// Refs: https://github.com/microsoft/vscode/issues/234064
 		validateDevDeviceId(this.stateService, this.logService);
 
-		// Report this installation's first launch for Backboard Studio adoption analytics
+		// Report this installation's first launch for DQuant Lab adoption analytics
 		void instantiationService.createInstance(StudioFirstLaunchReporter, process).report();
 	}
 }

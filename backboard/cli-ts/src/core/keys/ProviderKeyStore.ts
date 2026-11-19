@@ -20,6 +20,7 @@ import {
 import {
 	type ByokProviderId,
 	isByokProviderId,
+	type ProviderKeyConfig,
 	type ProviderKeyFile,
 	type ResolvedProviderKey,
 	type StoredProviderKey,
@@ -129,6 +130,12 @@ function readEntry(
 			typeof record.addedAt === "string"
 				? record.addedAt
 				: new Date(0).toISOString(),
+		...(typeof record.baseUrl === "string" && record.baseUrl
+			? { baseUrl: record.baseUrl }
+			: {}),
+		...(typeof record.model === "string" && record.model
+			? { model: record.model }
+			: {}),
 	};
 }
 
@@ -182,6 +189,8 @@ async function saveProviderKeys(
 			secret: encryptSecret(entry.key, activeSalt),
 			enabled: entry.enabled,
 			addedAt: entry.addedAt,
+			...(entry.baseUrl ? { baseUrl: entry.baseUrl } : {}),
+			...(entry.model ? { model: entry.model } : {}),
 		};
 	}
 
@@ -244,6 +253,7 @@ export async function setProviderKey(
 	key: string,
 	homeDir?: string,
 	now = new Date(),
+	config?: ProviderKeyConfig,
 ): Promise<ProviderKeyFile> {
 	const targetHome = homeDir ?? os.homedir();
 	return mutateProviderKeys(targetHome, (file) => ({
@@ -254,6 +264,7 @@ export async function setProviderKey(
 			// even if a previous key for this provider was toggled off.
 			enabled: true,
 			addedAt: now.toISOString(),
+			...(config ? { baseUrl: config.baseUrl, model: config.model } : {}),
 		},
 	}));
 }
@@ -294,7 +305,12 @@ export function enabledProviderKeys(
 	const resolved: ResolvedProviderKey[] = [];
 	for (const [provider, entry] of Object.entries(keys)) {
 		if (!isByokProviderId(provider) || !entry?.enabled) continue;
-		resolved.push({ provider, key: entry.key });
+		resolved.push({
+			provider,
+			key: entry.key,
+			...(entry.baseUrl ? { baseUrl: entry.baseUrl } : {}),
+			...(entry.model ? { model: entry.model } : {}),
+		});
 	}
 	return resolved;
 }

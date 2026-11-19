@@ -17,7 +17,7 @@ export const InstallExtensionsToolData: IToolData = {
 	toolReferenceName: 'installExtensions',
 	canBeReferencedInPrompt: true,
 	displayName: localize('installExtensionsTool.displayName', 'Install Extensions'),
-	modelDescription: 'This is a tool for installing extensions in Backboard IDE. You should provide the list of extension ids to install. The identifier of an extension is \'\${ publisher }.\${ name }\' for example: \'ms-dotnettools.csharp\'.',
+	modelDescription: 'This is a tool for installing extensions in DQuant Lab. You should provide the list of extension ids to install. The identifier of an extension is \'\${ publisher }.\${ name }\' for example: \'ms-dotnettools.csharp\'.',
 	userDescription: localize('installExtensionsTool.userDescription', 'Tool for installing extensions'),
 	source: ToolDataSource.Internal,
 	inputSchema: {

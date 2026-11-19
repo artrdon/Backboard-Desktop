@@ -27,10 +27,10 @@ export class EnableBackboardSounds extends Action2 {
 	constructor() {
 		super({
 			id: EnableBackboardSounds.ID,
-			title: localize2('backboard.sounds.enable', "Backboard: Enable Chat and Notification Sounds"),
+			title: localize2('backboard.sounds.enable', "DQuant Lab: Enable Chat and Notification Sounds"),
 			f1: true,
 			metadata: {
-				description: localize('backboard.sounds.enable.description', "Enable only Backboard's chat sent, chat done, and notification sounds.")
+				description: localize('backboard.sounds.enable.description', "Enable only DQuant Lab's chat sent, chat done, and notification sounds.")
 			}
 		});
 	}

@@ -470,7 +470,6 @@ export function panelHtml(webview: vscode.Webview, codiconsStylesheet: vscode.Ur
 		const buttons = {
 			mode: document.getElementById('modeBtn'),
 			model: document.getElementById('modelBtn'),
-			image: document.getElementById('imageBtn'),
 			voice: document.getElementById('voiceBtn'),
 			stop: document.getElementById('stopBtn'),
 			send: document.getElementById('sendBtn')
@@ -484,7 +483,6 @@ export function panelHtml(webview: vscode.Webview, codiconsStylesheet: vscode.Ur
 			model: document.getElementById('model'),
 			mode: document.getElementById('mode'),
 			intensity: document.getElementById('intensity'),
-			imageGeneration: document.getElementById('imageGeneration'),
 			voiceMode: document.getElementById('voiceMode'),
 			mcpFigma: document.getElementById('mcpFigma'),
 			mcpNotion: document.getElementById('mcpNotion'),
@@ -592,12 +590,6 @@ export function panelHtml(webview: vscode.Webview, codiconsStylesheet: vscode.Ur
 			].map(([value, label, meta]) => choice('chooseIntensity', value, label, meta, controls.intensity.value === value, false)).join('');
 			return section('Mode', modes) + section('Reasoning', intensities);
 		}
-		function renderImagePopover() {
-			return section('Image', [
-				choice('chooseImage', 'off', 'Off', '', controls.imageGeneration.value === 'off', false),
-				choice('chooseImage', 'auto', 'Auto', '', controls.imageGeneration.value === 'auto', false)
-			].join(''));
-		}
 		function renderVoicePopover() {
 			return section('Voice', [
 				choice('chooseVoice', 'off', 'Off', '', controls.voiceMode.value === 'off', false),
@@ -627,7 +619,6 @@ export function panelHtml(webview: vscode.Webview, codiconsStylesheet: vscode.Ur
 			const renderers = {
 				model: ['Model', renderModelPopover],
 				reasoning: ['Mode and Reasoning', renderReasoningPopover],
-				image: ['Image', renderImagePopover],
 				voice: ['Voice', renderVoicePopover]
 			};
 			const renderer = renderers[name] || renderers.model;
@@ -735,7 +726,6 @@ export function panelHtml(webview: vscode.Webview, codiconsStylesheet: vscode.Ur
 				renderModels();
 			setSelect(controls.mode, settings.mode || 'free');
 			setSelect(controls.intensity, settings.intensity || 'fast');
-			setSelect(controls.imageGeneration, settings.imageGeneration || 'off');
 			setSelect(controls.voiceMode, settings.voiceMode || 'off');
 			controls.mcpFigma.checked = !!settings.mcpFigma;
 			controls.mcpNotion.checked = !!settings.mcpNotion;
@@ -814,7 +804,6 @@ export function panelHtml(webview: vscode.Webview, codiconsStylesheet: vscode.Ur
 		});
 		buttons.mode.addEventListener('click', event => openPopover('reasoning', event.currentTarget));
 		buttons.model.addEventListener('click', event => openPopover('model', event.currentTarget));
-		buttons.image.addEventListener('click', event => openPopover('image', event.currentTarget));
 		buttons.voice.addEventListener('click', event => {
 			if (voiceRecording || controls.voiceMode.value === 'stt' || controls.voiceMode.value === 'conversation') {
 				void toggleVoiceCapture();
@@ -1030,8 +1019,6 @@ export function panelHtml(webview: vscode.Webview, codiconsStylesheet: vscode.Ur
 				chooseSelect(controls.mode, value, false);
 			} else if (action === 'chooseIntensity') {
 				chooseSelect(controls.intensity, value, false);
-			} else if (action === 'chooseImage') {
-				chooseSelect(controls.imageGeneration, value, true);
 			} else if (action === 'chooseVoice') {
 				chooseSelect(controls.voiceMode, value, true);
 				if (value === 'stt' || value === 'conversation') {
@@ -1090,8 +1077,6 @@ export function panelHtml(webview: vscode.Webview, codiconsStylesheet: vscode.Ur
 				openPopover('model', buttons.model);
 			} else if (action === 'openReasoning') {
 				openPopover('reasoning', buttons.mode);
-			} else if (action === 'openImage') {
-				openPopover('image', buttons.image);
 			} else if (action === 'cancelRun') {
 				vscode.postMessage({ type: 'cancel' });
 				closePopover();
@@ -1642,7 +1627,7 @@ export function panelHtml(webview: vscode.Webview, codiconsStylesheet: vscode.Ur
 			label.textContent = toolStatusLabel(status) + ' ' + name;
 			const meta = document.createElement('span');
 			meta.className = 'toolMeta';
-			meta.textContent = detail || (details ? 'View details' : 'Local Backboard tool');
+			meta.textContent = detail || (details ? 'View details' : 'Local DQuant Lab tool');
 			main.append(label, meta);
 			const duration = document.createElement('span');
 			duration.className = 'toolDuration';
@@ -2006,7 +1991,7 @@ export function panelHtml(webview: vscode.Webview, codiconsStylesheet: vscode.Ur
 			header.className = 'questionHeader';
 			const title = document.createElement('div');
 			title.className = 'questionTitle';
-			title.textContent = payload.question || 'Backboard needs input.';
+			title.textContent = payload.question || 'DQuant Lab needs input.';
 			const nav = document.createElement('div');
 			nav.className = 'questionNav';
 			nav.append(icon('chevron-left'));

@@ -70,7 +70,7 @@ function openBillingOverlay(accessor: ServicesAccessor): void {
 
 registerAction2(class extends Action2 {
 	constructor() {
-		super({ id: OPEN_BILLING_COMMAND_ID, title: localize2('backboard.openBilling', "Billing"), category: localize2('backboard.category', "Backboard"), f1: true });
+		super({ id: OPEN_BILLING_COMMAND_ID, title: localize2('backboard.openBilling', "Billing"), category: localize2('backboard.category', "DQuant Lab"), f1: true });
 	}
 	run(accessor: ServicesAccessor): void {
 		openBillingOverlay(accessor);

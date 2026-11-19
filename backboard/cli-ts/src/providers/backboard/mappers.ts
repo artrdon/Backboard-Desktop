@@ -266,12 +266,6 @@ function mapStreamPayload(
 			if (text) events.push({ kind: "reasoning_delta", text });
 			return { events, accumulatedContent, accumulatedReasoning };
 		}
-		case BACKBOARD_STREAM_EVENTS.mediaGenerated:
-			// Backboard's built-in image generation (image_generation: "auto").
-			// The payload shape is provider-defined; the consumer extracts what
-			// it can render.
-			events.push({ kind: "media", payload });
-			return { events, accumulatedContent, accumulatedReasoning };
 		case BACKBOARD_STREAM_EVENTS.toolCallStart: {
 			// Advisory early-render event; malformed frames are dropped, never fatal.
 			const id = stringField(payload, "tool_call_id");
@@ -280,10 +274,9 @@ function mapStreamPayload(
 			return { events, accumulatedContent, accumulatedReasoning };
 		}
 		case BACKBOARD_STREAM_EVENTS.toolCalls: {
-			// Advisory batch of completed calls. Hosted tools (generate_video,
-			// generate_image) are announced here and run server-side, so these
-			// map to announce-only start events — early execution waits for an
-			// explicit tool_submit_required.
+			// Advisory batch of completed calls. Hosted tools run server-side, so
+			// these map to announce-only start events — early execution waits for
+			// an explicit tool_submit_required.
 			const announced = Array.isArray(payload.tool_calls)
 				? payload.tool_calls
 				: [];

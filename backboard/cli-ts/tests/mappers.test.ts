@@ -125,24 +125,6 @@ describe("mapStreamPayloadToEvents", () => {
 		expect(events).toEqual([{ kind: "assistant_delta", text: "hello" }]);
 	});
 
-	it("maps generated media to a media event carrying the raw payload", () => {
-		const events = mapStreamPayloadToEvents({
-			type: "media_generated",
-			url: "https://cdn.example.com/img.png",
-			prompt: "a red fox",
-		});
-		expect(events).toEqual([
-			{
-				kind: "media",
-				payload: {
-					type: "media_generated",
-					url: "https://cdn.example.com/img.png",
-					prompt: "a red fox",
-				},
-			},
-		]);
-	});
-
 	it("maps reasoning deltas on both reasoning event names", () => {
 		expect(
 			mapStreamPayloadToEvents({

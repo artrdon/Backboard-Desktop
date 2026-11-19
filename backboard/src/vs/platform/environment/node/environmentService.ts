@@ -7,13 +7,21 @@ import { homedir, tmpdir } from 'os';
 import { NativeParsedArgs } from '../common/argv.js';
 import { IDebugParams } from '../common/environment.js';
 import { AbstractNativeEnvironmentService, parseDebugParams } from '../common/environmentService.js';
-import { getUserDataPath } from './userDataPath.js';
+import { getUserDataPath, migrateLegacyDataFolder } from './userDataPath.js';
 import { IProductService } from '../../product/common/productService.js';
 
 export class NativeEnvironmentService extends AbstractNativeEnvironmentService {
 
 	constructor(args: NativeParsedArgs, productService: IProductService) {
 		const homeDir = homedir();
+
+		// The application was renamed after the DQuant Lab rebrand: move the
+		// pre-rebrand data directories once so settings, extensions and history
+		// survive the update. Both calls are no-ops when the directories are
+		// absent or already migrated.
+		migrateLegacyDataFolder(productService.dataFolderName, homeDir);
+		migrateLegacyDataFolder(productService.sharedDataFolderName, homeDir);
+
 		super(args, {
 			homeDir,
 			tmpDir: tmpdir(),

@@ -35,7 +35,7 @@ export npm_config_arch="x64"
 export npm_config_cpu="x64"
 export npm_config_jobs="${BUILD_JOBS:-6}"
 
-echo "Building Backboard Studio ${VERSION} (${CHANNEL}, Linux x86_64)"
+echo "Building DQuant Lab ${VERSION} (${CHANNEL}, Linux x86_64)"
 echo "Environment: $(node --version), npm $(npm --version), bun $(bun --version)"
 mkdir -p "${OUTPUT_ROOT}"
 cd "${VSCODE_ROOT}"
@@ -98,12 +98,18 @@ node "${SOURCE_ROOT}/scripts/linux-release/stamp-product.mjs" \
 echo "Compiling and assembling the standalone Linux application"
 BACKBOARD_KEEP_COPILOT_SHIM_MARKER=1 npm run gulp -- vscode-linux-x64
 
-APP_NAME="backboard-studio"
-if [[ "${CHANNEL}" == "sandbox" ]]; then
-	APP_NAME="backboard-studio-sandbox"
-fi
 APP_DIR="${SOURCE_ROOT}/VSCode-linux-x64"
 APP_RESOURCES="${APP_DIR}/resources/app"
+APP_NAME="dquant-lab"
+if [[ "${CHANNEL}" == "sandbox" ]]; then
+	APP_NAME="dquant-lab-sandbox"
+fi
+# The stamped product.json is the single source of truth for the executable
+# name; the literals above are only a fallback for an unexpected stamp failure.
+STAMPED_APP_NAME="$(node -e "process.stdout.write(require(process.argv[1]).applicationName)" "${APP_RESOURCES}/product.json" 2>/dev/null || true)"
+if [[ -n "${STAMPED_APP_NAME}" ]]; then
+	APP_NAME="${STAMPED_APP_NAME}"
+fi
 APP_BINARY="${APP_DIR}/${APP_NAME}"
 BACKBOARD_SOURCE="${VSCODE_ROOT}/extensions/backboard"
 BACKBOARD_PACKAGED="${APP_RESOURCES}/extensions/backboard"
@@ -279,9 +285,9 @@ if [[ -z "${DEB_SOURCE}" ]]; then
 	exit 1
 fi
 
-TARBALL_NAME="Backboard-Studio-linux-x86_64.tar.gz"
-DEB_NAME="Backboard-Studio-linux-x86_64.deb"
-TARBALL_ROOT="Backboard-Studio-linux-x86_64"
+TARBALL_NAME="DQuant-Lab-linux-x86_64.tar.gz"
+DEB_NAME="DQuant-Lab-linux-x86_64.deb"
+TARBALL_ROOT="DQuant-Lab-linux-x86_64"
 tar -C "${SOURCE_ROOT}" \
 	--transform "s|^VSCode-linux-x64|${TARBALL_ROOT}|" \
 	-czf "${OUTPUT_ROOT}/${TARBALL_NAME}" \

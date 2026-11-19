@@ -105,7 +105,7 @@ export class SessionsPolicyBlockedOverlay extends Disposable {
 		}));
 
 		const button = this._register(new Button(card, { ...defaultButtonStyles, secondary: true }));
-		button.label = localize('policyBlocked.openVSCode', "Open Backboard IDE");
+		button.label = localize('policyBlocked.openVSCode', "Open DQuant Lab");
 		this._register(button.onDidClick(() => this._openVSCode()));
 	}
 

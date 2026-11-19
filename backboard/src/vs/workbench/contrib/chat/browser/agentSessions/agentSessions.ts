@@ -96,7 +96,7 @@ export function getAgentSessionProviderName(provider: AgentSessionTarget): strin
 		case AgentSessionProviders.Growth:
 			return 'Growth';
 		case AgentSessionProviders.AgentHostCopilot:
-			return localize('chat.session.providerLabel.agentHostCopilot', "Backboard");
+			return localize('chat.session.providerLabel.agentHostCopilot', "DQuant Lab");
 		default:
 			return provider;
 	}
@@ -202,7 +202,7 @@ export function getAgentCanContinueIn(provider: AgentSessionTarget): boolean {
 export function getAgentSessionProviderDescription(provider: AgentSessionTarget): string {
 	switch (provider) {
 		case AgentSessionProviders.Local:
-			return localize('chat.session.providerDescription.local', "Run tasks within Backboard chat. The agent iterates via chat and works interactively to implement changes on your main workspace.");
+			return localize('chat.session.providerDescription.local', "Run tasks within DQuant Lab chat. The agent iterates via chat and works interactively to implement changes on your main workspace.");
 		case AgentSessionProviders.Background:
 			return localize('chat.session.providerDescription.background', "Delegate tasks to a background agent running locally on your machine. The agent iterates via chat and works asynchronously in a Git worktree to implement changes isolated from your main workspace.");
 		case AgentSessionProviders.Cloud:
@@ -213,9 +213,9 @@ export function getAgentSessionProviderDescription(provider: AgentSessionTarget)
 		case AgentSessionProviders.Codex:
 			return localize('chat.session.providerDescription.codex', "Opens a new Codex session in the editor. Codex sessions can be managed from the chat sessions view.");
 		case AgentSessionProviders.Growth:
-			return localize('chat.session.providerDescription.growth', "Learn about Backboard features.");
+			return localize('chat.session.providerDescription.growth', "Learn about DQuant Lab features.");
 		case AgentSessionProviders.AgentHostCopilot:
-			return localize('chat.session.providerDescription.agentHostCopilot', "Run Backboard against the current workspace with local tools, model selection, and saved Backboard credentials.");
+			return localize('chat.session.providerDescription.agentHostCopilot', "Run DQuant Lab against the current workspace with local tools, model selection, and saved DQuant Lab credentials.");
 		default:
 			return '';
 	}

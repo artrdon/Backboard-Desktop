@@ -52,14 +52,14 @@ function getUpdateHoverContent(updateState: StateType): MarkdownString {
 	const hoverContent = new MarkdownString('', { isTrusted: true, supportThemeIcons: true });
 	switch (updateState) {
 		case StateType.AvailableForDownload:
-			hoverContent.appendMarkdown(localize('chat.modelPicker.downloadUpdateHover', "This model requires a newer version of Backboard IDE. [Download Update](command:update.downloadUpdate) to access it."));
+			hoverContent.appendMarkdown(localize('chat.modelPicker.downloadUpdateHover', "This model requires a newer version of DQuant Lab. [Download Update](command:update.downloadUpdate) to access it."));
 			break;
 		case StateType.Downloaded:
 		case StateType.Ready:
-			hoverContent.appendMarkdown(localize('chat.modelPicker.restartUpdateHover', "This model requires a newer version of Backboard IDE. [Restart to Update](command:update.restartToUpdate) to access it."));
+			hoverContent.appendMarkdown(localize('chat.modelPicker.restartUpdateHover', "This model requires a newer version of DQuant Lab. [Restart to Update](command:update.restartToUpdate) to access it."));
 			break;
 		default:
-			hoverContent.appendMarkdown(localize('chat.modelPicker.checkUpdateHover', "This model requires a newer version of Backboard IDE. [Update Backboard IDE](command:update.checkForUpdate) to access it."));
+			hoverContent.appendMarkdown(localize('chat.modelPicker.checkUpdateHover', "This model requires a newer version of DQuant Lab. [Update DQuant Lab](command:update.checkForUpdate) to access it."));
 			break;
 	}
 	return hoverContent;
@@ -575,7 +575,7 @@ export function buildModelPickerItems(
 			let hover: MarkdownString | undefined;
 			if (canUpgrade) {
 				hover = new MarkdownString('', { isTrusted: true, supportThemeIcons: true });
-				hover.appendMarkdown(localize('chat.modelPicker.upgradeHover', "[Upgrade Backboard](command:workbench.action.chat.upgradePlan \" \") to use the best models."));
+				hover.appendMarkdown(localize('chat.modelPicker.upgradeHover', "[Upgrade DQuant Lab](command:workbench.action.chat.upgradePlan \" \") to use the best models."));
 			}
 			items.push({
 				item: {
@@ -984,7 +984,7 @@ function createUnavailableModelItem(
 	if (reason === 'upgrade') {
 		description = new MarkdownString(localize('chat.modelPicker.upgradeLink', "[Upgrade](command:workbench.action.chat.upgradePlan \" \")"), { isTrusted: true });
 	} else if (reason === 'update') {
-		description = localize('chat.modelPicker.updateDescription', "Update Backboard IDE");
+		description = localize('chat.modelPicker.updateDescription', "Update DQuant Lab");
 	} else {
 		description = manageSettingsUrl
 			? new MarkdownString(localize('chat.modelPicker.adminLink', "[Contact your admin]({0})", manageSettingsUrl), { isTrusted: true })
@@ -995,9 +995,9 @@ function createUnavailableModelItem(
 	if (reason === 'upgrade') {
 		hoverContent = new MarkdownString('', { isTrusted: true, supportThemeIcons: true });
 		if (chatEntitlementService.entitlement === ChatEntitlement.Pro) {
-			hoverContent.appendMarkdown(localize('chat.modelPicker.upgradeHoverProPlus', "[Upgrade Backboard](command:workbench.action.chat.upgradePlan \" \") to use the best models."));
+			hoverContent.appendMarkdown(localize('chat.modelPicker.upgradeHoverProPlus', "[Upgrade DQuant Lab](command:workbench.action.chat.upgradePlan \" \") to use the best models."));
 		} else {
-			hoverContent.appendMarkdown(localize('chat.modelPicker.upgradeHover', "[Upgrade Backboard](command:workbench.action.chat.upgradePlan \" \") to use the best models."));
+			hoverContent.appendMarkdown(localize('chat.modelPicker.upgradeHover', "[Upgrade DQuant Lab](command:workbench.action.chat.upgradePlan \" \") to use the best models."));
 		}
 	} else if (reason === 'update') {
 		hoverContent = getUpdateHoverContent(updateStateType);

@@ -99,7 +99,7 @@ const CHATGPT_SUBSCRIPTION_SETUP: IAgentCliSetupCandidate = {
 	id: CHATGPT_SUBSCRIPTION_SETUP_ID,
 	label: localize('agentSetup.chatgptSubscription.label', "ChatGPT Subscription"),
 	icon: Codicon.openai,
-	description: localize('agentSetup.chatgptSubscription.description', "Connect or reconnect ChatGPT to use subscription models through the Backboard harness."),
+	description: localize('agentSetup.chatgptSubscription.description', "Connect or reconnect ChatGPT to use subscription models through the DQuant Lab harness."),
 	actionLabel: localize('agentSetup.chatgptSubscription.action', "Connect"),
 };
 
@@ -107,7 +107,7 @@ const CLAUDE_SUBSCRIPTION_SETUP: IAgentCliSetupCandidate & { readonly pasteBackS
 	id: CLAUDE_SUBSCRIPTION_SETUP_ID,
 	label: localize('agentSetup.claudeSubscription.label', "Claude Subscription"),
 	icon: Codicon.sparkle,
-	description: localize('agentSetup.claudeSubscription.description', "Connect or reconnect Claude Code to use subscription models through the Backboard harness."),
+	description: localize('agentSetup.claudeSubscription.description', "Connect or reconnect Claude Code to use subscription models through the DQuant Lab harness."),
 	actionLabel: localize('agentSetup.claudeSubscription.action', "Connect"),
 	pasteBackSignIn: true,
 };
@@ -229,7 +229,7 @@ export class AgentCliSetupService implements IAgentCliSetupService {
 			return;
 		}
 		if (isWindows) {
-			throw new Error(localize('agentSetup.byosDisabled', "BYOS subscriptions are not supported on Windows. Sign in with Backboard or use a provider API key."));
+			throw new Error(localize('agentSetup.byosDisabled', "BYOS subscriptions are not supported on Windows. Sign in with DQuant Lab or use a provider API key."));
 		}
 		if (id === CHATGPT_SUBSCRIPTION_SETUP.id) {
 			if (this._inFlight.has(id)) {
@@ -307,7 +307,7 @@ export class AgentCliSetupService implements IAgentCliSetupService {
 	private async _runChatGptSubscriptionSetup(preconfirmed: boolean): Promise<void> {
 		const { confirmed } = preconfirmed ? { confirmed: true } : await this._dialogService.confirm({
 			message: localize('agentSetup.chatgptSubscription.confirmTitle', "Connect ChatGPT subscription?"),
-			detail: localize('agentSetup.chatgptSubscription.confirmDetail', "Backboard will open ChatGPT in your browser and store its own renewable login. OpenAI model requests will continue to run through the Backboard CLI harness."),
+			detail: localize('agentSetup.chatgptSubscription.confirmDetail', "DQuant Lab will open ChatGPT in your browser and store its own renewable login. OpenAI model requests will continue to run through the DQuant Lab CLI harness."),
 			primaryButton: localize('agentSetup.chatgptSubscription.connectButton', "Connect"),
 		});
 		if (!confirmed) {
@@ -328,7 +328,7 @@ export class AgentCliSetupService implements IAgentCliSetupService {
 	private async _runClaudeSubscriptionSetup(preconfirmed: boolean): Promise<void> {
 		const { confirmed } = preconfirmed ? { confirmed: true } : await this._dialogService.confirm({
 			message: localize('agentSetup.claudeSubscription.confirmTitle', "Connect Claude subscription?"),
-			detail: localize('agentSetup.claudeSubscription.confirmDetail', "Backboard will use your existing Claude Code subscription login, or open Anthropic's sign-in flow if needed."),
+			detail: localize('agentSetup.claudeSubscription.confirmDetail', "DQuant Lab will use your existing Claude Code subscription login, or open Anthropic's sign-in flow if needed."),
 			primaryButton: localize('agentSetup.claudeSubscription.connectButton', "Connect"),
 		});
 		if (!confirmed) {
@@ -425,7 +425,7 @@ export class AgentCliSetupService implements IAgentCliSetupService {
 		}
 		const { confirmed: restart } = await this._dialogService.confirm({
 			message: localize('agentSetup.restartTitle', "{0} is installed", definition.label),
-			detail: localize('agentSetup.restartDetail', "Restart Backboard to finish enabling {0}.", definition.label),
+			detail: localize('agentSetup.restartDetail', "Restart DQuant Lab to finish enabling {0}.", definition.label),
 			primaryButton: localize('agentSetup.restartButton', "Restart"),
 		});
 		if (restart) {

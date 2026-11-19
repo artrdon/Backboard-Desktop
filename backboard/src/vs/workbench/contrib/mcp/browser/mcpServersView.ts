@@ -274,7 +274,7 @@ export class McpServersListView extends AbstractExtensionsListView<IWorkbenchMcp
 		const description = dom.append(welcomeContent, dom.$('.mcp-welcome-description'));
 		const markdownResult = this._register(this.markdownRendererService.render(
 			new MarkdownString(
-				localize('mcp.welcome.descriptionWithLink', "Browse and install Model Context Protocol (connector) servers directly from Backboard IDE to extend agent mode with extra tools for connecting to databases, invoking APIs and performing specialized tasks."),
+				localize('mcp.welcome.descriptionWithLink', "Browse and install Model Context Protocol (connector) servers directly from DQuant Lab to extend agent mode with extra tools for connecting to databases, invoking APIs and performing specialized tasks."),
 				{ isTrusted: { enabledCommands: ['workbench.action.openSettings'] } },
 			)
 				.appendMarkdown('\n\n')

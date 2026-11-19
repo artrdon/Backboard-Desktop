@@ -38,7 +38,7 @@ const chatViewIcon = FileAccess.asBrowserUri('vs/workbench/contrib/chat/browser/
 
 const chatViewContainer: ViewContainer = Registry.as<IViewContainersRegistry>(ViewExtensions.ViewContainersRegistry).registerViewContainer({
 	id: ChatViewContainerId,
-	title: localize2('backboard.viewContainer.label', "Backboard"),
+	title: localize2('backboard.viewContainer.label', "DQuant Lab"),
 	icon: chatViewIcon,
 	ctorDescriptor: new SyncDescriptor(ViewPaneContainer, [ChatViewContainerId, { mergeViewWithContainerWhenSingleView: true }]),
 	storageId: ChatViewContainerId,
@@ -51,13 +51,13 @@ const chatViewDescriptor: IViewDescriptor = {
 	containerIcon: chatViewContainer.icon,
 	containerTitle: chatViewContainer.title.value,
 	singleViewPaneContainerTitle: chatViewContainer.title.value,
-	name: localize2('backboard.viewContainer.label', "Backboard"),
+	name: localize2('backboard.viewContainer.label', "DQuant Lab"),
 	canToggleVisibility: false,
 	canMoveView: true,
 	openCommandActionDescriptor: {
 		id: ChatViewContainerId,
 		title: chatViewContainer.title,
-		mnemonicTitle: localize({ key: 'miToggleBackboard', comment: ['&& denotes a mnemonic'] }, "&&Backboard"),
+		mnemonicTitle: localize({ key: 'miToggleBackboard', comment: ['&& denotes a mnemonic'] }, "&&DQuant Lab"),
 		keybindings: {
 			primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KeyI,
 			mac: {

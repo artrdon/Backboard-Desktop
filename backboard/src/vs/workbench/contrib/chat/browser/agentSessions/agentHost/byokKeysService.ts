@@ -5,7 +5,7 @@
 
 import { Event } from '../../../../../../base/common/event.js';
 import { IByokKeyStatus } from '../../../../../../platform/agentHost/common/byokKeyStore.js';
-import { ByokProviderId } from '../../../../../../platform/agentHost/common/byokProviders.js';
+import { ByokProviderId, ICustomProviderConfig } from '../../../../../../platform/agentHost/common/byokProviders.js';
 import { createDecorator } from '../../../../../../platform/instantiation/common/instantiation.js';
 
 export type { IByokKeyStatus } from '../../../../../../platform/agentHost/common/byokKeyStore.js';
@@ -32,7 +32,9 @@ export interface IByokKeysService {
 	readonly onDidChange: Event<void>;
 	list(): readonly IByokKeyStatus[];
 	/** Validate in the runtime, persist, then activate. Rejects with {@link ByokKeyValidationError} when the vendor refuses the key. */
-	add(provider: ByokProviderId, key: string): Promise<void>;
+	add(provider: ByokProviderId, key: string, config?: ICustomProviderConfig): Promise<void>;
+	/** Validate a key without storing or activating it; used by Test Connection. */
+	validate(provider: ByokProviderId, key: string, config?: ICustomProviderConfig): Promise<void>;
 	/** Delete the key and deactivate it in every running runtime. */
 	remove(provider: ByokProviderId): Promise<void>;
 	/** Re-validate the stored key without re-activating it. */

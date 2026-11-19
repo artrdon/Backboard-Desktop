@@ -22,11 +22,11 @@ TEST_FILE="$VSCODE_ROOT/extensions/backboard/out/test/updatesInstaller.e2e.test.
 
 case "$CHANNEL" in
   stable)
-    APP_NAME="Backboard Studio.app"
+    APP_NAME="DQuant Lab.app"
     BUNDLE_IDENTIFIER="io.backboard.studio"
     ;;
   sandbox)
-    APP_NAME="Backboard Studio Sandbox.app"
+    APP_NAME="DQuant Lab Sandbox.app"
     BUNDLE_IDENTIFIER="io.backboard.studio.sandbox"
     ;;
   *)

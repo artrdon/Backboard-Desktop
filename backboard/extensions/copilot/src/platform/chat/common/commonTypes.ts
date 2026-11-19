@@ -288,7 +288,7 @@ function getRateLimitMessage(fetchResult: ChatFetchError, copilotPlan: string | 
 	}
 	if (fetchResult.capiError?.code?.startsWith('integration_rate_limited')) {
 		return l10n.t({
-			message: 'Sorry, Backboard Chat is currently experiencing high demand. Please try again in {0}. [Learn More]({1})',
+			message: 'Sorry, DQuant Chat is currently experiencing high demand. Please try again in {0}. [Learn More]({1})',
 			args: [retryAfterString, 'https://aka.ms/github-copilot-rate-limit-error'],
 			comment: [`{Locked=']({'}`]
 		});

@@ -32,7 +32,9 @@ export const DEFAULTS: AgentDefaults = {
 	finalVerificationNudge: true,
 };
 
-const KEY_ONLY_DEFAULT_MODELS: Readonly<Record<ByokProviderId, ModelRef>> = {
+const KEY_ONLY_DEFAULT_MODELS: Readonly<
+	Partial<Record<ByokProviderId, ModelRef>>
+> = {
 	anthropic: { provider: "anthropic", model: "claude-opus-5" },
 	openai: DEFAULTS.model,
 	google: { provider: "google", model: "gemini-2.5-flash" },
@@ -46,7 +48,8 @@ const KEY_ONLY_DEFAULT_MODELS: Readonly<Record<ByokProviderId, ModelRef>> = {
 export function keyOnlyDefaultModel(
 	provider: ByokProviderId | undefined,
 ): ModelRef | null {
-	return provider ? KEY_ONLY_DEFAULT_MODELS[provider] : null;
+	// Custom API's model is chosen by the user; there is no safe default.
+	return provider ? (KEY_ONLY_DEFAULT_MODELS[provider] ?? null) : null;
 }
 
 export function formatModel(ref: ModelRef): string {

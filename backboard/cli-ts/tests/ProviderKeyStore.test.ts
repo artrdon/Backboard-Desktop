@@ -44,6 +44,29 @@ describe("provider key store", () => {
 		});
 	});
 
+	it("round-trips a Custom API key with its non-secret endpoint", async () => {
+		const home = await tempHome();
+		await setProviderKey("custom", "custom-secret", home, new Date(0), {
+			baseUrl: "https://api.deepseek.com/v1",
+			model: "deepseek-chat",
+		});
+
+		expect(readProviderKeys(home).custom).toMatchObject({
+			key: "custom-secret",
+			enabled: true,
+			baseUrl: "https://api.deepseek.com/v1",
+			model: "deepseek-chat",
+		});
+		expect(enabledProviderKeys(readProviderKeys(home))).toEqual([
+			{
+				provider: "custom",
+				key: "custom-secret",
+				baseUrl: "https://api.deepseek.com/v1",
+				model: "deepseek-chat",
+			},
+		]);
+	});
+
 	it("writes the key file owner-only", async () => {
 		const home = await tempHome();
 		await setProviderKey("openai", "sk-example", home);

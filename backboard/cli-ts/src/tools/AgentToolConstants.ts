@@ -13,7 +13,6 @@ export const NON_DELEGATABLE_AGENT_TOOLS: ReadonlySet<string> = new Set([
 	"ask_user",
 	"browser",
 	"computer",
-	"generate_video",
 ]);
 
 /**

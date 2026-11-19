@@ -5,7 +5,7 @@
 
 import assert from 'assert';
 import { ensureNoDisposablesAreLeakedInTestSuite } from '../../../../base/test/common/utils.js';
-import { byokProviderDefinition, isByokProviderId, isConfigPropertyAvailableForModel, keyBilledProviderId, parseBillingRoute, routeProviderFamily, subscriptionPlanOfAgentType, subscriptionPlanOfModelId, vendorOfProvider } from '../../common/byokProviders.js';
+import { byokProviderDefinition, isByokProviderId, isConfigPropertyAvailableForModel, keyBilledProviderId, normalizeCustomProviderConfig, parseBillingRoute, routeProviderFamily, subscriptionPlanOfAgentType, subscriptionPlanOfModelId, validateProviderConfig, vendorOfProvider } from '../../common/byokProviders.js';
 
 suite('byokProviders', () => {
 	ensureNoDisposablesAreLeakedInTestSuite();
@@ -54,15 +54,11 @@ suite('byokProviders', () => {
 		);
 	});
 
-	test('hides Backboard media for key and subscription models, and memory only for keys', () => {
+	test('withholds memory from key-billed models but keeps it for Backboard and subscriptions', () => {
 		const models = ['anthropic/claude-opus-5', 'openai-key/gpt-5.5', 'backboard:openai-subscription/gpt-5.5', 'anthropic-subscription/opus[1m]', undefined];
 		assert.deepStrictEqual(
-			['imageModel', 'videoModel', 'imageGeneration', 'askBeforeGenerating', 'memory', 'webSearch'].map(property => models.map(model => isConfigPropertyAvailableForModel(property, model))),
+			['memory', 'webSearch'].map(property => models.map(model => isConfigPropertyAvailableForModel(property, model))),
 			[
-				[true, false, false, false, true],
-				[true, false, false, false, true],
-				[true, false, false, false, true],
-				[true, false, false, false, true],
 				[true, false, true, true, true],
 				[true, true, true, true, true],
 			],
@@ -91,6 +87,40 @@ suite('byokProviders', () => {
 				anthropic.looksLikeKey(`sk-${'a'.repeat(32)}`),
 			],
 			[true, false, true, false],
+		);
+	});
+
+
+	test('validates Custom API endpoints and keeps them non-secret', () => {
+		assert.deepStrictEqual(
+			[
+				parseBillingRoute('custom-key/deepseek-chat'),
+				byokProviderDefinition('custom').label,
+				byokProviderDefinition('custom').requiresEndpoint,
+				byokProviderDefinition('custom').looksLikeKey('any-token-at-all'),
+			],
+			[
+				{ source: 'byok', provider: 'custom', model: 'deepseek-chat' },
+				'Custom API',
+				true,
+				true,
+			],
+		);
+		assert.strictEqual(
+			normalizeCustomProviderConfig({ baseUrl: 'https://api.deepseek.com/v1/', model: ' deepseek-chat ' }).config?.baseUrl,
+			'https://api.deepseek.com/v1',
+		);
+		assert.strictEqual(
+			normalizeCustomProviderConfig({ baseUrl: 'https://api.deepseek.com/v1/chat/completions', model: 'deepseek-chat' }).error,
+			'Enter the base URL without /chat/completions.',
+		);
+		assert.strictEqual(
+			normalizeCustomProviderConfig({ baseUrl: 'https://user:pass@api.deepseek.com/v1', model: 'deepseek-chat' }).error,
+			'Do not put credentials in the API base URL. Use the API key field instead.',
+		);
+		assert.strictEqual(
+			validateProviderConfig('openai', { baseUrl: 'https://api.deepseek.com/v1', model: 'deepseek-chat' }).error,
+			'Endpoint settings are only supported for Custom API.',
 		);
 	});
 });

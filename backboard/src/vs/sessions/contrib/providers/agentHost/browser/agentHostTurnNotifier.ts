@@ -121,8 +121,8 @@ export class AgentHostTurnNotifierContribution extends Disposable implements IWo
 
 			const title = session.title.get() || localize('agentHostTurnNotifier.untitled', "Untitled Session");
 			const body = status === SessionStatus.Error
-				? localize('agentHostTurnNotifier.failed', "Backboard hit an error this turn.")
-				: localize('agentHostTurnNotifier.completed', "Backboard finished this turn.");
+				? localize('agentHostTurnNotifier.failed', "DQuant Lab hit an error this turn.")
+				: localize('agentHostTurnNotifier.completed', "DQuant Lab finished this turn.");
 			const result = await this._hostService.showToast({
 				title: title.replace(/`/g, '\''),
 				body,

@@ -12,8 +12,8 @@ import { EditorPaneDescriptor, IEditorPaneRegistry } from '../../../../browser/e
 import { EditorExtensions, IEditorFactoryRegistry, IEditorSerializer } from '../../../../common/editor.js';
 import { EditorInput } from '../../../../common/editor/editorInput.js';
 import { IEditorService } from '../../../../services/editor/common/editorService.js';
-import { ADD_PROVIDER_KEY_COMMAND_ID, OPEN_API_KEYS_COMMAND_ID } from './byokKeys.js';
-import { isByokProviderId } from '../../../../../platform/agentHost/common/byokProviders.js';
+import { ADD_PROVIDER_KEY_COMMAND_ID, OPEN_API_KEYS_COMMAND_ID, TEST_PROVIDER_KEY_COMMAND_ID } from './byokKeys.js';
+import { isByokProviderId, ICustomProviderConfig, validateProviderConfig } from '../../../../../platform/agentHost/common/byokProviders.js';
 import { IByokKeysService } from '../agentSessions/agentHost/byokKeysService.js';
 import { ByokKeysEditor } from './byokKeysEditor.js';
 import { ByokKeysEditorInput } from './byokKeysEditorInput.js';
@@ -49,7 +49,7 @@ registerAction2(class extends Action2 {
 		super({
 			id: OPEN_API_KEYS_COMMAND_ID,
 			title: localize2('backboard.openApiKeys', "API Keys"),
-			category: localize2('backboard.category', "Backboard"),
+			category: localize2('backboard.category', "DQuant Lab"),
 			f1: true,
 		});
 	}
@@ -63,15 +63,38 @@ registerAction2(class extends Action2 {
  * Inline key entry (model picker and sign-in card) saves through the same
  * keychain-backed service as the API Keys page, so the runtime bills to it.
  */
+function readProviderKeyArguments(provider: unknown, key: unknown, config: unknown): { provider: 'openai' | 'anthropic' | 'google' | 'openrouter' | 'xai' | 'custom'; key: string; config?: ICustomProviderConfig } {
+	if (!isByokProviderId(provider) || typeof key !== 'string' || !key.trim()) {
+		throw new Error(localize('backboard.addProviderKey.invalid', "Choose a provider and enter an API key."));
+	}
+	if (config === undefined) {
+		return { provider, key: key.trim() };
+	}
+	const settings = validateProviderConfig(provider, config as Partial<ICustomProviderConfig>);
+	if (settings.error || !settings.config) {
+		throw new Error(settings.error ?? localize('backboard.addProviderKey.invalidEndpoint', "Enter the API base URL and model ID."));
+	}
+	return { provider, key: key.trim(), config: settings.config };
+}
+
 registerAction2(class extends Action2 {
 	constructor() {
 		super({ id: ADD_PROVIDER_KEY_COMMAND_ID, title: localize2('backboard.addProviderKey', "Add Provider Key"), f1: false });
 	}
 
-	async run(accessor: ServicesAccessor, provider: unknown, key: unknown): Promise<void> {
-		if (!isByokProviderId(provider) || typeof key !== 'string' || !key.trim()) {
-			throw new Error(localize('backboard.addProviderKey.invalid', "Choose a provider and enter an API key."));
-		}
-		await accessor.get(IByokKeysService).add(provider, key.trim());
+	async run(accessor: ServicesAccessor, provider: unknown, key: unknown, config?: unknown): Promise<void> {
+		const args = readProviderKeyArguments(provider, key, config);
+		await accessor.get(IByokKeysService).add(args.provider, args.key, args.config);
+	}
+});
+
+registerAction2(class extends Action2 {
+	constructor() {
+		super({ id: TEST_PROVIDER_KEY_COMMAND_ID, title: localize2('backboard.testProviderKey', "Test Provider Key"), f1: false });
+	}
+
+	async run(accessor: ServicesAccessor, provider: unknown, key: unknown, config?: unknown): Promise<void> {
+		const args = readProviderKeyArguments(provider, key, config);
+		await accessor.get(IByokKeysService).validate(args.provider, args.key, args.config);
 	}
 });

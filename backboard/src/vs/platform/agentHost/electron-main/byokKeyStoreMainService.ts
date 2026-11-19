@@ -14,7 +14,7 @@ import { StorageScope, StorageTarget } from '../../storage/common/storage.js';
 import { IApplicationStorageMainService } from '../../storage/electron-main/storageMainService.js';
 import { IAgentCommandResult } from '../common/agentService.js';
 import { ByokKeyOperationOutcome, IByokKeyStatus, IByokKeyStore, maskKey } from '../common/byokKeyStore.js';
-import { BYOK_COMMANDS, BYOK_GENERATION_ARG, BYOK_KEY_ARG, BYOK_PROVIDER_ARG, BYOK_PROVIDERS, ByokProviderId, byokProviderDefinition } from '../common/byokProviders.js';
+import { BYOK_BASE_URL_ARG, BYOK_COMMANDS, BYOK_GENERATION_ARG, BYOK_KEY_ARG, BYOK_MODEL_ARG, BYOK_PROVIDER_ARG, BYOK_PROVIDERS, ByokProviderId, byokProviderDefinition, CUSTOM_PROVIDER_ID, ICustomProviderConfig, validateProviderConfig } from '../common/byokProviders.js';
 import { IAgentHostProcessAccess } from '../node/agentHostService.js';
 
 /** Secret storage key for one provider's API key; the same key the renderer wrote before main owned the store. */
@@ -32,6 +32,9 @@ type Persistence = 'persisted' | 'in-memory';
 interface IByokKeyRecord {
 	readonly masked: string;
 	readonly addedAt: number;
+	/** Custom API endpoint; never secret, so it lives beside the key metadata. */
+	readonly baseUrl?: string;
+	readonly model?: string;
 	readonly lastValidatedAt?: number;
 	readonly lastError?: string;
 	readonly lastErrorCategory?: string;
@@ -105,16 +108,21 @@ export class ByokKeyStoreMainService extends Disposable implements IByokKeyStore
 		return this._statuses();
 	}
 
-	async add(provider: ByokProviderId, key: string): Promise<ByokKeyOperationOutcome> {
+	async add(provider: ByokProviderId, key: string, config?: ICustomProviderConfig): Promise<ByokKeyOperationOutcome> {
 		await this._whenReady();
 		const label = byokProviderDefinition(provider).label;
 		const trimmed = key.trim();
 		if (!trimmed) {
 			return failure(localize('byokKeyStore.empty', "Enter a {0} API key.", label), 'invalid-key');
 		}
+		const settings = validateProviderConfig(provider, config);
+		if (settings.error || (provider === CUSTOM_PROVIDER_ID && !settings.config)) {
+			return failure(settings.error ?? localize('byokKeyStore.endpointRequired', "Enter the Custom API base URL and model ID."), 'invalid-config');
+		}
+		const endpoint = settings.config;
 		const generation = this._reserve(provider);
 		// 1. Validate in the runtime; nothing is stored for a rejected key.
-		const validation = await this._validate(provider, trimmed);
+		const validation = await this._validate(provider, trimmed, endpoint);
 		if (!validation.ok) {
 			return validation;
 		}
@@ -124,7 +132,12 @@ export class ByokKeyStoreMainService extends Disposable implements IByokKeyStore
 		}
 		const now = Date.now();
 		try {
-			await this._writeKey(provider, trimmed, { masked: maskKey(trimmed), addedAt: now, lastValidatedAt: now }, generation);
+			await this._writeKey(provider, trimmed, {
+				masked: maskKey(trimmed),
+				addedAt: now,
+				lastValidatedAt: now,
+				...(endpoint ? { baseUrl: endpoint.baseUrl, model: endpoint.model } : {}),
+			}, generation);
 		} catch (error) {
 			if (error instanceof SupersededError) {
 				return superseded(label);
@@ -136,8 +149,22 @@ export class ByokKeyStoreMainService extends Disposable implements IByokKeyStore
 		this._connected.delete(provider);
 		this._fireChange();
 		// 3. Activate. A failure here leaves the key "saved, connection pending".
-		await this._activate(provider, trimmed, generation);
+		await this._activate(provider, trimmed, generation, endpoint);
 		return { ok: true };
+	}
+
+	async validate(provider: ByokProviderId, key: string, config?: ICustomProviderConfig): Promise<ByokKeyOperationOutcome> {
+		await this._whenReady();
+		const label = byokProviderDefinition(provider).label;
+		const trimmed = key.trim();
+		if (!trimmed) {
+			return failure(localize('byokKeyStore.empty', "Enter a {0} API key.", label), 'invalid-key');
+		}
+		const settings = validateProviderConfig(provider, config);
+		if (settings.error || (provider === CUSTOM_PROVIDER_ID && !settings.config)) {
+			return failure(settings.error ?? localize('byokKeyStore.endpointRequired', "Enter the Custom API base URL and model ID."), 'invalid-config');
+		}
+		return this._validate(provider, trimmed, settings.config);
 	}
 
 	async remove(provider: ByokProviderId): Promise<ByokKeyOperationOutcome> {
@@ -165,7 +192,7 @@ export class ByokKeyStoreMainService extends Disposable implements IByokKeyStore
 		if (!key || !record) {
 			return failure(localize('byokKeyStore.notSet', "No {0} API key is stored.", label), 'invalid-key');
 		}
-		const validation = await this._validate(provider, key);
+		const validation = await this._validate(provider, key, record.baseUrl && record.model ? { baseUrl: record.baseUrl, model: record.model } : undefined);
 		if (!this._isNewest(provider, generation)) {
 			// The key changed while it was being tested; the result describes a key that no longer exists.
 			return superseded(label);
@@ -195,9 +222,13 @@ export class ByokKeyStoreMainService extends Disposable implements IByokKeyStore
 
 	// ---- agent host ----------------------------------------------------------
 
-	private async _validate(provider: ByokProviderId, key: string): Promise<ByokKeyOperationOutcome> {
+	private async _validate(provider: ByokProviderId, key: string, config?: ICustomProviderConfig): Promise<ByokKeyOperationOutcome> {
 		const label = byokProviderDefinition(provider).label;
-		const call = await this._hostCommand(BYOK_COMMANDS.validate, { [BYOK_PROVIDER_ARG]: provider, [BYOK_KEY_ARG]: key });
+		const call = await this._hostCommand(BYOK_COMMANDS.validate, {
+			[BYOK_PROVIDER_ARG]: provider,
+			[BYOK_KEY_ARG]: key,
+			...(config ? { [BYOK_BASE_URL_ARG]: config.baseUrl, [BYOK_MODEL_ARG]: config.model } : {}),
+		});
 		if (!call.ok) {
 			return failure(call.message, 'offline-or-timeout');
 		}
@@ -208,11 +239,16 @@ export class ByokKeyStoreMainService extends Disposable implements IByokKeyStore
 		return { ok: true };
 	}
 
-	private async _activate(provider: ByokProviderId, key: string, generation: number): Promise<void> {
+	private async _activate(provider: ByokProviderId, key: string, generation: number, config?: ICustomProviderConfig): Promise<void> {
 		if (!this._isNewest(provider, generation)) {
 			return;
 		}
-		const call = await this._hostCommand(BYOK_COMMANDS.set, { [BYOK_PROVIDER_ARG]: provider, [BYOK_KEY_ARG]: key, [BYOK_GENERATION_ARG]: generation });
+		const call = await this._hostCommand(BYOK_COMMANDS.set, {
+			[BYOK_PROVIDER_ARG]: provider,
+			[BYOK_KEY_ARG]: key,
+			[BYOK_GENERATION_ARG]: generation,
+			...(config ? { [BYOK_BASE_URL_ARG]: config.baseUrl, [BYOK_MODEL_ARG]: config.model } : {}),
+		});
 		if (!this._isNewest(provider, generation)) {
 			return;
 		}
@@ -243,7 +279,14 @@ export class ByokKeyStoreMainService extends Disposable implements IByokKeyStore
 			if (!key || !this._isNewest(provider, generation)) {
 				continue;
 			}
-			const call = await this._hostCommand(BYOK_COMMANDS.set, { [BYOK_PROVIDER_ARG]: provider, [BYOK_KEY_ARG]: key, [BYOK_GENERATION_ARG]: generation });
+			const record = this._readRecord(provider);
+			const config = record?.baseUrl && record.model ? { baseUrl: record.baseUrl, model: record.model } : undefined;
+			const call = await this._hostCommand(BYOK_COMMANDS.set, {
+				[BYOK_PROVIDER_ARG]: provider,
+				[BYOK_KEY_ARG]: key,
+				[BYOK_GENERATION_ARG]: generation,
+				...(config ? { [BYOK_BASE_URL_ARG]: config.baseUrl, [BYOK_MODEL_ARG]: config.model } : {}),
+			});
 			if (!this._isNewest(provider, generation)) {
 				continue;
 			}
@@ -255,12 +298,12 @@ export class ByokKeyStoreMainService extends Disposable implements IByokKeyStore
 	private async _hostCommand(command: string, args: Record<string, unknown>): Promise<HostCall> {
 		const agentService = this._agentHost.agentService;
 		if (!agentService?.executeAgentCommand) {
-			return { ok: false, unavailable: true, message: localize('byokKeyStore.hostNotRunning', "The Backboard agent host is not running.") };
+			return { ok: false, unavailable: true, message: localize('byokKeyStore.hostNotRunning', "The DQuant Lab agent host is not running.") };
 		}
 		try {
 			const result = await raceTimeout(agentService.executeAgentCommand({ provider: BACKBOARD_AGENT_PROVIDER, command, args }), HOST_COMMAND_TIMEOUT_MS);
 			if (!result) {
-				return { ok: false, unavailable: false, message: localize('byokKeyStore.hostTimeout', "The Backboard agent host did not respond in time.") };
+				return { ok: false, unavailable: false, message: localize('byokKeyStore.hostTimeout', "The DQuant Lab agent host did not respond in time.") };
 			}
 			return { ok: true, result };
 		} catch (error) {
@@ -349,6 +392,8 @@ export class ByokKeyStoreMainService extends Disposable implements IByokKeyStore
 			return {
 				masked: parsed.masked,
 				addedAt: parsed.addedAt,
+				...(typeof parsed.baseUrl === 'string' ? { baseUrl: parsed.baseUrl } : {}),
+				...(typeof parsed.model === 'string' ? { model: parsed.model } : {}),
 				...(typeof parsed.lastValidatedAt === 'number' ? { lastValidatedAt: parsed.lastValidatedAt } : {}),
 				...(typeof parsed.lastError === 'string' ? { lastError: parsed.lastError } : {}),
 				...(typeof parsed.lastErrorCategory === 'string' ? { lastErrorCategory: parsed.lastErrorCategory } : {}),
@@ -377,6 +422,8 @@ export class ByokKeyStoreMainService extends Disposable implements IByokKeyStore
 				consoleUrl: definition.consoleUrl,
 				configured: !!record,
 				masked: record?.masked,
+				...(record?.baseUrl ? { baseUrl: record.baseUrl } : {}),
+				...(record?.model ? { model: record.model } : {}),
 				addedAt: record?.addedAt,
 				lastValidatedAt: record?.lastValidatedAt,
 				lastError: record?.lastError,

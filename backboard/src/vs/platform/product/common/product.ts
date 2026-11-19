@@ -87,19 +87,19 @@ else {
 				provider: {
 					default: {
 						id: 'backboard',
-						name: 'Backboard',
+						name: 'DQuant Lab',
 					},
 					enterprise: {
 						id: 'backboard',
-						name: 'Backboard',
+						name: 'DQuant Lab',
 					},
 					google: {
 						id: 'backboard',
-						name: 'Backboard',
+						name: 'DQuant Lab',
 					},
 					apple: {
 						id: 'backboard',
-						name: 'Backboard',
+						name: 'DQuant Lab',
 					},
 				},
 				providerExtensionId: '',

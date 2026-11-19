@@ -191,7 +191,7 @@ async function openBackboardView(): Promise<void> {
 async function generateBackboardCommitMessage(bridge: BackboardBridge, rootUri: vscode.Uri | undefined, cancellationToken: vscode.CancellationToken | undefined): Promise<void> {
 	if (!configuredBackboardApiKey()) {
 		const signIn = 'Sign In to Backboard';
-		const selection = await vscode.window.showInformationMessage('Sign in to Backboard before generating a commit message.', signIn);
+		const selection = await vscode.window.showInformationMessage('Sign in to DQuant Lab before generating a commit message.', signIn);
 		if (selection === signIn) {
 			await promptBackboardSso(bridge);
 		}
@@ -200,14 +200,14 @@ async function generateBackboardCommitMessage(bridge: BackboardBridge, rootUri: 
 
 	const gitExtension = vscode.extensions.getExtension<GitExtension>('vscode.git');
 	if (!gitExtension) {
-		void vscode.window.showErrorMessage('Git is unavailable, so Backboard cannot generate a commit message.');
+		void vscode.window.showErrorMessage('Git is unavailable, so DQuant Lab cannot generate a commit message.');
 		return;
 	}
 
 	try {
 		const git = await gitExtension.activate();
 		if (!git.enabled) {
-			void vscode.window.showErrorMessage('Git is disabled, so Backboard cannot generate a commit message.');
+			void vscode.window.showErrorMessage('Git is disabled, so DQuant Lab cannot generate a commit message.');
 			return;
 		}
 
@@ -216,7 +216,7 @@ async function generateBackboardCommitMessage(bridge: BackboardBridge, rootUri: 
 			? api.getRepository(rootUri)
 			: api.repositories.length === 1 ? api.repositories[0] : undefined;
 		if (!repository) {
-			void vscode.window.showErrorMessage('Backboard could not find the Git repository for this commit message.');
+			void vscode.window.showErrorMessage('DQuant Lab could not find the Git repository for this commit message.');
 			return;
 		}
 
@@ -267,7 +267,7 @@ async function generateBackboardCommitMessage(bridge: BackboardBridge, rootUri: 
 		}
 	} catch (error) {
 		backboardToolOutput?.appendLine(`[commit-message] ${error instanceof Error ? error.stack ?? error.message : String(error)}`);
-		void vscode.window.showErrorMessage(`Backboard could not generate a commit message: ${error instanceof Error ? error.message : String(error)}`);
+		void vscode.window.showErrorMessage(`DQuant Lab could not generate a commit message: ${error instanceof Error ? error.message : String(error)}`);
 	}
 }
 
@@ -362,13 +362,13 @@ async function signInBackboard(bridge: BackboardBridge): Promise<boolean> {
 		bridge.restart();
 		bridge.warmUp();
 		if (saveResult.apiKeySaved) {
-			backboardToolOutput?.appendLine(`[oauth] Backboard SSO complete. API key saved to ${backboardConfigPath()}.`);
+			backboardToolOutput?.appendLine(`[oauth] DQuant Lab sign-in complete. API key saved to ${backboardConfigPath()}.`);
 		}
-		void vscode.window.showInformationMessage('Backboard SSO complete.');
+		void vscode.window.showInformationMessage('DQuant Lab sign-in complete.');
 		return true;
 	} catch (error) {
 		backboardToolOutput?.appendLine(`[oauth] sign in failed: ${error instanceof Error ? error.message : String(error)}`);
-		await vscode.window.showErrorMessage(`Backboard sign in failed: ${error instanceof Error ? error.message : String(error)}`);
+		await vscode.window.showErrorMessage(`DQuant Lab sign in failed: ${error instanceof Error ? error.message : String(error)}`);
 		return false;
 	}
 }
@@ -1815,7 +1815,6 @@ class BackboardPanelProvider implements vscode.WebviewViewProvider {
 		const attachments = backboardAttachments(image, files);
 		let boundThreadId = readBackboardThreadId(existingEntry);
 		const modelContent = content;
-		const imageGeneration = imageGenerationForPrompt(modelContent, settings.imageGeneration);
 		const liveStartedAt = Date.now();
 		const existingMessages = normalizePanelMessages(existingEntry?.messages);
 		const liveMessages: { role: string; content: string }[] = [...existingMessages, { role: 'user', content }];
@@ -1889,7 +1888,7 @@ class BackboardPanelProvider implements vscode.WebviewViewProvider {
 			// cold tool cache would otherwise serialize a full bridge round trip
 			// before the prompt even reaches the agent.
 			const submitToolsPromise = this.bridge.listTools(settings.mode, token)
-				.then(tools => trimBackboardToolsForRequest(tools, modelContent, imageGeneration))
+				.then(tools => trimBackboardToolsForRequest(tools, modelContent))
 				.catch(() => undefined);
 			await this.bridge.send('sendPrompt', sessionId, {
 				content: modelContent,
@@ -1900,7 +1899,6 @@ class BackboardPanelProvider implements vscode.WebviewViewProvider {
 				mode: settings.mode,
 				intensity: settings.intensity,
 				webSearch: 'Auto',
-				imageGeneration: imageGeneration === 'auto' ? 'auto' : undefined,
 				voiceMode,
 				audioFile: audio,
 				files: attachments,
@@ -2487,7 +2485,7 @@ class BackboardBridge implements vscode.Disposable {
 			processCwd: process.cwd(),
 			params: redactSensitiveValues(params)
 		};
-		this.output.appendLine(`[${new Date().toISOString()}] Backboard Studio -> Backboard bridge`);
+		this.output.appendLine(`[${new Date().toISOString()}] DQuant Lab -> Backboard bridge`);
 		if (backboardVerboseBridgeLogging()) {
 			this.output.appendLine(JSON.stringify(payload, undefined, '\t'));
 		} else {
@@ -2758,7 +2756,7 @@ function serveCredentialEnv(): Record<string, string> {
 	const out: Record<string, string> = {
 		// Keep cli-ts session logs out of the user's workspace.
 		BACKBOARD_SESSION_ROOT: path.join(os.homedir(), '.backboard_ide', 'cli-ts-sessions'),
-		// Lets the backend count these runs as Backboard Studio activity.
+		// Lets the backend count these runs as DQuant Lab activity.
 		BACKBOARD_CLIENT: `studio/${readCurrentAppVersion()}`,
 	};
 	const settings = readSettings().config;
@@ -2929,7 +2927,7 @@ async function approveTool(name: string, args: Record<string, unknown>, mode: st
 		return true;
 	}
 	const command = typeof args.command === 'string' ? `\n\n${args.command}` : '';
-	const choice = await vscode.window.showWarningMessage(`Backboard wants to run ${name}.${command}`, { modal: true }, 'Allow');
+	const choice = await vscode.window.showWarningMessage(`DQuant Lab wants to run ${name}.${command}`, { modal: true }, 'Allow');
 	return choice === 'Allow';
 }
 
@@ -2949,9 +2947,6 @@ async function executeTool(bridge: BackboardBridge, name: string, args: Record<s
 		case 'web_fetch':
 		case 'computer':
 			return asCompactJson(await bridge.runRustTool(name, args, token));
-		case 'generate_image':
-		case 'image_generate':
-			return generateImageTool(args);
 		case 'read_lints':
 			return readLints(args, token);
 		case 'write':
@@ -3094,14 +3089,6 @@ async function codebaseSearch(args: Record<string, unknown>): Promise<string> {
 		.slice(0, limit)
 		.map(item => `${vscode.workspace.asRelativePath(item.uri)}: ${item.preview}`)
 		.join('\n');
-}
-
-function generateImageTool(args: Record<string, unknown>): string {
-	const prompt = stringArg(args, 'prompt', 'description', 'query', 'input') || 'the requested image';
-	return asCompactJson({
-		success: true,
-		content: `Image generation request acknowledged for: ${prompt}. Backboard media generation is enabled for this turn; continue by returning or streaming the generated image media instead of calling another local image tool.`
-	});
 }
 
 async function readLints(args: Record<string, unknown>, token: vscode.CancellationToken): Promise<string> {
@@ -3425,7 +3412,7 @@ async function sleepTool(args: Record<string, unknown>, token: vscode.Cancellati
 
 async function taskTool(args: Record<string, unknown>): Promise<string> {
 	const prompt = stringArg(args, 'prompt', 'description');
-	return `Sub-task requested: ${prompt}\n\nBackboard Studio bridge recorded the task request. Parallel sub-agent execution is not available in this host yet.`;
+	return `Sub-task requested: ${prompt}\n\nBackboard bridge recorded the task request. Parallel sub-agent execution is not available in this host yet.`;
 }
 
 async function tryStat(uri: vscode.Uri): Promise<vscode.FileStat | undefined> {
@@ -3617,7 +3604,7 @@ function isReadOnlyTool(name: string): boolean {
 	return ['read_file', 'list_dir', 'glob', 'grep', 'codebase_search', 'web_search', 'web_fetch'].includes(name);
 }
 
-function trimBackboardToolsForRequest(tools: unknown[] | undefined, prompt: string, imageGeneration: string): unknown[] | undefined {
+function trimBackboardToolsForRequest(tools: unknown[] | undefined, prompt: string): unknown[] | undefined {
 	if (!tools?.length) {
 		return tools;
 	}
@@ -3631,9 +3618,6 @@ function trimBackboardToolsForRequest(tools: unknown[] | undefined, prompt: stri
 		}
 		if (name === 'enter_plan_mode' || name === 'exit_plan_mode') {
 			return promptMentionsPlan(prompt);
-		}
-		if (name === 'generate_image' || name === 'image_generate') {
-			return imageGeneration === 'auto' || promptMentionsImage(prompt);
 		}
 		return true;
 	});
@@ -3652,16 +3636,11 @@ function promptMentionsPlan(prompt: string): boolean {
 	return /\b(plan|planning|roadmap|steps|strategy)\b/i.test(prompt);
 }
 
-function promptMentionsImage(prompt: string): boolean {
-	return /\b(image|picture|photo|draw|drawing|illustration|logo|icon|sprite|visual|render)\b/i.test(prompt);
-}
-
 function readSettings(): {
 	readonly defaultProvider: string;
 	readonly defaultModel: string;
 	readonly mode: string;
 	readonly intensity: string;
-	readonly imageGeneration: string;
 	readonly voiceMode: string;
 	readonly mcpFigma: boolean;
 	readonly mcpNotion: boolean;
@@ -3676,7 +3655,6 @@ function readSettings(): {
 		defaultModel: config.get<string>('defaultModel') || 'moonshotai/kimi-k3',
 		mode: config.get<string>('mode') || 'free',
 		intensity: config.get<string>('intensity') || 'fast',
-		imageGeneration: config.get<string>('imageGeneration') || 'off',
 		voiceMode: config.get<string>('voiceMode') || 'off',
 		mcpFigma: config.get<boolean>('mcpFigma') ?? false,
 		mcpNotion: config.get<boolean>('mcpNotion') ?? false,
@@ -3697,7 +3675,6 @@ function resolveTurnSettings(options: PanelOptions): BackboardSettings {
 		defaultModel: options.model || settings.defaultModel,
 		mode: options.mode || settings.mode,
 		intensity: options.intensity || settings.intensity,
-		imageGeneration: options.imageGeneration || settings.imageGeneration,
 		voiceMode: options.voiceMode || settings.voiceMode,
 		mcpFigma: options.mcpFigma ?? settings.mcpFigma,
 		mcpNotion: options.mcpNotion ?? settings.mcpNotion,
@@ -3714,16 +3691,6 @@ function mcpCallsPayload(settings: BackboardSettings): string[] | undefined {
 	return enabled.length ? enabled : undefined;
 }
 
-function imageGenerationForPrompt(prompt: string, configured: string): string {
-	if (configured === 'auto') {
-		return configured;
-	}
-	return /\b(generate|create|make|draw|render)\b[\s\S]{0,80}\b(image|picture|photo|illustration|artwork)\b/i.test(prompt)
-		|| /\b(image|picture|photo|illustration|artwork)\b[\s\S]{0,80}\b(of|for|showing)\b/i.test(prompt)
-		? 'auto'
-		: configured;
-}
-
 function asPanelOptions(value: unknown): PanelOptions {
 	if (!value || typeof value !== 'object') {
 		return {};
@@ -3734,7 +3701,6 @@ function asPanelOptions(value: unknown): PanelOptions {
 		model: stringValue(raw.model),
 		mode: stringValue(raw.mode),
 		intensity: stringValue(raw.intensity),
-		imageGeneration: stringValue(raw.imageGeneration),
 		voiceMode: stringValue(raw.voiceMode),
 		mcpFigma: booleanValue(raw.mcpFigma),
 		mcpNotion: booleanValue(raw.mcpNotion),
@@ -3749,7 +3715,6 @@ async function savePanelOptions(options: PanelOptions): Promise<void> {
 		['defaultModel', options.model],
 		['mode', options.mode],
 		['intensity', options.intensity],
-		['imageGeneration', options.imageGeneration],
 		['voiceMode', options.voiceMode],
 		['mcpFigma', options.mcpFigma],
 		['mcpNotion', options.mcpNotion],
@@ -3999,7 +3964,6 @@ function publicSettings(settings: BackboardSettings): PanelOptions {
 		model: settings.defaultModel,
 		mode: settings.mode,
 		intensity: settings.intensity,
-		imageGeneration: settings.imageGeneration,
 		voiceMode: settings.voiceMode,
 		mcpFigma: settings.mcpFigma,
 		mcpNotion: settings.mcpNotion,

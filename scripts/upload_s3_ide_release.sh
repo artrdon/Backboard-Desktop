@@ -31,7 +31,7 @@ Usage:
   VERSION=2.0.1 $0
   $0 --version 2.0.1 --arch aarch64
 
-Uploads Backboard Studio release artifacts to S3. By default this also moves the
+Uploads DQuant Lab release artifacts to S3. By default this also moves the
 selected channel's latest manifest. Use --versioned-only for a manual release.
 
 Versioned objects:

@@ -137,8 +137,8 @@ echo "Starting the isolated Linux build; this can take a while under x86_64 emul
 
 "${DOCKER[@]}" cp "${BUILD_CONTAINER}:/work/output/." "${HOST_STAGE}/"
 for artifact in \
-	Backboard-Studio-linux-x86_64.tar.gz \
-	Backboard-Studio-linux-x86_64.deb \
+	DQuant-Lab-linux-x86_64.tar.gz \
+	DQuant-Lab-linux-x86_64.deb \
 	SHA256SUMS \
 	build-info.json \
 	native-binaries.txt \
@@ -155,8 +155,8 @@ done
 	shasum -a 256 -c SHA256SUMS
 )
 mkdir -p "${OUTPUT_DIR}"
-cp "${HOST_STAGE}/Backboard-Studio-linux-x86_64.tar.gz" "${OUTPUT_DIR}/"
-cp "${HOST_STAGE}/Backboard-Studio-linux-x86_64.deb" "${OUTPUT_DIR}/"
+cp "${HOST_STAGE}/DQuant-Lab-linux-x86_64.tar.gz" "${OUTPUT_DIR}/"
+cp "${HOST_STAGE}/DQuant-Lab-linux-x86_64.deb" "${OUTPUT_DIR}/"
 cp "${HOST_STAGE}/SHA256SUMS" "${OUTPUT_DIR}/"
 cp "${HOST_STAGE}/build-info.json" "${HOST_STAGE}/native-binaries.txt" \
 	"${HOST_STAGE}/launch.log" "${HOST_STAGE}/debian-install.log" "${OUTPUT_DIR}/"
@@ -164,6 +164,6 @@ cp "${HOST_STAGE}/build-info.json" "${HOST_STAGE}/native-binaries.txt" \
 echo
 echo "Local Linux release completed; no files were uploaded."
 echo "Artifacts: ${OUTPUT_DIR}"
-ls -lh "${OUTPUT_DIR}/Backboard-Studio-linux-x86_64.tar.gz" \
-	"${OUTPUT_DIR}/Backboard-Studio-linux-x86_64.deb" \
+ls -lh "${OUTPUT_DIR}/DQuant-Lab-linux-x86_64.tar.gz" \
+	"${OUTPUT_DIR}/DQuant-Lab-linux-x86_64.deb" \
 	"${OUTPUT_DIR}/SHA256SUMS"

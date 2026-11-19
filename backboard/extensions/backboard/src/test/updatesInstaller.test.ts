@@ -58,7 +58,7 @@ describe('macUpdateInstallerScript', () => {
 		assert.match(script, /run_elevated swap "\$APP_PATH"/);
 		assert.doesNotMatch(script, /run_elevated prepare "\$SOURCE_APP"/);
 		assert.doesNotMatch(script, /run_elevated remove-backup "\$BACKUP_APP"/);
-		assert.match(script, /with prompt "Backboard Studio needs permission to install this verified update\."/);
+		assert.match(script, /with prompt "DQuant Lab needs permission to install this verified update\."/);
 	});
 
 	test('keeps a rollback copy until the updated app is confirmed running', () => {
@@ -87,7 +87,7 @@ describe('macUpdateInstallerScript', () => {
 		assert.match(script, /Confirmed visible IDE window after verified launch/);
 		assert.match(script, /keeping the verified update installed/);
 		assert.doesNotMatch(script, /Updated app did not open visibly; restoring the previous version/);
-		assert.match(script, /Installed and launched Backboard Studio/);
+		assert.match(script, /Installed and launched DQuant Lab/);
 		assert.match(script, /xattr -cr "\$app_path"/);
 		assert.doesNotMatch(script, /local status=/);
 	});
@@ -196,15 +196,15 @@ describe('macUpdateInstallerScript', () => {
 		assert.ok(functionEnd > functionStart);
 		const shellFunction = script.slice(functionStart, functionEnd + 2);
 
-		const stable = spawnSync('/bin/zsh', ['-c', `${shellFunction}\napp_version_matches() { return 0; }\npid_is_exact_app_process() { return 0; }\nconfirm_app_stable "/Applications/Backboard Studio.app" "3.0.2" "42" 1`], { encoding: 'utf8' });
+		const stable = spawnSync('/bin/zsh', ['-c', `${shellFunction}\napp_version_matches() { return 0; }\npid_is_exact_app_process() { return 0; }\nconfirm_app_stable "/Applications/DQuant Lab.app" "3.0.2" "42" 1`], { encoding: 'utf8' });
 		assert.equal(stable.status, 0, stable.stderr);
 		assert.match(stable.stdout, /Confirmed stable after launch/);
 
-		const exited = spawnSync('/bin/zsh', ['-c', `${shellFunction}\napp_version_matches() { return 0; }\npid_is_exact_app_process() { return 1; }\nconfirm_app_stable "/Applications/Backboard Studio.app" "3.0.2" "42" 1`], { encoding: 'utf8' });
+		const exited = spawnSync('/bin/zsh', ['-c', `${shellFunction}\napp_version_matches() { return 0; }\npid_is_exact_app_process() { return 1; }\nconfirm_app_stable "/Applications/DQuant Lab.app" "3.0.2" "42" 1`], { encoding: 'utf8' });
 		assert.equal(exited.status, 1, exited.stderr);
 		assert.match(exited.stdout, /exited or no longer belongs to the installed bundle during post-launch stability check/);
 
-		const wrongVersion = spawnSync('/bin/zsh', ['-c', `${shellFunction}\napp_version_matches() { return 1; }\npid_is_exact_app_process() { return 0; }\nconfirm_app_stable "/Applications/Backboard Studio.app" "3.0.2" "42" 1`], { encoding: 'utf8' });
+		const wrongVersion = spawnSync('/bin/zsh', ['-c', `${shellFunction}\napp_version_matches() { return 1; }\npid_is_exact_app_process() { return 0; }\nconfirm_app_stable "/Applications/DQuant Lab.app" "3.0.2" "42" 1`], { encoding: 'utf8' });
 		assert.equal(wrongVersion.status, 1, wrongVersion.stderr);
 		assert.match(wrongVersion.stdout, /Installed app version changed during post-launch stability check/);
 	});

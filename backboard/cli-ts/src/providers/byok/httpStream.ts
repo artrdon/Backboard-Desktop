@@ -172,6 +172,8 @@ function providerLabel(provider: ByokProviderId): string {
 			return "Google";
 		case "openrouter":
 			return "OpenRouter";
+		case "custom":
+			return "Custom API";
 	}
 }
 

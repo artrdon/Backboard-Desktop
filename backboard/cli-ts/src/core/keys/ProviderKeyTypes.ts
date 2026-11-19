@@ -11,6 +11,7 @@ export const BYOK_PROVIDER_IDS = [
 	"google",
 	"openrouter",
 	"xai",
+	"custom",
 ] as const;
 
 export type ByokProviderId = (typeof BYOK_PROVIDER_IDS)[number];
@@ -19,12 +20,22 @@ export function isByokProviderId(value: string): value is ByokProviderId {
 	return (BYOK_PROVIDER_IDS as readonly string[]).includes(value);
 }
 
+/** Non-secret settings for the Custom API provider. */
+export interface ProviderKeyConfig {
+	baseUrl: string;
+	model: string;
+}
+
 /** One saved key as it appears on disk in ~/.backboard/keys.json. */
 export interface StoredProviderKey {
 	key: string;
 	/** Disabled keys stay on disk but are ignored when resolving models/clients. */
 	enabled: boolean;
 	addedAt: string;
+	/** Custom API base URL; never secret. */
+	baseUrl?: string;
+	/** Custom API model id; never secret. */
+	model?: string;
 }
 
 export type ProviderKeyFile = Partial<
@@ -35,6 +46,9 @@ export type ProviderKeyFile = Partial<
 export interface ResolvedProviderKey {
 	provider: ByokProviderId;
 	key: string;
+	/** Custom API settings, carried with the key so adapters need no global state. */
+	baseUrl?: string;
+	model?: string;
 }
 
 /**
@@ -50,6 +64,9 @@ export interface ProviderKeyStatus {
 	masked: string;
 	enabled: boolean;
 	addedAt: string | null;
+	/** Custom API endpoint, for the `/keys` status line. */
+	baseUrl?: string;
+	model?: string;
 }
 
 export interface ProviderKeyControllerOptions {

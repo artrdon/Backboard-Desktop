@@ -38,7 +38,6 @@ import { IEditorService } from '../../../../workbench/services/editor/common/edi
 import { IEditorGroup } from '../../../../workbench/services/editor/common/editorGroupsService.js';
 import { ILifecycleService } from '../../../../workbench/services/lifecycle/common/lifecycle.js';
 import { isIChatSessionFileChange2 } from '../../../../workbench/contrib/chat/common/chatSessionsService.js';
-import './canvasOverlay.js';
 
 const rightWorkbenchIcon = registerIcon('sessions-right-workbench-icon', Codicon.layoutPanelRight, localize2('sessionsRightWorkbenchIcon', 'View icon of the right workbench in the sessions window.').value);
 

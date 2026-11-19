@@ -57,7 +57,7 @@ if (Number(engineVersion.split('.')[0]) !== 1) {
 
 const stable = channel === 'stable';
 const applicationName = stable ? 'backboard-studio' : 'backboard-studio-sandbox';
-const displayName = stable ? 'Backboard Studio' : 'Backboard Studio Sandbox';
+const displayName = stable ? 'DQuant Lab' : 'DQuant Lab Sandbox';
 const productJson = readJson(productPath);
 
 productJson.applicationName = applicationName;

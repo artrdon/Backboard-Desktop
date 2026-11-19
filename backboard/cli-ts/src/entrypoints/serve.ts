@@ -47,6 +47,7 @@ import { createAgentClient } from "../providers/createAgentClient.ts";
 import { createDefaultTools } from "../tools/index.ts";
 import { errorMessage } from "../utils/errors.ts";
 import { shortId } from "../utils/id.ts";
+import { ServeSessionRestore } from "./ServeSessionRestore.ts";
 import {
 	SERVE_CAPABILITIES,
 	type ServeControl,
@@ -56,7 +57,6 @@ import {
 } from "./ServeTypes.ts";
 import { parseControlLine } from "./serveControl.ts";
 import { buildServeConversationContext } from "./serveConversationContext.ts";
-import { ServeSessionRestore } from "./ServeSessionRestore.ts";
 import {
 	McpStatusPublisher,
 	McpWorkQueue,
@@ -524,21 +524,6 @@ export async function runServe(argv: string[]): Promise<void> {
 						if (control.notify !== undefined) {
 							config.setNotifyEnabled(control.notify);
 						}
-						if (control.imageGeneration !== undefined) {
-							config.setImageGenerationEnabled(control.imageGeneration);
-						}
-						if (control.imageModel !== undefined) {
-							config.setImageModel(parseGenerativeModelRef(control.imageModel));
-						}
-						if (control.videoGeneration !== undefined) {
-							config.setVideoGenerationEnabled(control.videoGeneration);
-						}
-						if (control.videoModel !== undefined) {
-							config.setVideoModel(parseGenerativeModelRef(control.videoModel));
-						}
-						if (control.askBeforeGenerating !== undefined) {
-							config.setAskBeforeGeneratingEnabled(control.askBeforeGenerating);
-						}
 						config.setOpenRouterProvider(control.openRouterProvider);
 						// Sent on every turn; an absent list clears prior client
 						// tools so a disconnected surface never leaves stale tools.
@@ -685,7 +670,12 @@ export async function runServe(argv: string[]): Promise<void> {
 				// handlers run concurrently, so only the synchronous prefix of a
 				// handler is guaranteed to precede the next line's work.
 				config.setHostProviderKeys(
-					control.providerKeys.map(({ provider, key }) => ({ provider, key })),
+					control.providerKeys.map(({ provider, key, baseUrl, model }) => ({
+						provider,
+						key,
+						...(baseUrl ? { baseUrl } : {}),
+						...(model ? { model } : {}),
+					})),
 				);
 				writeRecord("serve:ack", control.requestId, {
 					op: "setCredentials",
@@ -700,22 +690,6 @@ export async function runServe(argv: string[]): Promise<void> {
 					"serve:models",
 					control.requestId,
 					await client.listModels(),
-				);
-				return;
-			case "listImageModels":
-				config.refreshAuth();
-				writeRecord(
-					"serve:imageModels",
-					control.requestId,
-					(await client.listImageModels?.()) ?? { models: [], total: 0 },
-				);
-				return;
-			case "listVideoModels":
-				config.refreshAuth();
-				writeRecord(
-					"serve:videoModels",
-					control.requestId,
-					(await client.listVideoModels?.()) ?? { models: [], total: 0 },
 				);
 				return;
 			case "listTools":
@@ -869,25 +843,6 @@ export async function runServe(argv: string[]): Promise<void> {
 	mcpShutdown.abort();
 	await Promise.allSettled([...pendingOps]);
 	await flush();
-}
-
-/**
- * Parses a `provider/name` selection into the pair Backboard expects.
- * Provider names never contain a slash, so splitting on the first one keeps
- * OpenRouter video ids (e.g. `openrouter/google/veo-3.1`) intact.
- */
-function parseGenerativeModelRef(
-	value: string,
-): { provider: string; name: string } | undefined {
-	const trimmed = value.trim();
-	const separator = trimmed.indexOf("/");
-	if (separator <= 0 || separator === trimmed.length - 1) {
-		return undefined;
-	}
-	return {
-		provider: trimmed.slice(0, separator),
-		name: trimmed.slice(separator + 1),
-	};
 }
 
 function parseMaxWorkers(value: string | undefined): number {

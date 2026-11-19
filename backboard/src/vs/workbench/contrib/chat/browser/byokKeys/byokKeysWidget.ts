@@ -9,7 +9,7 @@ import { Disposable, DisposableStore } from '../../../../../base/common/lifecycl
 import Severity from '../../../../../base/common/severity.js';
 import { URI } from '../../../../../base/common/uri.js';
 import { localize } from '../../../../../nls.js';
-import { byokProviderDefinition, ByokProviderId } from '../../../../../platform/agentHost/common/byokProviders.js';
+import { byokProviderDefinition, ByokProviderId, CUSTOM_PROVIDER_ID, ICustomProviderConfig, normalizeCustomProviderConfig } from '../../../../../platform/agentHost/common/byokProviders.js';
 import { IDialogService } from '../../../../../platform/dialogs/common/dialogs.js';
 import { INotificationService } from '../../../../../platform/notification/common/notification.js';
 import { IOpenerService } from '../../../../../platform/opener/common/opener.js';
@@ -111,7 +111,7 @@ export class ByokKeysWidget extends Disposable {
 		}
 		dom.append(statusLine, $('span.backboard-api-keys-status-text')).textContent = describeStatus(status);
 		statusLine.classList.toggle('error', !!status.lastError);
-		if (!status.configured) {
+		if (!status.configured && status.consoleUrl) {
 			const console = dom.append(statusLine, $<HTMLAnchorElement>('a.backboard-api-keys-console'));
 			console.href = status.consoleUrl;
 			console.textContent = localize('byokKeys.console', "Get a key");
@@ -159,6 +159,13 @@ export class ByokKeysWidget extends Disposable {
 	}
 
 	private async _addOrReplace(status: IByokKeyStatus): Promise<void> {
+		let customConfig: ICustomProviderConfig | undefined;
+		if (status.provider === CUSTOM_PROVIDER_ID) {
+			customConfig = await this._promptCustomConfig(status);
+			if (!customConfig) {
+				return;
+			}
+		}
 		let initialValue = '';
 		while (true) {
 			const key = await this._promptForKey(status, initialValue);
@@ -170,7 +177,7 @@ export class ByokKeysWidget extends Disposable {
 				try {
 					await this._progressService.withProgress(
 						{ location: ProgressLocation.Notification, title: localize('byokKeys.validating', "Validating {0} key…", status.label) },
-						() => this._keys.add(status.provider, key),
+						() => this._keys.add(status.provider, key, customConfig),
 					);
 				} catch (error) {
 					failure = error;
@@ -216,6 +223,66 @@ export class ByokKeysWidget extends Disposable {
 			} catch (error) {
 				this._notificationService.error(error instanceof Error ? error.message : String(error));
 			}
+		});
+	}
+
+	/** Custom API needs a base URL and model id before its key can be saved. */
+	private async _promptCustomConfig(status: IByokKeyStatus): Promise<ICustomProviderConfig | undefined> {
+		let baseUrl = status.baseUrl ?? '';
+		let model = status.model ?? '';
+		while (true) {
+			const nextBaseUrl = await this._promptText(
+				localize('byokKeys.customBaseUrlTitle', "Custom API Base URL"),
+				localize('byokKeys.customBaseUrlPlaceholder', "https://api.deepseek.com/v1"),
+				localize('byokKeys.customBaseUrlPrompt', "Use the OpenAI-compatible base URL, without /chat/completions."),
+				baseUrl,
+			);
+			if (nextBaseUrl === undefined) {
+				return undefined;
+			}
+			const nextModel = await this._promptText(
+				localize('byokKeys.customModelTitle', "Custom API Model ID"),
+				localize('byokKeys.customModelPlaceholder', "deepseek-chat"),
+				localize('byokKeys.customModelPrompt', "The model id sent to {0}.", nextBaseUrl),
+				model,
+			);
+			if (nextModel === undefined) {
+				return undefined;
+			}
+			const normalized = normalizeCustomProviderConfig({ baseUrl: nextBaseUrl, model: nextModel });
+			if (normalized.config) {
+				return normalized.config;
+			}
+			this._notificationService.error(normalized.error ?? localize('byokKeys.customEndpointInvalid', "Enter a valid base URL and model ID."));
+			baseUrl = nextBaseUrl;
+			model = nextModel;
+		}
+	}
+
+	private _promptText(title: string, placeholder: string, prompt: string, initialValue: string): Promise<string | undefined> {
+		return new Promise<string | undefined>(resolve => {
+			const store = new DisposableStore();
+			const input = store.add(this._quickInputService.createInputBox());
+			input.title = title;
+			input.placeholder = placeholder;
+			input.prompt = prompt;
+			input.ignoreFocusOut = true;
+			input.value = initialValue;
+			let accepted: string | undefined;
+			store.add(input.onDidAccept(() => {
+				const value = input.value.trim();
+				if (!value) {
+					input.validationMessage = localize('byokKeys.valueRequired', "A value is required.");
+					return;
+				}
+				accepted = value;
+				input.hide();
+			}));
+			store.add(input.onDidHide(() => {
+				store.dispose();
+				resolve(accepted);
+			}));
+			input.show();
 		});
 	}
 
@@ -268,6 +335,9 @@ function describeStatus(status: IByokKeyStatus): string {
 	if (status.masked) {
 		parts.push(status.masked);
 	}
+	if (status.baseUrl) {
+		parts.push(status.model ? `${status.baseUrl} · ${status.model}` : status.baseUrl);
+	}
 	if (status.addedAt) {
 		parts.push(localize('byokKeys.addedOn', "added {0}", new Date(status.addedAt).toLocaleDateString()));
 	}
@@ -275,7 +345,7 @@ function describeStatus(status: IByokKeyStatus): string {
 		parts.push(localize('byokKeys.rejectedOnTest', "rejected on last test: {0}", status.lastError));
 	}
 	if (status.persistence === 'in-memory') {
-		parts.push(localize('byokKeys.inMemory', "available until Backboard closes"));
+		parts.push(localize('byokKeys.inMemory', "available until DQuant Lab closes"));
 	}
 	return parts.join(' · ');
 }

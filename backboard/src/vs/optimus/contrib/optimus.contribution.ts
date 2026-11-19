@@ -323,7 +323,7 @@ class OptimusChromeContribution extends Disposable implements IWorkbenchContribu
 		const modeButton = this.modeButton = append(chrome, $('div.backboard-mode-segments'));
 		this._register(toDisposable(() => modeButton.remove()));
 		modeButton.setAttribute('role', 'group');
-		modeButton.setAttribute('aria-label', localize('optimusChrome.mode', "Switch Backboard mode"));
+		modeButton.setAttribute('aria-label', localize('optimusChrome.mode', "Switch DQuant Lab mode"));
 		for (const mode of [
 			{ label: localize('optimusChrome.agent', "Simple"), command: OPEN_SIMPLE_WINDOW_COMMAND_ID, active: false },
 			{ label: localize('optimusChrome.editor', "Editor"), command: OPEN_EDITOR_WINDOW_COMMAND_ID, active: false },

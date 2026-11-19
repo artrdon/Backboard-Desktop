@@ -951,7 +951,7 @@ export class SessionView extends Disposable implements ISerializableView {
 		card.appendChild(title);
 
 		const description = $('p.backboard-auth-gate-description');
-		description.textContent = localize('backboard.auth.sessionView.description', "Use Backboard, an API key, or a subscription.");
+		description.textContent = localize('backboard.auth.sessionView.description', "Sign in, use an API key, or use a subscription.");
 		card.appendChild(description);
 
 		this._register(renderBackboardAuthSetup(card, this.commandService, () => this._refreshBackboardAuthGateFromConfig()));

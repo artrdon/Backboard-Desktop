@@ -92,7 +92,7 @@ async function userInfoClaims(oauth: Record<string, unknown>, fileService: IFile
 	// The access token has expired; refresh it once and retry.
 	const refreshToken = stringValue(oauth.refresh_token);
 	if (result.status !== 401 || !refreshToken) {
-		logService.info(`[Backboard] userinfo lookup failed with status ${result.status}; not refreshing (refresh token available: ${Boolean(refreshToken)}).`);
+		logService.info(`[DQuant Lab] userinfo lookup failed with status ${result.status}; not refreshing (refresh token available: ${Boolean(refreshToken)}).`);
 		return undefined;
 	}
 	const refreshed = await refreshBackboardOAuthCredentials(fileService, configResource, requestService, logService, accessToken);
@@ -173,13 +173,13 @@ async function refreshBackboardAccessToken(refreshToken: string, requestService:
 	}, CancellationToken.None);
 	const status = context.res.statusCode;
 	if (!status || status < 200 || status >= 300) {
-		logService.info(`[Backboard] Access token refresh failed with status ${status}.`);
+		logService.info(`[DQuant Lab] Access token refresh failed with status ${status}.`);
 		return undefined;
 	}
 	const tokens = await jsonBody(context.stream);
 	const accessToken = tokens ? stringValue(tokens.access_token) : undefined;
 	if (!tokens || !accessToken) {
-		logService.info('[Backboard] Access token refresh response did not include an access token.');
+		logService.info('[DQuant Lab] Access token refresh response did not include an access token.');
 		return undefined;
 	}
 	return {

@@ -46,17 +46,17 @@ const engineVersion = String(packageJson.version);
 if (Number(engineVersion.split('.')[0]) !== 1) {
 	throw new Error(
 		`VS Code engine version must remain on the 1.x line, but found ${engineVersion}. ` +
-		`Backboard's ${version} release version belongs in product branding metadata.`,
+		`DQuant Lab's ${version} release version belongs in product branding metadata.`,
 	);
 }
 
 const stable = channel === 'stable';
-const applicationName = stable ? 'backboard-studio' : 'backboard-studio-sandbox';
-const displayName = stable ? 'Backboard Studio' : 'Backboard Studio Sandbox';
+const applicationName = stable ? 'dquant-lab' : 'dquant-lab-sandbox';
+const displayName = stable ? 'DQuant Lab' : 'DQuant Lab Sandbox';
 const productJson = readJson(productPath);
 
 productJson.applicationName = applicationName;
-productJson.dataFolderName = stable ? '.backboard-studio' : '.backboard-studio-sandbox';
+productJson.dataFolderName = stable ? '.dquant-lab' : '.dquant-lab-sandbox';
 productJson.nameShort = displayName;
 productJson.nameLong = displayName;
 productJson.linuxIconName = applicationName;

@@ -101,7 +101,7 @@ export class AgentLocationPicker extends Disposable {
 			const status = this.remoteService.connections.find(connection => connection.address === address)?.status;
 			items.push({ location: 'remote', address, label: entry.name, description: status?.kind === 'connected' ? localize('agentLocation.connected', "Connected") : localize('agentLocation.notConnected', "Not connected"), iconClass: 'codicon codicon-cloud' });
 		}
-		items.push({ location: 'add', label: localize('agentLocation.add', "Connect EC2…"), description: localize('agentLocation.addDescription', "Connect a running Backboard agent server"), iconClass: 'codicon codicon-add' });
+		items.push({ location: 'add', label: localize('agentLocation.add', "Connect EC2…"), description: localize('agentLocation.addDescription', "Connect a running DQuant agent server"), iconClass: 'codicon codicon-add' });
 		if (this.remoteService.configuredEntries.length) {
 			items.push({ location: 'manage', label: localize('agentLocation.manage', "Manage remote hosts…"), iconClass: 'codicon codicon-settings-gear' });
 		}
@@ -141,7 +141,7 @@ export class AgentLocationPicker extends Disposable {
 			return;
 		}
 		if (!provider.sessionTypes.some(type => type.id === 'backboard')) {
-			this.notificationService.warn(localize('agentLocation.noBackboard', "This host does not advertise a Backboard agent. Start the Backboard agent server on EC2, then reconnect."));
+			this.notificationService.warn(localize('agentLocation.noBackboard', "This host does not advertise a DQuant agent. Start the DQuant agent server on EC2, then reconnect."));
 			return;
 		}
 		const action = provider.browseActions[0];
@@ -159,7 +159,7 @@ export class AgentLocationPicker extends Disposable {
 	private async addHost(): Promise<void> {
 		const address = await this.quickInputService.input({
 			title: localize('agentLocation.connectTitle', "Connect EC2"),
-			prompt: localize('agentLocation.addressPrompt', "Enter the Backboard agent-server URL. For an SSH or Session Manager tunnel, use its localhost port."),
+			prompt: localize('agentLocation.addressPrompt', "Enter the DQuant agent-server URL. For an SSH or Session Manager tunnel, use its localhost port."),
 			placeHolder: 'ws://127.0.0.1:8081',
 			ignoreFocusLost: true,
 			validateInput: async value => parseRemoteAgentHostInput(value).parsed ? undefined : localize('agentLocation.invalidAddress', "Enter a host:port or a valid WebSocket URL."),

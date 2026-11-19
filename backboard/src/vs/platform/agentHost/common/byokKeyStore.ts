@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Event } from '../../../base/common/event.js';
-import { ByokProviderId } from './byokProviders.js';
+import { ByokProviderId, ICustomProviderConfig } from './byokProviders.js';
 
 /** IPC channel on which the main process exposes the {@link IByokKeyStore}. */
 export const BYOK_KEY_STORE_CHANNEL = 'byokKeyStore';
@@ -17,6 +17,10 @@ export interface IByokKeyStatus {
 	/** A key is stored for this provider. */
 	readonly configured: boolean;
 	readonly masked?: string;
+	/** Non-secret Custom API endpoint, when one is stored. */
+	readonly baseUrl?: string;
+	/** Non-secret Custom API model id, when one is stored. */
+	readonly model?: string;
 	readonly addedAt?: number;
 	readonly lastValidatedAt?: number;
 	readonly lastError?: string;
@@ -46,7 +50,9 @@ export interface IByokKeyStore {
 	readonly onDidChange: Event<readonly IByokKeyStatus[]>;
 	list(): Promise<readonly IByokKeyStatus[]>;
 	/** Validate in the runtime, persist, then activate. Nothing is stored for a rejected key. */
-	add(provider: ByokProviderId, key: string): Promise<ByokKeyOperationOutcome>;
+	add(provider: ByokProviderId, key: string, config?: ICustomProviderConfig): Promise<ByokKeyOperationOutcome>;
+	/** Validate without storing or activating; powers the inline Test Connection action. */
+	validate(provider: ByokProviderId, key: string, config?: ICustomProviderConfig): Promise<ByokKeyOperationOutcome>;
 	/** Delete the key and deactivate it in every running runtime. */
 	remove(provider: ByokProviderId): Promise<ByokKeyOperationOutcome>;
 	/** Re-validate the stored key without re-activating it. */

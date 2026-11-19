@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Push channel for Backboard Studio live updates.
+// Push channel for DQuant Lab live updates.
 //
 // Apps hold one server-sent events connection each:
 //   GET  /events?channel=stable&platform=darwin-arm64

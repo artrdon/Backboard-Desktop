@@ -1,6 +1,6 @@
 {
 	"$schema": "vscode://schemas/color-theme",
-	"name": "Backboard Mist",
+	"name": "DQuant Mist",
 	"include": "./backboard-porcelain.json",
 	"type": "light",
 	"colors": {

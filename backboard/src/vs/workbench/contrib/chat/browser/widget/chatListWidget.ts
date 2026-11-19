@@ -218,7 +218,7 @@ export class ChatListWidget extends Disposable {
 		const isAuxiliaryBarChat = this._container.closest('.part.auxiliarybar') !== null;
 		const isBackboardCodeEditorTranscript = this._container.closest('.backboard-clean-chat') !== null;
 		this._container.classList.toggle('right-panel-chat-scroll', isAuxiliaryBarChat);
-		// The editor panel is the reference transcript. Every Backboard ChatWidget
+		// The editor panel is the reference transcript. Every DQuant ChatWidget
 		// host opts into the same rendering path so reasoning, tools, edits and
 		// completed-work folding do not change when the user switches layouts.
 		this._container.classList.toggle('backboard-cursor-transcript', isBackboardCodeEditorTranscript);

@@ -1,6 +1,6 @@
-# Backboard Chat
+# DQuant Chat
 
-Backboard Chat provides the in-editor assistant experience for Backboard IDE. It supports chat, inline edits, agent sessions, tool calls, workspace search, terminal assistance, and code-generation workflows.
+DQuant Chat provides the in-editor assistant experience for DQuant Lab. It supports chat, inline edits, agent sessions, tool calls, workspace search, terminal assistance, and code-generation workflows.
 
 ## Agent Sessions
 

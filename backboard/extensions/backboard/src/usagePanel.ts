@@ -487,7 +487,7 @@ function usageHtml(webview: vscode.Webview): string {
 			<div>
 				<div class="eyebrow">Period spend</div>
 				<div class="cost-value" id="cost">—</div>
-				<div class="cost-note" id="cost-note">Backboard billing usage</div>
+				<div class="cost-note" id="cost-note">DQuant Lab billing usage</div>
 				<div class="provider-list" id="providers"></div>
 			</div>
 			<div class="chart-card">
@@ -651,7 +651,7 @@ function usageHtml(webview: vscode.Webview): string {
 			if (!state.snapshot) return;
 			const data = normalized();
 			$('cost').textContent = money(data.cost);
-			$('cost-note').textContent = data.fetchedAt ? 'Updated ' + new Date(data.fetchedAt).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) : 'Backboard billing usage';
+			$('cost-note').textContent = data.fetchedAt ? 'Updated ' + new Date(data.fetchedAt).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) : 'DQuant Lab billing usage';
 			renderProviders(data); renderChart(data); renderMetrics(data); renderBreakdown(data);
 		}
 		function escapeHtml(value) { const node = document.createElement('span'); node.textContent = String(value); return node.innerHTML; }
@@ -665,7 +665,7 @@ function usageHtml(webview: vscode.Webview): string {
 		});
 		window.addEventListener('message', event => {
 			const message = event.data;
-			if (message.type === 'loading') { state.loading = true; $('status').className = 'status visible'; $('status').textContent = 'Loading Backboard usage…'; render(); }
+			if (message.type === 'loading') { state.loading = true; $('status').className = 'status visible'; $('status').textContent = 'Loading DQuant Lab usage…'; render(); }
 			else if (message.type === 'snapshot') { state.snapshot = message.snapshot; state.loading = false; $('status').className = 'status'; $('status').textContent = ''; render(); }
 			else if (message.type === 'error') { state.loading = false; $('status').className = 'status visible error'; $('status').textContent = message.message || 'Could not load usage.'; render(); }
 		});

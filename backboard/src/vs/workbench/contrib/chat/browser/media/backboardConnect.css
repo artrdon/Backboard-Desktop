@@ -83,6 +83,7 @@
 .backboard-connect-icon.provider-google { --backboard-connect-icon: url('../widget/media/model-provider-icons/ai_gemini.svg'); }
 .backboard-connect-icon.provider-open-router { --backboard-connect-icon: url('../widget/media/model-provider-icons/ai_open_router.svg'); }
 .backboard-connect-icon.provider-x-ai { --backboard-connect-icon: url('../widget/media/model-provider-icons/ai_x_ai.svg'); }
+.backboard-connect-icon.provider-open-ai-compat { --backboard-connect-icon: url('../widget/media/model-provider-icons/ai_open_ai_compat.svg'); }
 
 .backboard-connect-copy {
 	display: flex;
@@ -194,7 +195,48 @@
 
 .backboard-connect-key-field {
 	display: flex;
+	flex-wrap: wrap;
 	gap: 6px;
+}
+
+.backboard-connect-key-endpoint {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.backboard-connect-key-field .backboard-connect-key-input {
+	flex: 1 1 auto;
+}
+
+.backboard-connect-key-test {
+	flex: 0 0 auto;
+	height: 28px;
+	padding: 0 10px;
+	border: 1px solid color-mix(in srgb, var(--vscode-foreground) 18%, transparent);
+	border-radius: 6px;
+	background: transparent;
+	color: var(--vscode-foreground);
+	font: inherit;
+	font-size: 12px;
+	cursor: pointer;
+}
+
+.backboard-connect-key-test[hidden] {
+	display: none;
+}
+
+.backboard-connect-key-test:disabled {
+	opacity: 0.45;
+	cursor: default;
+}
+
+.backboard-connect-key-test-note {
+	color: var(--vscode-testing-iconPassed, #3fb950);
+}
+
+.backboard-connect-key-test-note.error {
+	color: var(--vscode-errorForeground);
 }
 
 .backboard-connect-key-input {

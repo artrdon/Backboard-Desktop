@@ -229,8 +229,8 @@ APP_PATH="$2"
 CURRENT_PID="$3"
 VERSION="$4"
 LOG_PATH="$5"
-APP_NAME="\${6:-Backboard Studio.app}"
-BUNDLE_IDENTIFIER="\${7:-io.backboard.studio}"
+APP_NAME="\${6:-DQuant Lab.app}"
+BUNDLE_IDENTIFIER="\${7:-io.dquant.lab}"
 STATUS_PATH="$8"
 ISOLATED_TEST_USER_DATA_DIR="\${9:-}"
 UPDATE_LOCK_DIR="\${10:-}"
@@ -246,7 +246,7 @@ MOUNT_POINT="$(/usr/bin/mktemp -d /tmp/backboard-studio-update-mount.XXXXXX)"
 STATUS_STATE="starting"
 
 exec >>"$LOG_PATH" 2>&1
-echo "[$(/bin/date -u '+%Y-%m-%dT%H:%M:%SZ')] Preparing Backboard Studio $VERSION"
+echo "[$(/bin/date -u '+%Y-%m-%dT%H:%M:%SZ')] Preparing DQuant Lab $VERSION"
 
 # The extension host injects process-local VS Code IPC state into its children.
 # None of it is valid after the current app exits, and carrying a stale main IPC
@@ -382,23 +382,23 @@ wait_for_current_app_exit() {
   # terminate the entire app bundle.
   for _ in {1..120}; do
     if ! /bin/ps -p "$current_pid" >/dev/null 2>&1 && ! app_running "$target_app"; then
-      echo "Confirmed current Backboard Studio processes exited cleanly."
+      echo "Confirmed current DQuant Lab processes exited cleanly."
       return 0
     fi
     /bin/sleep 0.5
   done
 
-  echo "Backboard Studio is still running; requesting a graceful quit."
+  echo "DQuant Lab is still running; requesting a graceful quit."
   /usr/bin/osascript -e "tell application id \"$bundle_identifier\" to quit" >/dev/null 2>&1 || true
   for _ in {1..120}; do
     if ! /bin/ps -p "$current_pid" >/dev/null 2>&1 && ! app_running "$target_app"; then
-      echo "Confirmed current Backboard Studio processes exited after quit request."
+      echo "Confirmed current DQuant Lab processes exited after quit request."
       return 0
     fi
     /bin/sleep 0.5
   done
 
-  echo "Backboard Studio did not quit cleanly; canceling the update and leaving the installed app unchanged."
+  echo "DQuant Lab did not quit cleanly; canceling the update and leaving the installed app unchanged."
   return 1
 }
 
@@ -570,7 +570,7 @@ run_elevated() {
   done
   /usr/bin/osascript - "$command" <<'APPLESCRIPT'
 on run argv
-  do shell script (item 1 of argv) with administrator privileges with prompt "Backboard Studio needs permission to install this verified update."
+  do shell script (item 1 of argv) with administrator privileges with prompt "DQuant Lab needs permission to install this verified update."
 end run
 APPLESCRIPT
 }
@@ -607,7 +607,7 @@ handle_exit() {
   trap - EXIT
   cleanup
   if [[ "$exit_code" != "0" ]]; then
-    echo "[$(/bin/date -u '+%Y-%m-%dT%H:%M:%SZ')] Update failed for Backboard Studio $VERSION"
+    echo "[$(/bin/date -u '+%Y-%m-%dT%H:%M:%SZ')] Update failed for DQuant Lab $VERSION"
     write_status "failed"
     if [[ -d "$APP_PATH" ]] && ! app_running "$APP_PATH"; then
       register_app "$APP_PATH"
@@ -641,7 +641,7 @@ if [[ ! -w "$APP_PARENT" ]]; then
   NEEDS_ELEVATION=1
 fi
 
-echo "Prepared and verified Backboard Studio $VERSION at $STAGED_APP"
+echo "Prepared and verified DQuant Lab $VERSION at $STAGED_APP"
 write_status "ready"
 
 if ! wait_for_current_app_exit "$APP_PATH" "$CURRENT_PID" "$BUNDLE_IDENTIFIER"; then
@@ -691,7 +691,7 @@ fi
 
 remove_backup_app "$BACKUP_APP"
 
-echo "[$(/bin/date -u '+%Y-%m-%dT%H:%M:%SZ')] Installed and launched Backboard Studio $VERSION"
+echo "[$(/bin/date -u '+%Y-%m-%dT%H:%M:%SZ')] Installed and launched DQuant Lab $VERSION"
 write_status "installed"
 `;
 }

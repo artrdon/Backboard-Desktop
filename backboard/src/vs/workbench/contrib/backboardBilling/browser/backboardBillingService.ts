@@ -465,7 +465,7 @@ export class BackboardBillingService extends Disposable implements IBackboardBil
 		} else if (error instanceof BillingRequestError && error.message === 'subscription_required') {
 			this.message = 'An active subscription is required to add credits.';
 		} else { this.message = error instanceof Error ? error.message : 'Billing is temporarily unavailable. Please refresh.'; }
-		this.logService.warn(`[Backboard Billing] Request failed${error instanceof BillingRequestError ? ` (${error.statusCode})` : ''}.`);
+		this.logService.warn(`[DQuant Lab Billing] Request failed${error instanceof BillingRequestError ? ` (${error.statusCode})` : ''}.`);
 	}
 
 	private async request<T>(path: string, method: 'GET' | 'POST' = 'GET', timeoutMs = 15000, cancellation = CancellationToken.None, body?: unknown): Promise<T> {

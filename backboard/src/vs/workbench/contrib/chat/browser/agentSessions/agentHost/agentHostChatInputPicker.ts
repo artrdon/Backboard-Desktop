@@ -41,7 +41,6 @@ import { IAgentHostUntitledProvisionalSessionService } from './agentHostUntitled
 import { toAgentHostBackendSessionUri } from './agentHostSessionUri.js';
 import { resolveSessionConfigShared } from './agentHostSessionConfigResolveCache.js';
 import { BackboardLogoIcon } from '../agentSessions.js';
-import { videoModelSummary } from '../../../../../../platform/agentHost/common/generativeMediaCapabilities.js';
 
 const FILTER_THRESHOLD = 10;
 
@@ -145,15 +144,6 @@ function getConfigIcon(property: string, value: unknown | undefined): ThemeIcon 
 	if (property === 'notifications') {
 		return isToggledOff(value) ? Codicon.bellSlash : Codicon.bell;
 	}
-	if (property === 'imageGeneration') {
-		return isToggledOff(value) ? Codicon.circleSlash : Codicon.symbolColor;
-	}
-	if (property === 'imageModel') {
-		return isToggledOff(value) ? Codicon.circleSlash : Codicon.symbolColor;
-	}
-	if (property === 'videoModel') {
-		return isToggledOff(value) ? Codicon.circleSlash : Codicon.deviceCameraVideo;
-	}
 	if (property === 'memoryMode') {
 		return isToggledOff(value) ? Codicon.circleSlash : Codicon.database;
 	}
@@ -196,7 +186,7 @@ function toActionItems(property: string, items: readonly IConfigPickerItem[], cu
 	return items.map(item => ({
 		kind: ActionListItemKind.Action,
 		label: item.label,
-		detail: videoModelSummary(item.description),
+		detail: item.description,
 		group: { title: '', icon: getConfigIcon(property, item.value) },
 		disabled: policyRestricted && property === SessionConfigKey.AutoApprove && (item.value === 'autoApprove' || item.value === 'autopilot'),
 		item: { ...item, label: isSelectedValue(currentValue, item.value) ? `${item.label} ${localize('selected', "(Selected)")}` : item.label },
@@ -316,8 +306,6 @@ export class AgentHostChatInputPicker extends Disposable {
 	private _container: HTMLElement | undefined;
 	private _trigger: HTMLElement | undefined;
 	private _isDisposed = false;
-	private _modelCatalogSnapshot: { readonly backendSession: string; readonly items: readonly IConfigPickerItem[] } | undefined;
-	private _modelCatalogRequest = 0;
 
 	private _initialResolved: { readonly sessionResource: URI; readonly result: ResolveSessionConfigResult } | undefined;
 	private readonly _initialResolveCts = this._register(new MutableDisposable<CancellationTokenSource>());
@@ -679,7 +667,7 @@ export class AgentHostChatInputPicker extends Disposable {
 
 				const header = dom.append(root, dom.$('.backboard-access-picker-header'));
 				const heading = dom.append(header, dom.$('span.backboard-access-picker-heading'));
-				heading.textContent = localize('agentHostChatInputPicker.access.heading', "How should Backboard actions be approved?");
+				heading.textContent = localize('agentHostChatInputPicker.access.heading', "How should DQuant Lab actions be approved?");
 
 				const list = dom.append(root, dom.$('.backboard-access-picker-list'));
 				list.role = 'listbox';
@@ -771,21 +759,12 @@ export class AgentHostChatInputPicker extends Disposable {
 	}
 
 	/**
-	 * Latest media catalog or static enum seed for custom editors. Selection
-	 * is always read from the session, never from a cached catalog response.
-	 * `undefined` for non-enum properties or before the schema has resolved.
+	 * Latest static enum seed for custom editors. Selection is always read
+	 * from the session, never from a cached response. `undefined` for
+	 * non-enum properties or before the schema has resolved.
 	 */
 	getEnumInfo(): { values: string[]; labels: string[]; descriptions: (string | undefined)[]; current: string | undefined } | undefined {
 		const ctx = this._readContext();
-		if (ctx && this._modelCatalogSnapshot?.backendSession === ctx.backendSession.toString()) {
-			const items = this._modelCatalogSnapshot.items;
-			return {
-				values: items.map(item => item.value),
-				labels: items.map(item => item.label),
-				descriptions: items.map(item => item.description),
-				current: typeof ctx.value === 'string' ? ctx.value : undefined,
-			};
-		}
 		if (!ctx || !Array.isArray(ctx.schema.enum) || ctx.schema.enum.length === 0) {
 			return undefined;
 		}
@@ -808,14 +787,8 @@ export class AgentHostChatInputPicker extends Disposable {
 		if (!ctx || !ctx.schema.enumDynamic) {
 			return undefined;
 		}
-		const isMediaCatalog = ctx.backendSession.scheme === 'backboard' && (this._property === 'imageModel' || this._property === 'videoModel');
-		const request = ++this._modelCatalogRequest;
-		return this._getItems(ctx.schema, undefined, refresh, isMediaCatalog).then(items => {
+		return this._getItems(ctx.schema, undefined, refresh).then(items => {
 			const currentContext = this._readContext();
-			if (isMediaCatalog && request === this._modelCatalogRequest && !this._isDisposed
-				&& currentContext?.backendSession.toString() === ctx.backendSession.toString()) {
-				this._modelCatalogSnapshot = { backendSession: ctx.backendSession.toString(), items };
-			}
 			return {
 				values: items.map(item => item.value),
 				labels: items.map(item => item.label),
@@ -857,7 +830,7 @@ export class AgentHostChatInputPicker extends Disposable {
 		return ctx.value !== normalizeConfigValueForSchema(ctx.schema, ctx.schema.default);
 	}
 
-	private async _getItems(schema: SessionConfigPropertySchema, query?: string, refresh?: boolean, propagateError = false): Promise<readonly IConfigPickerItem[]> {
+	private async _getItems(schema: SessionConfigPropertySchema, query?: string, refresh?: boolean): Promise<readonly IConfigPickerItem[]> {
 		if (schema.type === 'boolean') {
 			return [
 				{ value: 'true', label: localize('agentHostChatInputPicker.boolean.true', "On") },
@@ -878,10 +851,7 @@ export class AgentHostChatInputPicker extends Disposable {
 					config: this._readCurrentValues(),
 				});
 				return result.items.map(item => this._fromCompletion(item));
-			} catch (error) {
-				if (propagateError) {
-					throw error;
-				}
+			} catch {
 				// Fall through to the static enum below.
 			}
 		}

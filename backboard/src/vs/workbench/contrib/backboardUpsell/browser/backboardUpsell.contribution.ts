@@ -333,13 +333,13 @@ class BackboardBalanceUpsell extends Disposable implements IWorkbenchContributio
 			}, CancellationToken.None);
 			const status = context.res.statusCode ?? 0;
 			if (status < 200 || status >= 300) {
-				this.logService.trace(`[Backboard] Balance check returned ${status}.`);
+				this.logService.trace(`[DQuant Lab] Balance check returned ${status}.`);
 				return undefined;
 			}
 			const wallet = JSON.parse((await streamToBuffer(context.stream)).toString()) as IWalletBalance;
 			return (wallet.paid_credit_usd ?? 0) + (wallet.subscription_credits_usd ?? 0);
 		} catch (error) {
-			this.logService.trace('[Backboard] Balance check failed.', error);
+			this.logService.trace('[DQuant Lab] Balance check failed.', error);
 			return undefined;
 		}
 	}
@@ -400,7 +400,7 @@ function showBalanceCardPreview(accessor: ServicesAccessor, kind: BalanceCardKin
 
 registerAction2(class extends Action2 {
 	constructor() {
-		super({ id: 'backboard.showSignInCard', title: localize2('upsell.cmd.signIn', "Show Sign-In Card"), category: localize2('backboard.category', "Backboard"), f1: true });
+		super({ id: 'backboard.showSignInCard', title: localize2('upsell.cmd.signIn', "Show Sign-In Card"), category: localize2('backboard.category', "DQuant Lab"), f1: true });
 	}
 	run(accessor: ServicesAccessor): Promise<unknown> {
 		return accessor.get(ICommandService).executeCommand(SHOW_SIGN_IN_PROMPT_COMMAND_ID, 'Claude Opus 5.5');
@@ -409,7 +409,7 @@ registerAction2(class extends Action2 {
 
 registerAction2(class extends Action2 {
 	constructor() {
-		super({ id: 'backboard.showLowCreditsCard', title: localize2('upsell.cmd.low', "Show Low Credits Card"), category: localize2('backboard.category', "Backboard"), f1: true });
+		super({ id: 'backboard.showLowCreditsCard', title: localize2('upsell.cmd.low', "Show Low Credits Card"), category: localize2('backboard.category', "DQuant Lab"), f1: true });
 	}
 	run(accessor: ServicesAccessor): void {
 		showBalanceCardPreview(accessor, 'low');
@@ -418,7 +418,7 @@ registerAction2(class extends Action2 {
 
 registerAction2(class extends Action2 {
 	constructor() {
-		super({ id: 'backboard.showOutOfCreditsCard', title: localize2('upsell.cmd.out', "Show Out of Credits Card"), category: localize2('backboard.category', "Backboard"), f1: true });
+		super({ id: 'backboard.showOutOfCreditsCard', title: localize2('upsell.cmd.out', "Show Out of Credits Card"), category: localize2('backboard.category', "DQuant Lab"), f1: true });
 	}
 	run(accessor: ServicesAccessor): void {
 		showBalanceCardPreview(accessor, 'out');

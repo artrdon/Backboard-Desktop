@@ -1,4 +1,4 @@
-# Backboard Studio Linux release build
+# DQuant Lab Linux release build
 
 The Linux builder runs in an isolated native x86_64 Ubuntu 22.04 environment. It does not upload artifacts or modify the macOS release directories.
 

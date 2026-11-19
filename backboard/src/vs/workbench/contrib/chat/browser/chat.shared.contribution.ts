@@ -680,7 +680,7 @@ configurationRegistry.registerConfiguration({
 		[ChatConfiguration.ChatViewSessionsEnabled]: {
 			type: 'boolean',
 			default: false,
-			description: nls.localize('chat.viewSessions.enabled', "Show chat agent sessions when chat is empty or to the side when chat view is wide enough. Backboard uses the history modal as the default session surface."),
+			description: nls.localize('chat.viewSessions.enabled', "Show chat agent sessions when chat is empty or to the side when chat view is wide enough. DQuant Lab uses the history modal as the default session surface."),
 			agentsWindow: { default: false },
 		},
 		[ChatConfiguration.ChatViewSessionsOrientation]: {
@@ -1536,7 +1536,7 @@ configurationRegistry.registerConfiguration({
 			title: nls.localize('chat.hookFilesLocations.title', "Hook File Locations",),
 			markdownDescription: nls.localize(
 				'chat.hookFilesLocations.description',
-				"Specify paths to hook configuration files that define custom shell commands to execute at strategic points in an agent's workflow. [Learn More]({0}).\n\nRelative paths are resolved from the root folder(s) of your workspace. Supports Backboard hooks (`*.json`) and Claude Code hooks (`settings.json`, `settings.local.json`).",
+				"Specify paths to hook configuration files that define custom shell commands to execute at strategic points in an agent's workflow. [Learn More]({0}).\n\nRelative paths are resolved from the root folder(s) of your workspace. Supports DQuant Lab hooks (`*.json`) and Claude Code hooks (`settings.json`, `settings.local.json`).",
 				HOOK_DOCUMENTATION_URL,
 			),
 			default: {
@@ -1584,7 +1584,7 @@ configurationRegistry.registerConfiguration({
 		[PromptsConfig.USE_CLAUDE_HOOKS]: {
 			type: 'boolean',
 			title: nls.localize('chat.useClaudeHooks.title', "Use Claude Hooks",),
-			markdownDescription: nls.localize('chat.useClaudeHooks.description', "Controls whether hooks from Claude configuration files can execute. When disabled, only Backboard-format hooks are used. Hooks are loaded from the files configured in `#chat.hookFilesLocations#`.",),
+			markdownDescription: nls.localize('chat.useClaudeHooks.description', "Controls whether hooks from Claude configuration files can execute. When disabled, only DQuant Lab-format hooks are used. Hooks are loaded from the files configured in `#chat.hookFilesLocations#`.",),
 			default: false,
 			restricted: true,
 			disallowConfigurationDefault: true,
@@ -1711,7 +1711,7 @@ configurationRegistry.registerConfiguration({
 		},
 		[ChatConfiguration.TitleBarSignInEnabled]: {
 			type: 'boolean',
-			description: nls.localize('chat.titleBar.signIn.enabled', "Controls whether the Backboard Sign In button is shown in the title bar when signed out. When disabled, the Sign In affordance falls back to the status bar."),
+			description: nls.localize('chat.titleBar.signIn.enabled', "Controls whether the DQuant Lab Sign In button is shown in the title bar when signed out. When disabled, the Sign In affordance falls back to the status bar."),
 			default: true,
 		},
 		[ChatConfiguration.TitleBarOpenInAgentsWindowEnabled]: {
@@ -1749,7 +1749,7 @@ configurationRegistry.registerConfiguration({
 		},
 		[ChatConfiguration.GrowthNotificationEnabled]: {
 			type: 'boolean',
-			description: nls.localize('chat.growthNotification', "Controls whether to show a growth notification in the agent sessions view to encourage new users to try Backboard."),
+			description: nls.localize('chat.growthNotification', "Controls whether to show a growth notification in the agent sessions view to encourage new users to try DQuant Lab."),
 			default: false,
 			tags: ['experimental'],
 			experiment: {

@@ -594,14 +594,14 @@ export class ChatViewPane extends ViewPane implements IViewWelcomeDelegate {
 		// Sessions title: Backboard brand + collapse affordance, matching the side-chat design.
 		const sessionsTitleContainer = this.sessionsTitleContainer = append(sessionsContainer, $('.agent-sessions-title-container'));
 		const sessionsTitle = this.sessionsTitle = append(sessionsTitleContainer, $('span.agent-sessions-title'));
-		sessionsTitle.textContent = localize('backboardSideChatTitle', "Backboard");
+		sessionsTitle.textContent = localize('backboardSideChatTitle', "DQuant Lab");
 		this._register(addDisposableListener(sessionsTitle, EventType.CLICK, () => {
 			this.sessionsControl?.scrollToTop();
 			this.sessionsControl?.focus();
 		}));
 		const collapseButton = append(sessionsTitleContainer, $('button.agent-sessions-collapse-button')) as HTMLButtonElement;
 		collapseButton.type = 'button';
-		const collapseLabel = localize('hideBackboardSideChat', "Hide Backboard sidebar");
+		const collapseLabel = localize('hideBackboardSideChat', "Hide DQuant Lab sidebar");
 		collapseButton.title = collapseLabel;
 		collapseButton.setAttribute('aria-label', collapseLabel);
 		const collapseIcon = append(collapseButton, $('span.agent-sessions-collapse-icon'));
@@ -895,7 +895,7 @@ referencesExpandedWhenEmptyResponse: false,
 		this.createBackboardChatAuthGate(chatControlsContainer);
 		this.updateBackboardChatAuthGate();
 		this.refreshBackboardChatAuthGateFromConfig().catch(error => {
-			this.logService.error(`[Backboard] Failed to refresh chat auth gate: ${error instanceof Error ? error.message : String(error)}`);
+			this.logService.error(`[DQuant Lab] Failed to refresh chat auth gate: ${error instanceof Error ? error.message : String(error)}`);
 		});
 
 		const updateWidgetVisibility = (reader?: IReader) => this._widget.setVisible(this.isBodyVisible() && !this.welcomeController?.isShowingWelcome.read(reader));
@@ -928,7 +928,7 @@ referencesExpandedWhenEmptyResponse: false,
 		title.textContent = localize('backboard.auth.chat.title', "Connect Your AI");
 
 		const description = append(card, $('p.backboard-auth-gate-description'));
-		description.textContent = localize('backboard.auth.chat.description', "Use Backboard, an API key, or a subscription.");
+		description.textContent = localize('backboard.auth.chat.description', "Use DQuant Lab, an API key, or a subscription.");
 
 		this._register(renderBackboardAuthSetup(card, this.commandService, () => this.refreshBackboardChatAuthGateFromConfig()));
 

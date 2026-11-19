@@ -2746,7 +2746,7 @@ export class RightWorkbenchViewPane extends ViewPane {
 			}));
 		} else {
 			append(actions, $('span.sessions-right-workbench-extension-detail-installed', {}, extension.isBuiltin
-				? localize('rightWorkbench.builtInExtension', "Included with Backboard")
+				? localize('rightWorkbench.builtInExtension', "Included with DQuant Lab")
 				: localize('rightWorkbench.installedExtension', "Installed")));
 		}
 		const link = extension.repository || extension.url || extension.supportUrl;

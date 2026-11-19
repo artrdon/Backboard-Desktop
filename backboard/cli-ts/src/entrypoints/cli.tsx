@@ -25,7 +25,6 @@ import {
 	HookManagerController,
 	loadHookConfig,
 } from "../core/hooks/index.ts";
-import { configureProviderKey } from "./configureProviderKey.ts";
 import { ProviderKeyController } from "../core/keys/ProviderKeyController.ts";
 import {
 	unreadableProviderKeys,
@@ -80,6 +79,7 @@ import { createTheme, setTheme } from "../ui/theme/theme.ts";
 import { errorMessage } from "../utils/errors.ts";
 import { shortId } from "../utils/id.ts";
 import { pluralize } from "../utils/string.ts";
+import { configureProviderKey } from "./configureProviderKey.ts";
 import { runKeysValidateCommand } from "./keysValidate.ts";
 
 const HELP = `${APP_DISPLAY_NAME} · coding agent
@@ -95,6 +95,7 @@ Usage:
   ${APP_COMMAND_NAME} claude-subscription logout
   ${APP_COMMAND_NAME} claude-subscription status --json
   ${APP_COMMAND_NAME} keys validate --provider <id>   (key on stdin; prints one JSON line)
+  ${APP_COMMAND_NAME} keys validate --provider custom --base-url <url> --model <id>  (Custom API)
 
 Options:
   --model <provider/model>   Model to use (e.g. openai/gpt-5.5)
@@ -125,7 +126,14 @@ async function main(): Promise<void> {
 	const argv = process.argv.slice(2);
 	if (argv.includes("--alternative-auth-status")) {
 		const auth = resolveAuth();
-		process.stdout.write(JSON.stringify({ configured: auth.providerKeys.length > 0 || auth.chatgptSubscription !== null || auth.claudeSubscription !== null }));
+		process.stdout.write(
+			JSON.stringify({
+				configured:
+					auth.providerKeys.length > 0 ||
+					auth.chatgptSubscription !== null ||
+					auth.claudeSubscription !== null,
+			}),
+		);
 		return;
 	}
 	if (argv.includes("--configure-provider-key")) {
@@ -147,13 +155,26 @@ async function main(): Promise<void> {
 		return;
 	}
 	const earlyFlags = parseFlags(argv);
-	if (process.platform === "win32" && (earlyFlags.subscriptionLogin || earlyFlags.claudeSubscriptionLogin || earlyFlags.claudeSubscriptionEnable)) {
-		process.stderr.write("BYOS subscriptions are not supported on Windows. Sign in with Backboard or add a provider API key.\n");
+	if (
+		process.platform === "win32" &&
+		(earlyFlags.subscriptionLogin ||
+			earlyFlags.claudeSubscriptionLogin ||
+			earlyFlags.claudeSubscriptionEnable)
+	) {
+		process.stderr.write(
+			"BYOS subscriptions are not supported on Windows. Sign in with Backboard or add a provider API key.\n",
+		);
 		process.exitCode = 1;
 		return;
 	}
 	if (earlyFlags.help) {
-		process.stdout.write(process.platform === "win32" ? HELP.split("\n").filter(line => !line.includes("subscription")).join("\n") : HELP);
+		process.stdout.write(
+			process.platform === "win32"
+				? HELP.split("\n")
+						.filter((line) => !line.includes("subscription"))
+						.join("\n")
+				: HELP,
+		);
 		return;
 	}
 	if (earlyFlags.version) {
@@ -202,6 +223,11 @@ async function main(): Promise<void> {
 		process.exitCode = await runKeysValidateCommand(
 			earlyFlags.provider,
 			readPromptFromStdin,
+			undefined,
+			undefined,
+			earlyFlags.baseUrl && earlyFlags.model
+				? { baseUrl: earlyFlags.baseUrl, model: earlyFlags.model }
+				: undefined,
 		);
 		return;
 	}

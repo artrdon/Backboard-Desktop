@@ -126,22 +126,6 @@ export interface SendMessageRequest {
 	/** OpenRouter upstream-routing controls. Omitted to use OpenRouter's automatic routing. */
 	openrouter?: OpenRouterRequestOptions;
 	tools?: OpenAITool[];
-	/** `"auto"` enables Backboard's built-in image generation for the turn. */
-	image_generation?: string;
-	image_model_provider?: string;
-	image_model_name?: string;
-	/** `"auto"` enables Backboard's built-in video generation for the turn. */
-	video_generation?: string;
-	video_model_provider?: string;
-	video_model_name?: string;
-	/** Direct media generation without a conversation-model call. */
-	operation?: string;
-	video_config?: {
-		duration?: number;
-		resolution?: string;
-		generate_audio?: boolean;
-		aspect_ratio?: string;
-	};
 	stream?: boolean;
 	/**
 	 * The billing route the turn or worker captured when it started. In
@@ -162,57 +146,11 @@ export interface OpenRouterRequestOptions {
 	cost_tier?: string;
 }
 
-/** One entry from `GET /models/image/all`. */
-export interface ImageModelInfo {
-	name: string;
-	provider: string;
-	model_type?: string;
-	supports_vision?: boolean | null;
-}
-
-/** One entry from `GET /models/video/all`. */
-export interface VideoModelInfo {
-	id: string;
-	name: string;
-	provider: string;
-	model_type?: string;
-	supports_video_input?: boolean | null;
-	supports_audio_input?: boolean | null;
-}
-
-export interface ImageModelsListResponse {
-	models: ImageModelInfo[];
-	total: number;
-}
-
-export interface VideoModelsListResponse {
-	models: VideoModelInfo[];
-	total: number;
-}
-
 export interface GeneratedMediaInfo {
 	document_id?: string;
 	media_type?: string;
 	mime_type?: string;
 	url: string;
-}
-
-export interface GenerateVideoRequest {
-	prompt: string;
-	video_model_provider: string;
-	video_model_name: string;
-	video_config?: {
-		duration?: number;
-		resolution?: string;
-		generate_audio?: boolean;
-		aspect_ratio?: string;
-	};
-}
-
-export interface GenerateVideoResult {
-	url: string;
-	document_id?: string;
-	label?: string;
 }
 
 /**
@@ -347,7 +285,6 @@ export type ProviderEvent =
 	  }
 	| { kind: "usage"; usage: ProviderUsage }
 	| { kind: "warning"; message: string }
-	| { kind: "media"; payload: Record<string, unknown> }
 	| {
 			kind: "completed";
 			providerMetadata?: string;

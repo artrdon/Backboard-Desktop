@@ -611,7 +611,7 @@ export class BackboardWorkspacePage extends Disposable {
 		const footer = append(card, $('.backboard-workspace-card-footer'));
 		const pill = append(footer, $('span.backboard-workspace-card-model-pill'));
 		append(pill, $('span.codicon.codicon-sparkle')).setAttribute('aria-hidden', 'true');
-		append(pill, $('span')).textContent = session.providerLabel || 'Backboard';
+		append(pill, $('span')).textContent = session.providerLabel || 'DQuant Lab';
 
 		// Click opens the run in the right drawer
 		this.cardDisposables.add(addDisposableListener(card, EventType.CLICK, event => {
@@ -803,7 +803,7 @@ export class BackboardWorkspacePage extends Disposable {
 			return true;
 		} catch (error) {
 			this.logService.error('[BackboardWorkspacePage] Failed to prepare workspace folder', error);
-			this.notificationService.error(localize('backboardWorkspacePrepareFolderError', "Unable to prepare the Backboard workspace folder: {0}", toErrorMessage(error)));
+			this.notificationService.error(localize('backboardWorkspacePrepareFolderError', "Unable to prepare the DQuant Lab workspace folder: {0}", toErrorMessage(error)));
 			return false;
 		}
 	}

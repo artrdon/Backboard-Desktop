@@ -11,7 +11,7 @@ import { CancellationTokenSource } from '../../../../base/common/cancellation.js
 import { Codicon } from '../../../../base/common/codicons.js';
 import { Event } from '../../../../base/common/event.js';
 import { Disposable, DisposableStore, IDisposable, MutableDisposable, toDisposable } from '../../../../base/common/lifecycle.js';
-import { autorun, derivedObservableWithCache, IObservable, observableSignalFromEvent, observableValue } from '../../../../base/common/observable.js';
+import { autorun, derivedObservableWithCache, IObservable, IReader, observableSignalFromEvent, observableValue } from '../../../../base/common/observable.js';
 import { isWeb } from '../../../../base/common/platform.js';
 import { isEqual } from '../../../../base/common/resources.js';
 import { URI } from '../../../../base/common/uri.js';
@@ -50,6 +50,9 @@ import { IWorkbenchLayoutService } from '../../../../workbench/services/layout/b
 import { HiddenItemStrategy, MenuWorkbenchToolBar } from '../../../../platform/actions/browser/toolbar.js';
 import { Menus } from '../../../browser/menus.js';
 import { ISimpleModeBackgroundService } from './simpleModeBackgroundService.js';
+import { IDquantSessionLanguageService } from '../../../services/dquant/browser/dquantSessionLanguageService.js';
+import { DquantWelcomeWidget, IDquantWelcomeResult } from '../../dquant/browser/dquantWelcomeWidget.js';
+import { DQUANT_LANGUAGE_PRESENTATION } from '../../../common/dquant/dquantPresentation.js';
 
 // #region --- New Chat Widget ---
 
@@ -317,6 +320,21 @@ export class NewChatWidget extends Disposable {
 
 	private readonly _session: IObservable<IActiveSession | undefined>;
 
+	/**
+	 * DQuant welcome flow. Rendered over the composer while the active session
+	 * has no language profile yet; once a session is configured the regular
+	 * composer (with the profile badge) takes over.
+	 */
+	private _dquantWelcome: DquantWelcomeWidget | undefined;
+	private _dquantBadge: HTMLElement | undefined;
+	private _dquantBadgeName: HTMLElement | undefined;
+	private _dquantBadgeLanguage: HTMLElement | undefined;
+	/** Set once this composer created a DQuant session, so the welcome never returns for it. */
+	private _dquantCreatedSessionId: string | undefined;
+	/** Re-renders the welcome/badge when a session's language profile changes. */
+	private readonly _dquantProfileSignal: IObservable<void>;
+	private _dquantWelcomeFocused = false;
+
 	constructor(
 		private readonly _options: IChatViewOptions,
 		@IInstantiationService private readonly instantiationService: IInstantiationService,
@@ -334,6 +352,7 @@ export class NewChatWidget extends Disposable {
 		@IPathService private readonly pathService: IPathService,
 		@IAgentCliSetupService private readonly agentCliSetupService: IAgentCliSetupService,
 		@ISimpleModeBackgroundService private readonly simpleModeBackgroundService: ISimpleModeBackgroundService,
+		@IDquantSessionLanguageService private readonly dquantSessionLanguageService: IDquantSessionLanguageService,
 		@IWorkbenchLayoutService private readonly layoutService: IWorkbenchLayoutService,
 	) {
 		super();
@@ -363,6 +382,9 @@ export class NewChatWidget extends Disposable {
 		});
 
 		this._sessionTypePicker = this._register(this.instantiationService.createInstance(SessionTypePicker, this._session, () => this._workspacePicker.selectedFolderUri));
+		// DQuant: a language profile lives on the session, so the welcome flow and
+		// the composer badge follow the profile service instead of keeping a copy.
+		this._dquantProfileSignal = observableSignalFromEvent(this, this.dquantSessionLanguageService.onDidChange);
 		// Remote hosts expose the same Backboard agent under a host-specific
 		// chat session type. Match its stable provider id as well as the local id.
 		this._sessionTypePicker.setAllowedSessionTypeIds([...NEW_CHAT_ALLOWED_SESSION_TYPES, 'backboard']);
@@ -512,6 +534,7 @@ export class NewChatWidget extends Disposable {
 		this._applyBackgroundImage(this.simpleModeBackgroundService.backgroundImage);
 
 		this._renderMiddleSection(chatWidgetContent);
+		this._renderDquantWelcome(chatWidgetContent);
 		const composerStack = dom.append(chatWidgetContent, dom.$('.new-chat-composer-stack'));
 		this._composerStackElement = composerStack;
 		this._octopusElement = this._renderPixelOctopus(composerStack);
@@ -549,6 +572,8 @@ export class NewChatWidget extends Disposable {
 		}
 
 		this._ensureComposerHasWorkspace();
+
+		this._register(autorun(reader => this._updateDquantProfileUi(reader)));
 
 		chatWidgetContainer.classList.add('revealed');
 	}
@@ -796,6 +821,16 @@ export class NewChatWidget extends Disposable {
 		}));
 		const middle = dom.append(container, dom.$('.new-chat-middle-section'));
 
+		// DQuant profile badge: makes the project name and bound language
+		// visible above the composer for a session created on the welcome
+		// screen. Hidden for sessions without a profile.
+		this._dquantBadge = dom.append(middle, dom.$('.dquant-session-badge'));
+		this._dquantBadgeName = dom.append(this._dquantBadge, dom.$('span.dquant-session-badge-name'));
+		const badgeSeparator = dom.append(this._dquantBadge, dom.$('span.dquant-session-badge-separator'));
+		badgeSeparator.textContent = '·';
+		this._dquantBadgeLanguage = dom.append(this._dquantBadge, dom.$('span.dquant-session-badge-language'));
+		this._dquantBadge.style.display = 'none';
+
 		// The heading embeds the workspace picker trigger mid-sentence: "What
 		// should we build in [workspace ▾]?". The prefix/suffix spans carry the
 		// localized sentence around the picker slot; the picker itself renders
@@ -994,6 +1029,139 @@ export class NewChatWidget extends Disposable {
 		this._pendingPreferredUpgrade.value = store;
 	}
 
+	// --- DQuant welcome flow -------------------------------------------------
+
+	/** Mounts the two-step welcome panel over the composer. */
+	private _renderDquantWelcome(container: HTMLElement): void {
+		const welcome = this._register(new DquantWelcomeWidget(selection => this._createDquantSession(selection)));
+		this._dquantWelcome = welcome;
+		container.appendChild(welcome.element);
+	}
+
+	/**
+	 * Keeps the welcome panel, the profile badge and the composer in sync with
+	 * the active session's language profile. Legacy sessions (no language) keep
+	 * the standard composer and never get a language assigned automatically.
+	 */
+	private _updateDquantProfileUi(reader: IReader): void {
+		this._dquantProfileSignal.read(reader);
+		const active = this.sessionsService.activeSession.read(reader);
+		this._applyDquantProfileUi(active);
+	}
+
+	private _applyDquantProfileUi(active: ISession | undefined): void {
+		const language = active ? this.dquantSessionLanguageService.getLanguage(active.sessionId) : undefined;
+		const projectName = active ? this.dquantSessionLanguageService.getProjectName(active.sessionId) : undefined;
+		const showWelcome = !language && !this._dquantCreatedSessionId;
+
+		this._chatWidgetContent?.classList.toggle('dquant-welcome-active', showWelcome);
+		if (this._dquantWelcome) {
+			this._dquantWelcome.element.style.display = showWelcome ? '' : 'none';
+			if (showWelcome && !this._dquantWelcomeFocused) {
+				this._dquantWelcomeFocused = true;
+				this._dquantWelcome.focus();
+			}
+		}
+
+		if (!this._dquantBadge || !this._dquantBadgeName || !this._dquantBadgeLanguage) {
+			return;
+		}
+		if (!language) {
+			this._dquantBadge.style.display = 'none';
+			return;
+		}
+
+		const presentation = DQUANT_LANGUAGE_PRESENTATION[language];
+		this._dquantBadge.style.display = '';
+		this._dquantBadgeName.textContent = projectName ?? '';
+		this._dquantBadgeName.style.display = projectName ? '' : 'none';
+		this._dquantBadgeLanguage.textContent = presentation.label;
+		this._dquantBadgeLanguage.title = presentation.description;
+	}
+
+	private _refreshDquantProfileUi(): void {
+		this._applyDquantProfileUi(this.sessionsService.activeSession.get());
+	}
+
+	/**
+	 * Creates the session for the welcome flow using the existing composer
+	 * plumbing ({@link _createSessionNow} → `sessionsService.openNewSession`)
+	 * and stores the profile on that session only.
+	 */
+	private async _createDquantSession(selection: IDquantWelcomeResult): Promise<boolean> {
+		const folderUri = await this._resolveDquantWorkspaceFolder();
+		if (!folderUri) {
+			this._dquantWelcome?.setStatus(localize('dquant.welcome.noWorkspace', "Не удалось определить рабочую папку для проекта. Выберите папку в списке рабочей области и попробуйте снова."), 'error');
+			return false;
+		}
+
+		const created = this._createSessionNow(folderUri, this._sessionTypePicker.getUserPickedSessionType());
+		if (!created) {
+			// The Backboard agent host can still be connecting after startup.
+			this._dquantWelcome?.setStatus(localize('dquant.welcome.waitingForAgent', "Подключаем агента… Попробуйте создать сессию ещё раз через несколько секунд."), 'info');
+			return false;
+		}
+
+		this._defaultWorkspaceHandled = true;
+		this._workspacePicker.setSelectedWorkspace(folderUri, { fireEvent: false });
+		this._dquantCreatedSessionId = created.sessionId;
+
+		// The profile is written to this session's own config bag: nothing global,
+		// so another session created later cannot change it.
+		this.dquantSessionLanguageService.setProjectName(created.sessionId, selection.name);
+		this.dquantSessionLanguageService.setLanguage(created.sessionId, selection.language);
+
+		// Show the project name right away; the backend title follows the first
+		// message and the DQuant contribution re-applies the name afterwards.
+		const titled = created as ISession & { setTitle?(title: string): void };
+		titled.setTitle?.(selection.name);
+
+		this._refreshDquantProfileUi();
+		const active = this.sessionsService.activeSession.get();
+		if (active?.sessionId === created.sessionId) {
+			this.setChat(active.mainChat.get());
+		}
+		this._widget.focusInput();
+		return true;
+	}
+
+	/**
+	 * Folder the new MQL session should work in: the explicit picker selection,
+	 * then the most recent servable session, then the picker default, then the
+	 * `~/Backboard` projects folder (created on demand).
+	 */
+	private async _resolveDquantWorkspaceFolder(): Promise<URI | undefined> {
+		const selected = this._workspacePicker.selectedFolderUri;
+		if (selected) {
+			return selected;
+		}
+
+		const { recent, other } = this.sessionsService.getRecentlyOpenedSessions();
+		const recentFolder = this._recentSessionFolder([...recent, ...other]);
+		if (recentFolder) {
+			return recentFolder;
+		}
+
+		const candidate = this._workspacePicker.getDefaultWorkspaceCandidate();
+		if (candidate) {
+			return candidate;
+		}
+
+		const fallback = this._defaultFolderFallback.get();
+		if (fallback) {
+			return fallback;
+		}
+
+		try {
+			const projects = await this._getProjectsFolder();
+			this._defaultFolderFallback.set(projects, undefined);
+			return projects;
+		} catch (error) {
+			this.logService.error('[DQuant] Failed to resolve a workspace folder for the new session', error);
+			return undefined;
+		}
+	}
+
 	private _renderEmptyState(container: HTMLElement): IDisposable {
 		const emptyState = this.instantiationService.createInstance(NoAgentHostEmptyState);
 		emptyState.render(container);
@@ -1141,7 +1309,7 @@ export class NewChatWidget extends Disposable {
 					this._widget.setInput(query);
 					this._widget.focusInput();
 					await this.dialogService.error(
-						localize('newChatWorkspaceUnavailable', "Backboard could not start a session in that directory."),
+						localize('newChatWorkspaceUnavailable', "DQuant Lab could not start a session in that directory."),
 						localize('newChatWorkspaceUnavailableDetail', "Choose a different directory and try again.")
 					);
 					return true;
@@ -1214,10 +1382,10 @@ export class NewChatWidget extends Disposable {
 			closeButton.appendChild(renderIcon(Codicon.close));
 
 			const title = dom.append(modal, dom.$('h2.new-chat-folder-modal-title'));
-			title.textContent = localize('newChatSelectDirectoryTitle', "Where should Backboard work?");
+			title.textContent = localize('newChatSelectDirectoryTitle', "Where should DQuant Lab work?");
 
 			const message = dom.append(modal, dom.$('p.new-chat-folder-modal-message'));
-			message.textContent = localize('newChatSelectDirectoryMessage', "Backboard needs a place on your computer to store the files it creates and edits for this project.");
+			message.textContent = localize('newChatSelectDirectoryMessage', "DQuant Lab needs a place on your computer to store the files it creates and edits for this project.");
 
 			const detail = dom.append(modal, dom.$('p.new-chat-folder-modal-detail'));
 			detail.textContent = localize('newChatSelectDirectoryDetail', "Don't have one? We can create one for you!");
@@ -1264,7 +1432,7 @@ export class NewChatWidget extends Disposable {
 
 	private async _pickWorkspaceFolderForFirstSend(): Promise<URI | undefined> {
 		const result = await this.fileDialogService.showOpenDialog({
-			title: localize('newChatSelectDirectoryDialogTitle', "Choose a Folder for Backboard"),
+			title: localize('newChatSelectDirectoryDialogTitle', "Choose a Folder for DQuant Lab"),
 			openLabel: localize('newChatSelectDirectoryOpenLabel', "Choose Folder"),
 			canSelectFolders: true,
 			canSelectFiles: false,
@@ -1281,7 +1449,7 @@ export class NewChatWidget extends Disposable {
 	 */
 	private async _getProjectsFolder(): Promise<URI> {
 		const home = await this.pathService.userHome({ preferLocal: true });
-		const projects = URI.joinPath(home, 'Backboard');
+		const projects = URI.joinPath(home, 'DQuant');
 		if (!await this.fileService.exists(projects)) {
 			await this.fileService.createFolder(projects);
 		}
@@ -1301,7 +1469,7 @@ export class NewChatWidget extends Disposable {
 		} catch (error) {
 			this.logService.error('[NewChatWidget] Failed to create project folder', error);
 			await this.dialogService.error(
-				localize('newChatCreateProjectFolderFailed', "Backboard could not create a new project folder."),
+				localize('newChatCreateProjectFolderFailed', "DQuant Lab could not create a new project folder."),
 				localize('newChatCreateDesktopWorkspaceFailedDetail', "Choose a folder instead and try again.")
 			);
 			return undefined;
@@ -1331,7 +1499,7 @@ export class NewChatWidget extends Disposable {
 			title.textContent = localize('newChatCreateFolderTitle', "Name this project folder");
 
 			const message = dom.append(modal, dom.$('p.new-chat-folder-modal-message'));
-			message.textContent = localize('newChatCreateProjectFolderMessage', "Backboard will create this folder in the Backboard folder in your home folder.");
+			message.textContent = localize('newChatCreateProjectFolderMessage', "DQuant Lab will create this folder in the DQuant folder in your home folder.");
 
 			const field = dom.append(modal, dom.$('.new-chat-folder-modal-field'));
 			const label = dom.append(field, dom.$('label.new-chat-folder-modal-label')) as HTMLLabelElement;
@@ -1497,7 +1665,24 @@ export class NewChatWidget extends Disposable {
 		}
 
 		if (!this._store.isDisposed) {
+			const previous = this.sessionsService.activeSession.get();
+			const language = previous ? this.dquantSessionLanguageService.getLanguage(previous.sessionId) : undefined;
+			const projectName = previous ? this.dquantSessionLanguageService.getProjectName(previous.sessionId) : undefined;
+
 			this._createNewSession(folderUri);
+
+			// Switching the draft's folder replaces the session object. Carry the
+			// DQuant profile over so the user does not lose the language chosen on
+			// the welcome screen.
+			const next = this.sessionsService.activeSession.get();
+			if (language && projectName && next && next.sessionId !== previous?.sessionId) {
+				this.dquantSessionLanguageService.setProjectName(next.sessionId, projectName);
+				this.dquantSessionLanguageService.setLanguage(next.sessionId, language);
+				this._dquantCreatedSessionId = next.sessionId;
+				const titled = next as ISession & { setTitle?(title: string): void };
+				titled.setTitle?.(projectName);
+				this._refreshDquantProfileUi();
+			}
 		}
 	}
 

@@ -7,7 +7,7 @@ import { Emitter } from '../../../../../base/common/event.js';
 import { Disposable } from '../../../../../base/common/lifecycle.js';
 import { ProxyChannel } from '../../../../../base/parts/ipc/common/ipc.js';
 import { BYOK_KEY_STORE_CHANNEL, IByokKeyStatus, IByokKeyStore } from '../../../../../platform/agentHost/common/byokKeyStore.js';
-import { BYOK_PROVIDERS, ByokProviderId } from '../../../../../platform/agentHost/common/byokProviders.js';
+import { BYOK_PROVIDERS, ByokProviderId, ICustomProviderConfig } from '../../../../../platform/agentHost/common/byokProviders.js';
 import { InstantiationType, registerSingleton } from '../../../../../platform/instantiation/common/extensions.js';
 import { IMainProcessService } from '../../../../../platform/ipc/common/mainProcessService.js';
 import { ILogService } from '../../../../../platform/log/common/log.js';
@@ -63,8 +63,15 @@ export class ByokKeysService extends Disposable implements IByokKeysService {
 		return this._statuses;
 	}
 
-	async add(provider: ByokProviderId, key: string): Promise<void> {
-		const outcome = await this._owner.add(provider, key);
+	async add(provider: ByokProviderId, key: string, config?: ICustomProviderConfig): Promise<void> {
+		const outcome = await this._owner.add(provider, key, config);
+		if (!outcome.ok) {
+			throw new ByokKeyValidationError(outcome.message, outcome.category);
+		}
+	}
+
+	async validate(provider: ByokProviderId, key: string, config?: ICustomProviderConfig): Promise<void> {
+		const outcome = await this._owner.validate(provider, key, config);
 		if (!outcome.ok) {
 			throw new ByokKeyValidationError(outcome.message, outcome.category);
 		}

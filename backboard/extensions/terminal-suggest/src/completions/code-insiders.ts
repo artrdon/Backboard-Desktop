@@ -7,7 +7,7 @@ import code, { commonOptions, extensionManagementOptions, troubleshootingOptions
 const codeInsidersCompletionSpec: Fig.Spec = {
 	...code,
 	name: 'code-insiders',
-	description: 'Backboard IDE Insiders',
+	description: 'DQuant Lab Insiders',
 	options: [
 		...commonOptions,
 		...extensionManagementOptions('code-insiders'),

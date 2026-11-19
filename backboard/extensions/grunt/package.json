@@ -1,8 +1,8 @@
 {
   "name": "grunt",
   "publisher": "vscode",
-  "description": "Extension to add Grunt capabilities to Backboard IDE.",
-  "displayName": "Grunt support for Backboard IDE",
+  "description": "Extension to add Grunt capabilities to DQuant Lab.",
+  "displayName": "Grunt support for DQuant Lab",
   "version": "10.0.0",
   "private": true,
   "icon": "images/grunt.png",

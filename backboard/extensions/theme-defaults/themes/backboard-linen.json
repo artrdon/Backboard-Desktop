@@ -1,6 +1,6 @@
 {
 	"$schema": "vscode://schemas/color-theme",
-	"name": "Backboard Linen",
+	"name": "DQuant Linen",
 	"include": "./backboard-porcelain.json",
 	"type": "light",
 	"colors": {

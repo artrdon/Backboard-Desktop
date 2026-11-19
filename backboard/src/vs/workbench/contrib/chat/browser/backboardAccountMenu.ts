@@ -94,7 +94,7 @@ export class BackboardAccountMenu extends Disposable {
 		}));
 		this._register(billing.onDidChange(() => this.updatePresentation()));
 		this._register(this.runner.onDidRun(event => { if (event.error) { this.notifications.error(event.error); } }));
-		void auth.refresh().then(() => this.refreshIdentity()).catch(error => this.log.warn('[Backboard] Could not refresh account menu identity.', error));
+		void auth.refresh().then(() => this.refreshIdentity()).catch(error => this.log.warn('[DQuant Lab] Could not refresh account menu identity.', error));
 	}
 
 	render(parent: HTMLElement, compact = true): HTMLButtonElement {
@@ -134,15 +134,15 @@ export class BackboardAccountMenu extends Disposable {
 			if (revision !== this.revision || this._store.isDisposed || !this.signedIn()) { return; }
 			this.info = info;
 			this.updatePresentation();
-		} catch { this.log.warn('[Backboard] Could not resolve account menu identity.'); }
+		} catch { this.log.warn('[DQuant Lab] Could not resolve account menu identity.'); }
 	}
 
 	private updatePresentation(): void {
 		const signedIn = this.signedIn();
-		const name = signedIn ? this.info.name ?? this.info.email ?? localize('backboardAccountName', "Backboard account") : localize('backboardAccountSignedOut', "Backboard Desktop");
+		const name = signedIn ? this.info.name ?? this.info.email ?? localize('backboardAccountName', "DQuant Lab account") : localize('backboardAccountSignedOut', "DQuant Lab");
 		const plan = signedIn && !this.billing.needsSignIn ? this.billing.status?.plan?.plan_name : undefined;
-		const subtitle = signedIn ? plan ? `${plan.charAt(0)}${plan.slice(1).toLowerCase()} plan` : this.info.email ?? localize('backboardAccountConnected', "Signed in to Backboard")
-			: this.alternative() ? localize('backboardSubscriptionsConnected', "Connected subscriptions") : localize('backboardAccountSignInHint', "Sign in to Backboard");
+		const subtitle = signedIn ? plan ? `${plan.charAt(0)}${plan.slice(1).toLowerCase()} plan` : this.info.email ?? localize('backboardAccountConnected', "Signed in to DQuant Lab")
+			: this.alternative() ? localize('backboardSubscriptionsConnected', "Connected subscriptions") : localize('backboardAccountSignInHint', "Sign in to DQuant Lab");
 		for (const node of [this.avatar, this.headerAvatar]) { if (node) { node.textContent = signedIn ? backboardAccountInitials(name) : 'B'; } }
 		for (const node of [this.label, this.headerName]) { if (node) { node.textContent = name; } }
 		for (const node of [this.subtitle, this.headerSubtitle]) { if (node) { node.textContent = subtitle; } }
@@ -167,7 +167,7 @@ export class BackboardAccountMenu extends Disposable {
 		];
 		const existing = this.menuActions(MenuId.GlobalActivity);
 		const authentication: IAction[] = [];
-		if (!this.signedIn()) { authentication.push(action('backboard.signIn', localize('backboardAccountSignIn', "Sign in to Backboard"), Codicon.signIn)); }
+		if (!this.signedIn()) { authentication.push(action('backboard.signIn', localize('backboardAccountSignIn', "Sign in to DQuant Lab"), Codicon.signIn)); }
 		if (this.signedIn() || this.alternative()) { authentication.push(action('backboard.signOut', localize('backboardAccountSignOut', "Sign out"), Codicon.signOut)); }
 		return combineBackboardAccountActions(primary,
 			this.options.editorMode ? existing : existing.filter(item => item.id.startsWith('update.') || item.id === 'backboard.signOut'),
@@ -203,7 +203,7 @@ export class BackboardAccountMenu extends Disposable {
 				store.add(this.runner.onWillRun(() => this.close()));
 				const actions = this.actions();
 				menu = store.add(new Menu(DOM.append(panel, DOM.$('.backboard-account-menu-actions')), actions, {
-					actionRunner: this.runner, ariaLabel: localize('backboardAccountMenuLabel', "Backboard account"),
+					actionRunner: this.runner, ariaLabel: localize('backboardAccountMenuLabel', "DQuant Lab account"),
 					getKeyBinding: action => this.keybindings.lookupKeybinding(action.id),
 				}, { ...defaultMenuStyles, shadowColor: undefined, borderColor: undefined }));
 				// Native Menu preserves shortcuts, checked states, and submenu navigation.

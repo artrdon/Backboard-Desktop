@@ -4,15 +4,15 @@
 	<metadata_license>@@LICENSE@@</metadata_license>
 	<project_license>@@LICENSE@@</project_license>
 	<name>@@NAME_LONG@@</name>
-	<url type="homepage">https://docs.backboard.io</url>
-	<summary>Backboard IDE. Code editing with Backboard.</summary>
+	<url type="homepage">https://github.com/artrdon/Backboard-Desktop</url>
+	<summary>AI IDE for MQL4 and MQL5 development.</summary>
 	<description>
-		<p>Backboard IDE combines the simplicity of a code editor with Backboard-powered development workflows.</p>
+		<p>DQuant Lab is an AI-powered development environment designed for MQL4 and MQL5 developers. Build, edit, debug, and develop algorithmic trading systems with AI assistance.</p>
 	</description>
 	<screenshots>
 		<screenshot type="default">
 			<image>https://docs.backboard.io/assets/backboard-ide.png</image>
-			<caption>Editing TypeScript and searching for extensions</caption>
+			<caption>Editing MQL5 code with AI assistance</caption>
 		</screenshot>
 	</screenshots>
 </component>

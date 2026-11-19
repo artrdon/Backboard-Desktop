@@ -52,7 +52,6 @@ export function buildSystemPromptWith(
 			: "",
 		deps.getSystemPromptFragment(layout.base, promptContext),
 		buildBackboardPlatformPrompt(promptContext),
-		options.mediaGenerationPrompt ?? "",
 		options.computerUseEnabled ? deps.computer.prompt : "",
 		options.browserUseEnabled ? deps.browser.prompt : "",
 		options.clientToolsEnabled ? clientTools.prompt : "",

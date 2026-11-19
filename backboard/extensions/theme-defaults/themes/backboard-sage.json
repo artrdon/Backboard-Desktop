@@ -1,6 +1,6 @@
 {
 	"$schema": "vscode://schemas/color-theme",
-	"name": "Backboard Sage",
+	"name": "DQuant Sage",
 	"include": "./backboard-porcelain.json",
 	"type": "light",
 	"colors": {

@@ -144,16 +144,6 @@ export type CliTsServeControl =
 		readonly browserUse?: boolean;
 		/** Enables turn-completion notifications for this turn (default off). */
 		readonly notify?: boolean;
-		/** Enables Backboard's built-in image tool for this turn. */
-		readonly imageGeneration?: boolean;
-		/** Selected image model as `provider/name`; `off` clears the selection. */
-		readonly imageModel?: string;
-		/** Enables Backboard's built-in video tool for this turn. */
-		readonly videoGeneration?: boolean;
-		/** Selected video model as `provider/name`; `off` clears the selection. */
-		readonly videoModel?: string;
-		/** Confirm each image/video generation with the user (via `ask_user`) before spending credits. */
-		readonly askBeforeGenerating?: boolean;
 		/** Pins an OpenRouter upstream; absent uses automatic routing. */
 		readonly openRouterProvider?: string;
 		/** IDE-executed tools advertised to the model; absent clears them. */
@@ -199,7 +189,13 @@ export type CliTsServeControl =
 		readonly op: 'setCredentials';
 		readonly requestId?: string;
 		readonly revision: number;
-		readonly providerKeys: readonly { readonly provider: string; readonly key: string }[];
+		readonly providerKeys: readonly {
+			readonly provider: string;
+			readonly key: string;
+			/** Non-secret Custom API endpoint settings. */
+			readonly baseUrl?: string;
+			readonly model?: string;
+		}[];
 	}
 	| { readonly op: 'listModels'; readonly requestId: string }
 	| { readonly op: 'listImageModels'; readonly requestId: string }

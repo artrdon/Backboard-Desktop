@@ -1,6 +1,6 @@
 name: Prod Release
 
-# Every push to prod builds, signs and publishes Backboard Studio for Apple
+# Every push to prod builds, signs and publishes DQuant Lab for Apple
 # silicon, Intel macOS, Windows x64 and Linux x64 as one GitHub release.
 #
 # The version is backboardVersion in backboard/product.json; bump it in the
@@ -74,7 +74,7 @@ jobs:
             echo "Tag v${version} already exists. Bump backboardVersion in backboard/product.json." >&2
             exit 1
           fi
-          echo "Releasing Backboard Studio ${version}"
+          echo "Releasing DQuant Lab ${version}"
           echo "version=${version}" >> "${GITHUB_OUTPUT}"
 
   macos:
@@ -236,8 +236,8 @@ jobs:
         with:
           name: release-linux-x86_64
           path: |
-            linux-release/${{ needs.prepare.outputs.version }}/x86_64/Backboard-Studio-linux-x86_64.tar.gz
-            linux-release/${{ needs.prepare.outputs.version }}/x86_64/Backboard-Studio-linux-x86_64.deb
+            linux-release/${{ needs.prepare.outputs.version }}/x86_64/DQuant-Lab-linux-x86_64.tar.gz
+            linux-release/${{ needs.prepare.outputs.version }}/x86_64/DQuant-Lab-linux-x86_64.deb
           if-no-files-found: error
           retention-days: 30
           compression-level: 0
@@ -277,8 +277,8 @@ jobs:
           mkdir -p release
           cp downloads/release-macos-aarch64/Backboard-Studio-aarch64.dmg release/
           cp downloads/release-macos-x86_64/Backboard-Studio-x86_64.dmg release/
-          cp downloads/release-linux-x86_64/Backboard-Studio-linux-x86_64.tar.gz release/
-          cp downloads/release-linux-x86_64/Backboard-Studio-linux-x86_64.deb release/
+          cp downloads/release-linux-x86_64/DQuant-Lab-linux-x86_64.tar.gz release/
+          cp downloads/release-linux-x86_64/DQuant-Lab-linux-x86_64.deb release/
           windows="downloads/Backboard-Studio-${VERSION}-windows-x64-signed"
           cp "${windows}"/*.exe "${windows}/Backboard-Studio-win32-x64.zip" release/
           (cd release && sha256sum * > SHA256SUMS)
@@ -290,5 +290,5 @@ jobs:
           gh release create "v${VERSION}" release/* \
             --repo "${GITHUB_REPOSITORY}" \
             --target "${GITHUB_SHA}" \
-            --title "Backboard Studio ${VERSION}" \
+            --title "DQuant Lab ${VERSION}" \
             --generate-notes

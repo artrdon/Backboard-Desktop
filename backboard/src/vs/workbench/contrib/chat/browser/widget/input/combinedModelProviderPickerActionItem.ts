@@ -104,6 +104,7 @@ export function providerIconKeyForCombinedModelSection(sectionId: string): strin
 		case 'google':
 		case 'google-ai': return 'google';
 		case 'openrouter': return 'open-router';
+		case 'custom': return 'open-ai-compat';
 		case 'xai':
 		case 'x-ai': return 'x-ai';
 		default: return undefined;
@@ -119,7 +120,7 @@ export type CombinedModelSectionGroup = 'backboard' | 'subscriptions' | 'byok' |
 
 export function combinedModelSectionGroupLabel(group: CombinedModelSectionGroup): string {
 	switch (group) {
-		case 'backboard': return localize('combinedPicker.backboardGroup', "Backboard");
+		case 'backboard': return localize('combinedPicker.backboardGroup', "DQuant Lab");
 		case 'subscriptions': return localize('combinedPicker.subscriptionsGroup', "Subscriptions");
 		case 'byok': return localize('combinedPicker.byokGroup', "BYOK");
 		case 'models': return localize('combinedPicker.modelsGroup', "Models");
@@ -606,7 +607,7 @@ export function modelCostScore(model: ILanguageModelChatMetadataAndIdentifier): 
 
 function connectHint(target: BackboardConnectTarget): string {
 	switch (target) {
-		case 'backboard': return localize('combinedPicker.connectBackboardHint', "Sign in to Backboard to use this model");
+		case 'backboard': return localize('combinedPicker.connectBackboardHint', "Sign in to DQuant Lab to use this model");
 		case 'chatgpt': return localize('combinedPicker.connectChatGptHint', "Connect ChatGPT to use this model");
 		case 'claude': return localize('combinedPicker.connectClaudeHint', "Connect Claude to use this model");
 		case 'key': return localize('combinedPicker.connectKeyHint', "Add an API key to use this model");
@@ -908,11 +909,11 @@ export class CombinedModelProviderPickerActionItem extends BaseActionViewItem {
 					// itself already succeeded and published its own models (a key's
 					// catalog comes from its validation). A user with only a key has
 					// no Backboard catalog to refresh, which must not read as a failure.
-					this._logService.warn(`[Backboard] model refresh after connecting failed: ${message}`);
+					this._logService.warn(`[DQuant Lab] model refresh after connecting failed: ${message}`);
 					return;
 				}
-				this._notificationService.error(message.includes('Unsupported Backboard command: models.refresh')
-					? localize('combinedPicker.refreshRestartRequired', "Restart Backboard after your running agents finish to enable model and subscription refresh.")
+				this._notificationService.error(message.includes('Unsupported DQuant Lab command: models.refresh')
+					? localize('combinedPicker.refreshRestartRequired', "Restart DQuant Lab after your running agents finish to enable model and subscription refresh.")
 					: localize('combinedPicker.refreshFailed', "Could not refresh models and subscriptions: {0}", message));
 			})
 			.finally(() => {

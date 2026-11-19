@@ -757,6 +757,13 @@ class NewSession extends Disposable {
 
 	/** Backend session URI, set the moment {@link eagerCreate} starts. */
 	private _backendUri: URI | undefined;
+	/**
+	 * Session metadata written before the backend session finished being
+	 * created (e.g. the DQuant language chosen on the welcome screen). Flushed
+	 * as one `SessionConfigChanged` action as soon as the state subscription is
+	 * in place.
+	 */
+	private readonly _pendingMetadataValues = new Map<string, string | undefined>();
 	/** Connection used to create the backend session, captured for `disposeSession` on tear-down. */
 	private _connection: IAgentConnection | undefined;
 	/** Held state subscription. Set after the wire `createSession` resolves. */
@@ -894,6 +901,35 @@ class NewSession extends Disposable {
 			schema: current?.schema ?? { type: 'object', properties: {} },
 			values: { ...(current?.values ?? {}), [property]: value },
 		};
+	}
+
+	/**
+	 * Writes a metadata value into the draft's config bag and forwards it to the
+	 * backend session when that already exists. Values written before the
+	 * backend round-trip completes are flushed from {@link eagerCreate}.
+	 */
+	setMetadataValue(property: string, value: string | undefined): void {
+		if (value === undefined) {
+			const current = this._config;
+			if (current) {
+				const values = { ...current.values };
+				delete values[property];
+				this._config = { schema: current.schema, values };
+			}
+		} else {
+			this.setConfigValue(property, value);
+		}
+
+		const connection = this._connection;
+		const backendUri = this._backendUri;
+		if (connection && backendUri && this._subscription) {
+			connection.dispatch(backendUri.toString(), {
+				type: ActionType.SessionConfigChanged as const,
+				config: { [property]: value },
+			});
+		} else {
+			this._pendingMetadataValues.set(property, value);
+		}
 	}
 
 	/**
@@ -1035,6 +1071,20 @@ class NewSession extends Disposable {
 			const ref = connection.getSubscription(StateComponents.Session, backendUri, 'BaseAgentHostSessionsProvider.session');
 			this._subscription = ref;
 
+			// Flush metadata written while the backend round-trip was in flight
+			// (DQuant language/project name) now that the session exists.
+			if (this._pendingMetadataValues.size > 0) {
+				const config: Record<string, string | undefined> = {};
+				for (const [key, value] of this._pendingMetadataValues) {
+					config[key] = value;
+				}
+				this._pendingMetadataValues.clear();
+				connection.dispatch(backendUri.toString(), {
+					type: ActionType.SessionConfigChanged as const,
+					config,
+				});
+			}
+
 			// Forward `SessionState` updates back to the provider so
 			// `_lastSessionStates` (and therefore `getCustomAgents`) becomes
 			// populated for this still-Untitled session. Seed once from the
@@ -1068,6 +1118,7 @@ class NewSession extends Disposable {
 		this._subscription = undefined;
 		this._backendUri = undefined;
 		this._connection = undefined;
+		this._pendingMetadataValues.clear();
 		this._configRequestSeq++;
 	}
 
@@ -1742,6 +1793,53 @@ export abstract class BaseAgentHostSessionsProvider extends Disposable implement
 			const action = { type: ActionType.SessionConfigChanged as const, config: { [property]: normalizedValue } };
 			connection.dispatch(sessionUri.toString(), action);
 			void this._resolveRunningSessionConfig(sessionId, cached, nextValues);
+		}
+	}
+
+	/**
+	 * Writes a session-local metadata value into the session's config bag.
+	 *
+	 * Unlike {@link setSessionConfigValue} this bypasses the resolved schema:
+	 * DQuant's language profile is metadata, not a user-facing picker, so it
+	 * has no schema property to be `sessionMutable`. The value is persisted by
+	 * the agent host together with the rest of the session config and restored
+	 * with it.
+	 */
+	setSessionMetadataValue(sessionId: string, property: string, value: string | undefined): void {
+		const next = value === undefined ? undefined : value;
+
+		const newSession = this._getNewSession(sessionId);
+		if (newSession) {
+			newSession.setMetadataValue(property, next);
+			this._onDidChangeSessionConfig.fire(sessionId);
+			return;
+		}
+
+		const runningConfig = this._runningSessionConfigs.get(sessionId);
+		const connection = this.connection;
+		if (!connection) {
+			return;
+		}
+
+		if (runningConfig) {
+			const values = { ...runningConfig.values };
+			if (next === undefined) {
+				delete values[property];
+			} else {
+				values[property] = next;
+			}
+			this._runningSessionConfigs.set(sessionId, { ...runningConfig, values });
+			this._onDidChangeSessionConfig.fire(sessionId);
+		}
+
+		const rawId = this._rawIdFromChatId(sessionId);
+		const cached = rawId ? this._sessionCache.get(rawId) : undefined;
+		if (cached && rawId) {
+			const sessionUri = AgentSession.uri(cached.agentProvider, rawId);
+			connection.dispatch(sessionUri.toString(), {
+				type: ActionType.SessionConfigChanged as const,
+				config: { [property]: next },
+			});
 		}
 	}
 

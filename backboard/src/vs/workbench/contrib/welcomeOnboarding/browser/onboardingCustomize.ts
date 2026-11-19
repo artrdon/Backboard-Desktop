@@ -138,7 +138,7 @@ export function createCustomizePanel(parent: HTMLElement, options: { readonly te
 		append(text, $('span')).textContent = localize('onboarding.customize.terminalCommand', "terminal command");
 		terminalHelp = append(row, $('span.onboarding-help-icon.codicon.codicon-question'));
 		terminalHelp.tabIndex = 0;
-		terminalHelp.setAttribute('aria-label', localize('onboarding.customize.terminalHelp', "Adds {0} as a terminal command that opens Backboard Studio. Open a new terminal to use it.", options.terminalCommand));
+		terminalHelp.setAttribute('aria-label', localize('onboarding.customize.terminalHelp', "Adds {0} as a terminal command that opens DQuant Lab. Open a new terminal to use it.", options.terminalCommand));
 	}
 
 	const importSection = append(element, $('.onboarding-customize-import'));

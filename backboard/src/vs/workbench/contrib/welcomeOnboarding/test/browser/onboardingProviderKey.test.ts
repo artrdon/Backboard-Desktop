@@ -80,7 +80,8 @@ suite('Backboard onboarding provider key', () => {
 				return true;
 			} };
 			harness._renderProviderKeySetup(container);
-			const input = container.querySelector('input')!;
+			const inputs = container.querySelectorAll('input');
+			const input = inputs[inputs.length - 1]!;
 			const select = container.querySelector('select')!;
 			const save = container.querySelector('button')!;
 			assert.strictEqual(save.disabled, true);
@@ -105,4 +106,50 @@ suite('Backboard onboarding provider key', () => {
 			});
 		});
 	}
+
+	test('Custom API collects a base URL, model ID, key, and can test before saving', async () => {
+		const harness = Object.create(OnboardingVariationA.prototype) as {
+			stepDisposables: DisposableStore;
+			stepFocusableElements: HTMLElement[];
+			hasImportedApiKey: boolean;
+			postOnboardingSignInPromptShown: boolean;
+			commandService: { executeCommand(id: string, ...args: unknown[]): Promise<boolean> };
+			_logAction(): void;
+			_advanceOrComplete(): void;
+			_renderProviderKeySetup(container: HTMLElement): void;
+		};
+		const container = document.body.appendChild(document.createElement('div'));
+		disposables.add(toDisposable(() => container.remove()));
+		harness.stepDisposables = disposables.add(new DisposableStore());
+		harness.stepFocusableElements = [];
+		harness.hasImportedApiKey = false;
+		harness.postOnboardingSignInPromptShown = false;
+		harness._logAction = () => undefined;
+		harness._advanceOrComplete = () => undefined;
+		const calls: unknown[][] = [];
+		harness.commandService = { executeCommand: async (...args) => { calls.push(args); return true; } };
+		harness._renderProviderKeySetup(container);
+
+		const select = container.querySelector('select')!;
+		select.value = 'custom';
+		select.dispatchEvent(new Event('change'));
+		const inputs = container.querySelectorAll('input');
+		const [baseUrl, model, key] = [inputs[0], inputs[1], inputs[2]];
+		baseUrl.value = 'https://api.deepseek.com/v1/';
+		model.value = 'deepseek-chat';
+		key.value = 'custom-secret';
+		for (const input of [baseUrl, model, key]) {
+			input.dispatchEvent(new Event('input'));
+		}
+		const [save, test] = container.querySelectorAll('button');
+		test.click();
+		await new Promise(resolve => setTimeout(resolve, 0));
+		save.click();
+		await new Promise(resolve => setTimeout(resolve, 0));
+
+		assert.deepStrictEqual(calls, [
+			['backboard.testProviderKey', 'custom', 'custom-secret', { baseUrl: 'https://api.deepseek.com/v1', model: 'deepseek-chat' }],
+			['backboard.addProviderKey', 'custom', 'custom-secret', { baseUrl: 'https://api.deepseek.com/v1', model: 'deepseek-chat' }],
+		]);
+	});
 });

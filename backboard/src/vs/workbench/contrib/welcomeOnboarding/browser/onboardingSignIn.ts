@@ -43,7 +43,7 @@ export function createMadeByFooter(parent: HTMLElement): HTMLElement {
 	append(footer, $('span')).textContent = localize('onboarding.signIn.madeBy', "made by");
 	const brand = append(footer, $('span.onboarding-made-by-brand'));
 	createMark(brand, 'onboarding-made-by-mark');
-	append(brand, $('span')).textContent = localize('onboarding.signIn.brand', "Backboard");
+	append(brand, $('span')).textContent = localize('onboarding.signIn.brand', "DQuant Lab");
 	return footer;
 }
 
@@ -55,7 +55,7 @@ export function createSignInPanel(parent: HTMLElement): ISignInPanel {
 	const element = append(parent, $('.onboarding-signin'));
 
 	createMark(element, 'onboarding-signin-logo');
-	append(element, $('h1.onboarding-signin-title')).textContent = localize('onboarding.signIn.title', "Welcome to Backboard");
+	append(element, $('h1.onboarding-signin-title')).textContent = localize('onboarding.signIn.title', "Welcome to DQuant Lab");
 	append(element, $('p.onboarding-signin-subtitle')).textContent = localize('onboarding.signIn.subtitle', "Sign in or create an account");
 
 	const actions = append(element, $('.onboarding-signin-actions'));

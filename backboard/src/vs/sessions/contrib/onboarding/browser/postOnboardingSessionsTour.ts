@@ -112,7 +112,7 @@ export function showSessionsOnboardingTour(layoutService: IWorkbenchLayoutServic
 	const steps: ISpotlightTourStep[] = [
 		{
 			title: localize('sessions.tour.prompt.title', "Start with a prompt"),
-			body: localize('sessions.tour.prompt.body', "Choose a project folder, then describe a small task. Try: ‘Explain this project and suggest a first change.’ Connect your Backboard account or API key when you're ready to use the agent."),
+			body: localize('sessions.tour.prompt.body', "Choose a project folder, then describe a small task. Try: ‘Explain this project and suggest a first change.’ Connect your DQuant Lab account or API key when you're ready to use the agent."),
 			preferredPlacement: TourPlacement.Top,
 			anchor: query('.interactive-input-part'),
 		},

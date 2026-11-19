@@ -110,6 +110,16 @@ export interface IAgentHostSessionsProvider extends ISessionsProvider {
 	/** Sets one dynamic configuration property and re-resolves the schema. */
 	setSessionConfigValue(sessionId: string, property: string, value: unknown): Promise<void>;
 	/**
+	 * Sets a session-local metadata value in the session's config bag without
+	 * requiring the property to be declared in the resolved config schema.
+	 *
+	 * Used by DQuant Lab for the per-session language profile: the value must
+	 * follow the session (persisted and restored by the agent host) but must
+	 * not turn into a composer picker. Implementations must ignore unknown
+	 * sessions and never throw for a missing connection.
+	 */
+	setSessionMetadataValue?(sessionId: string, property: string, value: string | undefined): void;
+	/**
 	 * Replaces the full set of running-session config values atomically.
 	 *
 	 * Dispatches a single `session/configChanged` action with replace

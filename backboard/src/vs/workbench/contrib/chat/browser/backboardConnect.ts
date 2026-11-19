@@ -12,10 +12,10 @@ import { DisposableStore, toDisposable } from '../../../../base/common/lifecycle
 import { isWindows } from '../../../../base/common/platform.js';
 import { URI } from '../../../../base/common/uri.js';
 import { localize } from '../../../../nls.js';
-import { BYOK_PROVIDERS, ByokProviderId } from '../../../../platform/agentHost/common/byokProviders.js';
+import { BYOK_PROVIDERS, ByokProviderId, CUSTOM_PROVIDER_ID, ICustomProviderConfig, validateProviderConfig } from '../../../../platform/agentHost/common/byokProviders.js';
 import { ICommandService } from '../../../../platform/commands/common/commands.js';
 import { CHATGPT_SUBSCRIPTION_SETUP_ID, CHECK_CLAUDE_CODE_VERSION_COMMAND_ID, CLAUDE_SUBSCRIPTION_SETUP_ID, IClaudeCodeVersion, UPDATE_CLAUDE_CODE_COMMAND_ID } from './agentSessions/agentCliSetup.js';
-import { ADD_PROVIDER_KEY_COMMAND_ID } from './byokKeys/byokKeys.js';
+import { ADD_PROVIDER_KEY_COMMAND_ID, TEST_PROVIDER_KEY_COMMAND_ID } from './byokKeys/byokKeys.js';
 import './media/backboardConnect.css';
 
 /** One way to pay for models: Backboard itself, a subscription, or the user's own key. */
@@ -63,7 +63,18 @@ const KEY_ICON: Record<ByokProviderId, string> = {
 	google: 'google',
 	openrouter: 'open-router',
 	xai: 'x-ai',
+	custom: 'open-ai-compat',
 };
+
+/** The host part of a Custom API base URL, for the privacy note; never throws on partial input. */
+function safeHost(baseUrl: string): string | undefined {
+	try {
+		const url = new URL(baseUrl.trim());
+		return url.host || undefined;
+	} catch {
+		return undefined;
+	}
+}
 
 /**
  * The single place the user connects something that can pay for models:
@@ -82,6 +93,10 @@ export function renderBackboardConnect(parent: HTMLElement, commands: ICommandSe
 	let keyFormOpen = false;
 	let keyError = '';
 	let keyDraft = '';
+	let customBaseUrlDraft = '';
+	let customModelDraft = '';
+	/** Result line under the Custom API form; `true` means a successful Test Connection. */
+	let customTestNote: { readonly text: string; readonly ok: boolean } | undefined;
 	/** Read once per render of the panel; an outdated Claude Code lists fewer models. */
 	let claudeCode: IClaudeCodeVersion | undefined;
 	let updatingClaudeCode = false;
@@ -98,7 +113,7 @@ export function renderBackboardConnect(parent: HTMLElement, commands: ICommandSe
 
 	const title = (target: BackboardConnectTarget): string => {
 		switch (target) {
-			case 'backboard': return localize('backboardConnect.backboard', "Backboard");
+			case 'backboard': return localize('backboardConnect.backboard', "DQuant Lab");
 			case 'chatgpt': return localize('backboardConnect.chatGpt', "ChatGPT");
 			case 'claude': return localize('backboardConnect.claude', "Claude");
 			case 'key': return localize('backboardConnect.apiKey', "API Key");
@@ -116,8 +131,8 @@ export function renderBackboardConnect(parent: HTMLElement, commands: ICommandSe
 		}
 		switch (target) {
 			case 'backboard': return state.signedIn
-				? localize('backboardConnect.backboardConnected', "Signed in. Every model, billed to Backboard")
-				: localize('backboardConnect.backboardDescription', "Every model, billed to your Backboard account");
+				? localize('backboardConnect.backboardConnected', "Signed in. Every model, billed to DQuant Lab")
+				: localize('backboardConnect.backboardDescription', "Every model, billed to your DQuant Lab account");
 			case 'chatgpt': return state.chatGpt
 				? localize('backboardConnect.chatGptConnected', "Connected. GPT models use your plan")
 				: localize('backboardConnect.chatGptDescription', "Use GPT models included with your plan");
@@ -128,7 +143,7 @@ export function renderBackboardConnect(parent: HTMLElement, commands: ICommandSe
 				: localize('backboardConnect.claudeDescription', "Use Claude models included with your plan");
 			case 'key': return state.keys.size
 				? localize('backboardConnect.keysConnected', "{0} connected", BYOK_PROVIDERS.filter(provider => state.keys.has(provider.id)).map(provider => provider.label).join(', '))
-				: localize('backboardConnect.keyDescription', "OpenAI, Anthropic, Gemini, OpenRouter or xAI");
+				: localize('backboardConnect.keyDescription', "OpenAI, Anthropic, Gemini, OpenRouter, xAI or a custom endpoint");
 		}
 	};
 
@@ -202,6 +217,21 @@ export function renderBackboardConnect(parent: HTMLElement, commands: ICommandSe
 		}
 	};
 
+	/** Reads and validates the Custom API endpoint fields; empty for every other provider. */
+	const customEndpoint = (): { readonly config?: ICustomProviderConfig; readonly error?: string } => {
+		if (keyProvider !== CUSTOM_PROVIDER_ID) {
+			return {};
+		}
+		return validateProviderConfig(CUSTOM_PROVIDER_ID, { baseUrl: customBaseUrlDraft, model: customModelDraft });
+	};
+
+	const keyCommandArgs = (key: string): unknown[] => {
+		const endpoint = customEndpoint();
+		return endpoint.config
+			? [keyProvider, key, endpoint.config]
+			: [keyProvider, key];
+	};
+
 	const submitKey = async (): Promise<void> => {
 		const key = keyDraft.trim();
 		const definition = BYOK_PROVIDERS.find(provider => provider.id === keyProvider)!;
@@ -213,13 +243,50 @@ export function renderBackboardConnect(parent: HTMLElement, commands: ICommandSe
 			render();
 			return;
 		}
+		const endpoint = customEndpoint();
+		if (endpoint.error || (keyProvider === CUSTOM_PROVIDER_ID && !endpoint.config)) {
+			keyError = endpoint.error ?? localize('backboardConnect.endpointRequired', "Enter the API base URL and model ID.");
+			render();
+			return;
+		}
 		keyError = '';
-		if (await run('key', () => commands.executeCommand(ADD_PROVIDER_KEY_COMMAND_ID, keyProvider, key))) {
+		customTestNote = undefined;
+		if (await run('key', () => commands.executeCommand(ADD_PROVIDER_KEY_COMMAND_ID, ...keyCommandArgs(key)))) {
 			keyDraft = '';
 			keyFormOpen = false;
 			if (!disposed) {
 				render();
 			}
+		}
+	};
+
+	const testKeyConnection = async (): Promise<void> => {
+		const key = keyDraft.trim();
+		const definition = BYOK_PROVIDERS.find(provider => provider.id === keyProvider)!;
+		customTestNote = undefined;
+		if (!key) {
+			keyError = localize('backboardConnect.keyRequired', "Enter a {0} API key.", definition.label);
+			render();
+			return;
+		}
+		if (!definition.looksLikeKey(key)) {
+			keyError = localize('backboardConnect.keyShape', "That does not look like a {0} key (expected {1}).", definition.label, definition.keyHint);
+			render();
+			return;
+		}
+		const endpoint = customEndpoint();
+		if (endpoint.error || (keyProvider === CUSTOM_PROVIDER_ID && !endpoint.config)) {
+			keyError = endpoint.error ?? localize('backboardConnect.endpointRequired', "Enter the API base URL and model ID.");
+			render();
+			return;
+		}
+		keyError = '';
+		await run('key', async () => {
+			await commands.executeCommand(TEST_PROVIDER_KEY_COMMAND_ID, ...keyCommandArgs(key));
+			customTestNote = { text: localize('backboardConnect.testPassed', "Connection verified."), ok: true };
+		});
+		if (!disposed) {
+			render();
 		}
 	};
 
@@ -243,11 +310,41 @@ export function renderBackboardConnect(parent: HTMLElement, commands: ICommandSe
 				EventHelper.stop(event, true);
 				keyProvider = provider.id;
 				keyError = '';
+				customTestNote = undefined;
 				render();
 				root.querySelector<HTMLInputElement>('.backboard-connect-key-input')?.focus();
 			}));
 		}
 		const definition = BYOK_PROVIDERS.find(provider => provider.id === keyProvider)!;
+		let save: HTMLButtonElement;
+		let test: HTMLButtonElement;
+		if (definition.requiresEndpoint) {
+			const endpointFields = append(form, $('.backboard-connect-key-endpoint'));
+			const baseUrl = append(endpointFields, $<HTMLInputElement>('input.backboard-connect-key-input.backboard-connect-key-base-url'));
+			baseUrl.type = 'url';
+			baseUrl.autocomplete = 'off';
+			baseUrl.spellcheck = false;
+			baseUrl.placeholder = localize('backboardConnect.baseUrlPlaceholder', "API base URL (e.g. https://api.deepseek.com/v1)");
+			baseUrl.setAttribute('aria-label', localize('backboardConnect.baseUrl', "API base URL"));
+			baseUrl.value = customBaseUrlDraft;
+			baseUrl.disabled = busy === 'key';
+			rowStore.add(addDisposableListener(baseUrl, EventType.INPUT, () => {
+				customBaseUrlDraft = baseUrl.value;
+				customTestNote = undefined;
+			}));
+			const model = append(endpointFields, $<HTMLInputElement>('input.backboard-connect-key-input.backboard-connect-key-model'));
+			model.type = 'text';
+			model.autocomplete = 'off';
+			model.spellcheck = false;
+			model.placeholder = localize('backboardConnect.modelPlaceholder', "Model ID (e.g. deepseek-chat)");
+			model.setAttribute('aria-label', localize('backboardConnect.modelId', "Model ID"));
+			model.value = customModelDraft;
+			model.disabled = busy === 'key';
+			rowStore.add(addDisposableListener(model, EventType.INPUT, () => {
+				customModelDraft = model.value;
+				customTestNote = undefined;
+			}));
+		}
 		const field = append(form, $('.backboard-connect-key-field'));
 		const input = append(field, $<HTMLInputElement>('input.backboard-connect-key-input'));
 		input.type = 'password';
@@ -257,13 +354,20 @@ export function renderBackboardConnect(parent: HTMLElement, commands: ICommandSe
 		input.setAttribute('aria-label', input.placeholder);
 		input.value = keyDraft;
 		input.disabled = busy === 'key';
-		const save = append(field, $<HTMLButtonElement>('button.backboard-connect-key-save'));
+		save = append(field, $<HTMLButtonElement>('button.backboard-connect-key-save'));
 		save.type = 'button';
 		save.textContent = localize('backboardConnect.save', "Save");
 		save.disabled = busy === 'key' || !keyDraft.trim();
+		test = append(field, $<HTMLButtonElement>('button.backboard-connect-key-test'));
+		test.type = 'button';
+		test.textContent = localize('backboardConnect.testConnection', "Test Connection");
+		test.disabled = busy === 'key' || !keyDraft.trim();
+		test.hidden = !definition.requiresEndpoint;
 		rowStore.add(addDisposableListener(input, EventType.INPUT, () => {
 			keyDraft = input.value;
 			save.disabled = !keyDraft.trim();
+			test.disabled = !keyDraft.trim();
+			customTestNote = undefined;
 		}));
 		rowStore.add(addDisposableListener(input, EventType.KEY_DOWN, event => {
 			const keyboardEvent = new StandardKeyboardEvent(event);
@@ -280,17 +384,30 @@ export function renderBackboardConnect(parent: HTMLElement, commands: ICommandSe
 			EventHelper.stop(event, true);
 			void submitKey();
 		}));
+		rowStore.add(addDisposableListener(test, EventType.CLICK, event => {
+			EventHelper.stop(event, true);
+			void testKeyConnection();
+		}));
 		const footer = append(form, $('.backboard-connect-key-footer'));
 		const note = append(footer, $('span.backboard-connect-key-note'));
-		note.textContent = keyError || localize('backboardConnect.keyNote', "Stored in your OS keychain and sent only to {0}.", definition.label);
+		note.textContent = keyError || (definition.requiresEndpoint
+			? localize('backboardConnect.customKeyNote', "Stored encrypted on this device and sent only to {0}.", safeHost(customBaseUrlDraft) ?? 'this endpoint')
+			: localize('backboardConnect.keyNote', "Stored in your OS keychain and sent only to {0}.", definition.label));
 		note.classList.toggle('error', !!keyError);
-		const link = append(footer, $<HTMLButtonElement>('button.backboard-connect-key-link'));
-		link.type = 'button';
-		link.textContent = localize('backboardConnect.getKey', "Get a Key");
-		rowStore.add(addDisposableListener(link, EventType.CLICK, event => {
-			EventHelper.stop(event, true);
-			void commands.executeCommand('vscode.open', URI.parse(definition.consoleUrl));
-		}));
+		if (customTestNote) {
+			const testNote = append(footer, $('span.backboard-connect-key-test-note'));
+			testNote.textContent = customTestNote.text;
+			testNote.classList.toggle('error', !customTestNote.ok);
+		}
+		if (definition.consoleUrl) {
+			const link = append(footer, $<HTMLButtonElement>('button.backboard-connect-key-link'));
+			link.type = 'button';
+			link.textContent = localize('backboardConnect.getKey', "Get a Key");
+			rowStore.add(addDisposableListener(link, EventType.CLICK, event => {
+				EventHelper.stop(event, true);
+				void commands.executeCommand('vscode.open', URI.parse(definition.consoleUrl));
+			}));
+		}
 	};
 
 	const renderStore = store.add(new DisposableStore());

@@ -8,6 +8,7 @@ import * as os from 'os';
 import * as path from 'path';
 import { localize } from '../../../../nls.js';
 import { SessionConfigKey } from '../../common/sessionConfigKeys.js';
+import { DQUANT_CONFIG_PREFIX } from '../../common/dquant/dquantSessionMetadata.js';
 import { guestApiKey } from './backboardGuest.js';
 import { IAgentModelInfo } from '../../common/agentService.js';
 import { createAgentModelPricingMeta } from '../../common/agentModelPricing.js';
@@ -59,27 +60,6 @@ const BACKBOARD_WEB_SEARCH_CONFIG_KEY = 'webSearch';
 const BACKBOARD_COMPUTER_USE_CONFIG_KEY = 'computerUse';
 const BACKBOARD_BROWSER_USE_CONFIG_KEY = 'browserUse';
 const BACKBOARD_NOTIFICATIONS_CONFIG_KEY = 'notifications';
-const BACKBOARD_IMAGE_GENERATION_CONFIG_KEY = 'imageGeneration';
-/** Selected image model as `provider/name`; `off` disables image generation. */
-export const BACKBOARD_IMAGE_MODEL_CONFIG_KEY = 'imageModel';
-const BACKBOARD_VIDEO_GENERATION_CONFIG_KEY = 'videoGeneration';
-/** Selected video model as `provider/name`; `off` disables video generation. */
-export const BACKBOARD_VIDEO_MODEL_CONFIG_KEY = 'videoModel';
-/**
- * Higgsfield-style "Ask Before Generating" switch: when on, the agent confirms
- * each image/video generation with the user before it spends Backboard credits.
- */
-export const BACKBOARD_ASK_BEFORE_GENERATING_CONFIG_KEY = 'askBeforeGenerating';
-/**
- * Legacy composer value that used to turn image or video generation off.
- * Media is now always available on Backboard-billed models, so it resolves to
- * the default model instead.
- */
-export const BACKBOARD_GENERATIVE_MEDIA_OFF = 'off';
-/** Image model used unless the user picks another one: OpenAI's newest image model. */
-const DEFAULT_IMAGE_MODEL_SELECTION = 'openrouter/openai/gpt-5.4-image-2';
-/** Video model used unless the user picks another one: ByteDance Seedance 2.5. */
-const DEFAULT_VIDEO_MODEL_SELECTION = 'openrouter/bytedance/seedance-2.5';
 export const BACKBOARD_OPENROUTER_PROVIDER_CONFIG_KEY = 'openRouterProvider';
 export const BACKBOARD_MODE_PLAN = 'plan';
 export const BACKBOARD_MODE_MULTITASK = 'multitask';
@@ -226,16 +206,6 @@ export interface BackboardTurnSettings {
 	readonly browserUse: boolean;
 	/** Whether turn-completion notifications are enabled this turn. */
 	readonly notifications: boolean;
-	/** Whether Backboard's built-in image generation is enabled this turn. */
-	readonly imageGeneration: boolean;
-	/** Selected image model; undefined uses the harness default. */
-	readonly imageModel?: { provider: string; name: string };
-	/** Whether Backboard's built-in video generation is enabled this turn. */
-	readonly videoGeneration: boolean;
-	/** Selected video model; video generation needs an explicit model. */
-	readonly videoModel?: { provider: string; name: string };
-	/** Whether the agent confirms each image/video generation first; false whenever media is unavailable. */
-	readonly askBeforeGenerating: boolean;
 	/** A user-pinned OpenRouter serving provider; undefined keeps automatic routing. */
 	readonly openRouterProvider?: string;
 	readonly config: Record<string, unknown>;
@@ -289,7 +259,9 @@ function normalizeProviderKey(provider: string | undefined): string {
 function providerLabel(provider: string | undefined): string {
 	const normalized = normalizeProviderKey(provider);
 	if (isKeyBilledProvider(normalized)) {
-		return localize('backboard.provider.keyBilled', "{0} API Key", providerLabel(vendorOfProvider(normalized)));
+		const vendor = vendorOfProvider(normalized);
+		const vendorLabel = providerLabel(vendor);
+		return vendor === 'custom' ? vendorLabel : localize('backboard.provider.keyBilled', "{0} API Key", vendorLabel);
 	}
 	switch (normalized) {
 		case 'aws-bedrock':
@@ -321,6 +293,8 @@ function providerLabel(provider: string | undefined): string {
 			return 'OpenAI Compatible';
 		case 'openrouter':
 			return 'OpenRouter';
+		case 'custom':
+			return 'Custom API';
 		case 'xai':
 			return 'xAI';
 		default:
@@ -700,6 +674,7 @@ export function resolveBackboardSessionConfig(rawConfig: Record<string, unknown>
 		: undefined;
 	const values = {
 		...normalizeBackboardConfig(rawConfig),
+		...dquantConfigPassthrough(rawConfig),
 		[SessionConfigKey.Isolation]: isolation,
 		...(branch ? { [SessionConfigKey.Branch]: branch } : {}),
 	};
@@ -710,7 +685,7 @@ export function resolveBackboardSessionConfig(rawConfig: Record<string, unknown>
 					[SessionConfigKey.Isolation]: {
 						type: 'string',
 						title: localize('backboard.config.isolation.title', "Isolation"),
-						description: localize('backboard.config.isolation.description', "Where Backboard should make changes."),
+						description: localize('backboard.config.isolation.description', "Where DQuant Lab should make changes."),
 						default: 'folder',
 						enum: repository ? ['folder', 'worktree'] : ['folder'],
 						enumLabels: repository
@@ -741,7 +716,7 @@ export function resolveBackboardSessionConfig(rawConfig: Record<string, unknown>
 					[SessionConfigKey.Mode]: {
 						type: 'string',
 						title: localize('backboard.config.mode.title', "Mode"),
-						description: localize('backboard.config.mode.description', "Controls how Backboard plans, delegates work, and approves tool use."),
+						description: localize('backboard.config.mode.description', "Controls how DQuant Lab plans, delegates work, and approves tool use."),
 						default: BACKBOARD_ACCESS_FULL,
 						enum: [BACKBOARD_ACCESS_DEFAULT, BACKBOARD_MODE_MULTITASK, BACKBOARD_MODE_PLAN, BACKBOARD_ACCESS_MANUAL, BACKBOARD_ACCESS_FULL],
 						enumLabels: [
@@ -763,7 +738,7 @@ export function resolveBackboardSessionConfig(rawConfig: Record<string, unknown>
 					[BACKBOARD_INTENSITY_CONFIG_KEY]: {
 						type: 'string',
 						title: localize('backboard.config.intensity.title', "Reasoning"),
-						description: localize('backboard.config.intensity.description', "Controls Backboard's per-turn thinking configuration."),
+						description: localize('backboard.config.intensity.description', "Controls DQuant Lab's per-turn thinking configuration."),
 						default: 'medium',
 						enum: ['off', 'low', 'medium', 'high', 'max'],
 						enumLabels: [
@@ -774,7 +749,7 @@ export function resolveBackboardSessionConfig(rawConfig: Record<string, unknown>
 							localize('backboard.config.intensity.max', "Max"),
 						],
 						enumDescriptions: [
-							localize('backboard.config.intensity.off.description', "Disable Backboard thinking for this turn."),
+							localize('backboard.config.intensity.off.description', "Disable DQuant Lab thinking for this turn."),
 							localize('backboard.config.intensity.low.description', "Use low reasoning effort or a small reasoning-token budget."),
 							localize('backboard.config.intensity.medium.description', "Use medium reasoning effort or a balanced reasoning-token budget."),
 							localize('backboard.config.intensity.high.description', "Use high reasoning effort or a large reasoning-token budget."),
@@ -785,7 +760,7 @@ export function resolveBackboardSessionConfig(rawConfig: Record<string, unknown>
 					[BACKBOARD_MEMORY_CONFIG_KEY]: {
 						type: 'string',
 						title: localize('backboard.config.memory.title', "Memory"),
-						description: localize('backboard.config.memory.description', "Controls Backboard's semantic memory for this session."),
+						description: localize('backboard.config.memory.description', "Controls DQuant Lab's semantic memory for this session."),
 						default: 'off',
 						enum: ['off', 'auto', 'readonly'],
 						enumLabels: [
@@ -795,7 +770,7 @@ export function resolveBackboardSessionConfig(rawConfig: Record<string, unknown>
 						],
 						enumDescriptions: [
 							localize('backboard.config.memory.off.description', "Nothing is stored or recalled."),
-							localize('backboard.config.memory.auto.description', "Backboard stores and recalls memories as needed."),
+							localize('backboard.config.memory.auto.description', "DQuant Lab stores and recalls memories as needed."),
 							localize('backboard.config.memory.readonly.description', "Recall existing memories without storing new ones."),
 						],
 						sessionMutable: true,
@@ -803,7 +778,7 @@ export function resolveBackboardSessionConfig(rawConfig: Record<string, unknown>
 					[BACKBOARD_COMPUTER_USE_CONFIG_KEY]: {
 						type: 'boolean',
 						title: localize('backboard.config.computerUse.title', "Computer Use"),
-						description: localize('backboard.config.computerUse.description', "Lets Backboard operate desktop apps. A fast vision model watches each app window, acts on it in the background, and shows an on-screen agent cursor; screenshots, mouse, and keyboard are the fallback."),
+						description: localize('backboard.config.computerUse.description', "Lets DQuant Lab operate desktop apps. A fast vision model watches each app window, acts on it in the background, and shows an on-screen agent cursor; screenshots, mouse, and keyboard are the fallback."),
 						// Off by default: a new chat only gets desktop control after the
 						// user turns Computer on in the composer.
 						default: false,
@@ -812,47 +787,15 @@ export function resolveBackboardSessionConfig(rawConfig: Record<string, unknown>
 					[BACKBOARD_BROWSER_USE_CONFIG_KEY]: {
 						type: 'boolean',
 						title: localize('backboard.config.browserUse.title', "Browser Use"),
-						description: localize('backboard.config.browserUse.description', "Lets Backboard drive a web browser to navigate pages and interact with sites."),
+						description: localize('backboard.config.browserUse.description', "Lets DQuant Lab drive a web browser to navigate pages and interact with sites."),
 						default: false,
 						sessionMutable: true,
 					},
 					[BACKBOARD_NOTIFICATIONS_CONFIG_KEY]: {
 						type: 'boolean',
 						title: localize('backboard.config.notifications.title', "Notifications"),
-						description: localize('backboard.config.notifications.description', "Shows a system notification when Backboard finishes a turn."),
+						description: localize('backboard.config.notifications.description', "Shows a system notification when DQuant Lab finishes a turn."),
 						default: false,
-						sessionMutable: true,
-					},
-					[BACKBOARD_IMAGE_MODEL_CONFIG_KEY]: {
-						type: 'string',
-						title: localize('backboard.config.imageModel.title', "Image"),
-						description: localize('backboard.config.imageModel.description', "Generate images with the selected Backboard image model."),
-						default: DEFAULT_IMAGE_MODEL_SELECTION,
-						enum: [DEFAULT_IMAGE_MODEL_SELECTION],
-						enumLabels: ['GPT-5.4 Image 2'],
-						enumDescriptions: [localize('backboard.config.imageModel.default.description', "OpenAI's GPT-5.4 Image 2.")],
-						// The live catalog is too large to enumerate; the enum above is the seed.
-						enumDynamic: true,
-						sessionMutable: true,
-					},
-					[BACKBOARD_VIDEO_MODEL_CONFIG_KEY]: {
-						type: 'string',
-						title: localize('backboard.config.videoModel.title', "Video"),
-						description: localize('backboard.config.videoModel.description', "Generate videos with the selected Backboard video model."),
-						default: DEFAULT_VIDEO_MODEL_SELECTION,
-						// Live completions supply every other selectable model.
-						enum: [DEFAULT_VIDEO_MODEL_SELECTION],
-						enumLabels: ['Seedance 2.5'],
-						enumDescriptions: [localize('backboard.config.videoModel.default.description', "ByteDance's Seedance 2.5.")],
-						enumDynamic: true,
-						sessionMutable: true,
-					},
-					[BACKBOARD_ASK_BEFORE_GENERATING_CONFIG_KEY]: {
-						type: 'boolean',
-						title: localize('backboard.config.askBeforeGenerating.title', "Ask Before Generating"),
-						description: localize('backboard.config.askBeforeGenerating.description', "Backboard shows what it will generate and waits for your approval before it spends credits on an image or video."),
-						// On by default, like Higgsfield: media generation spends credits.
-						default: true,
 						sessionMutable: true,
 					},
 				},
@@ -875,10 +818,27 @@ function normalizeBackboardConfig(rawConfig: Record<string, unknown> | undefined
 		[BACKBOARD_COMPUTER_USE_CONFIG_KEY]: booleanOf(merged[BACKBOARD_COMPUTER_USE_CONFIG_KEY], false),
 		[BACKBOARD_BROWSER_USE_CONFIG_KEY]: booleanOf(merged[BACKBOARD_BROWSER_USE_CONFIG_KEY], false),
 		[BACKBOARD_NOTIFICATIONS_CONFIG_KEY]: booleanOf(merged[BACKBOARD_NOTIFICATIONS_CONFIG_KEY], false),
-		[BACKBOARD_IMAGE_MODEL_CONFIG_KEY]: normalizeImageModelSelection(merged[BACKBOARD_IMAGE_MODEL_CONFIG_KEY], merged[BACKBOARD_IMAGE_GENERATION_CONFIG_KEY]),
-		[BACKBOARD_VIDEO_MODEL_CONFIG_KEY]: normalizeVideoModelSelection(merged[BACKBOARD_VIDEO_MODEL_CONFIG_KEY], merged[BACKBOARD_VIDEO_GENERATION_CONFIG_KEY]),
-		[BACKBOARD_ASK_BEFORE_GENERATING_CONFIG_KEY]: booleanOf(merged[BACKBOARD_ASK_BEFORE_GENERATING_CONFIG_KEY], true),
 	};
+}
+
+/**
+ * DQuant stores its per-session language profile (and project name) in the
+ * session's config bag. The Backboard runtime only knows its own keys, so carry
+ * every `dquant.*` value through the resolved config unchanged. This keeps the
+ * profile with the session across create/restore without exposing it as a
+ * picker in the composer.
+ */
+function dquantConfigPassthrough(rawConfig: Record<string, unknown> | undefined): Record<string, unknown> {
+	if (!rawConfig) {
+		return {};
+	}
+	const passthrough: Record<string, unknown> = {};
+	for (const [key, value] of Object.entries(rawConfig)) {
+		if (key.startsWith(DQUANT_CONFIG_PREFIX)) {
+			passthrough[key] = value;
+		}
+	}
+	return passthrough;
 }
 
 export function createBackboardTurnSettings(
@@ -892,12 +852,6 @@ export function createBackboardTurnSettings(
 	// an explicit billing source instead.
 	const parsedModel = billingRouteForProvider(selected.provider, selected.model);
 	const rawMode = stringConfigValue(values, SessionConfigKey.Mode, BACKBOARD_ACCESS_FULL);
-	// Backboard's hosted media only runs on Backboard-billed turns. The composer
-	// hides the pickers for key and subscription models, but a selection made
-	// on a Backboard model stays in the session config and must not follow it.
-	const backboardMedia = parsedModel.source === 'backboard';
-	const imageModel = backboardMedia ? parseGenerativeModelSelection(stringConfigValue(values, BACKBOARD_IMAGE_MODEL_CONFIG_KEY, DEFAULT_IMAGE_MODEL_SELECTION)) : undefined;
-	const videoModel = backboardMedia ? parseGenerativeModelSelection(stringConfigValue(values, BACKBOARD_VIDEO_MODEL_CONFIG_KEY, DEFAULT_VIDEO_MODEL_SELECTION)) : undefined;
 	const configuredOpenRouterProvider = stringValueFromRecord(model?.config?.[BACKBOARD_OPENROUTER_PROVIDER_CONFIG_KEY]);
 	const configuredModelIntensity = stringValueFromRecord(model?.config?.[BACKBOARD_INTENSITY_CONFIG_KEY]);
 	const intensity = configuredModelIntensity
@@ -923,13 +877,6 @@ export function createBackboardTurnSettings(
 		computerUse: booleanConfigValue(values, BACKBOARD_COMPUTER_USE_CONFIG_KEY, false),
 		browserUse: booleanConfigValue(values, BACKBOARD_BROWSER_USE_CONFIG_KEY, false),
 		notifications: booleanConfigValue(values, BACKBOARD_NOTIFICATIONS_CONFIG_KEY, false),
-		// The wire booleans are derived from the selected models so the composer
-		// has a single source of truth (the model picker).
-		imageGeneration: imageModel !== undefined,
-		videoGeneration: videoModel !== undefined,
-		...(imageModel ? { imageModel } : {}),
-		...(videoModel ? { videoModel } : {}),
-		askBeforeGenerating: backboardMedia && booleanConfigValue(values, BACKBOARD_ASK_BEFORE_GENERATING_CONFIG_KEY, true),
 		...(parsedModel.provider === 'openrouter' && configuredOpenRouterProvider && configuredOpenRouterProvider !== 'auto'
 			? { openRouterProvider: configuredOpenRouterProvider }
 			: {}),
@@ -937,31 +884,9 @@ export function createBackboardTurnSettings(
 	};
 }
 
-// Image and video generation are always available on Backboard-billed models:
-// a missing selection, the retired "off" value, or a retired boolean toggle all
-// resolve to the default model, so nothing has to be switched on first.
-function normalizeImageModelSelection(value: unknown, _legacyEnabled: unknown): string {
-	const selected = stringValueFromRecord(value);
-	return selected && selected.toLowerCase() !== BACKBOARD_GENERATIVE_MEDIA_OFF ? selected : DEFAULT_IMAGE_MODEL_SELECTION;
-}
-
-function normalizeVideoModelSelection(value: unknown, _legacyEnabled: unknown): string {
-	const selected = stringValueFromRecord(value);
-	return selected && selected.toLowerCase() !== BACKBOARD_GENERATIVE_MEDIA_OFF ? selected : DEFAULT_VIDEO_MODEL_SELECTION;
-}
-
-/** Splits a `provider/name` selection; provider names never contain a slash. */
-function parseGenerativeModelSelection(value: string | undefined): { provider: string; name: string } | undefined {
-	const trimmed = value?.trim();
-	if (!trimmed || trimmed.toLowerCase() === BACKBOARD_GENERATIVE_MEDIA_OFF) {
-		return undefined;
-	}
-	const separator = trimmed.indexOf('/');
-	if (separator <= 0 || separator === trimmed.length - 1) {
-		return undefined;
-	}
-	return { provider: trimmed.slice(0, separator), name: trimmed.slice(separator + 1) };
-}
+// Image and video generation are removed from this build: the session schema
+// no longer exposes media models, and the runtime no longer announces the
+// hosted generate_image / generate_video tools.
 
 function normalizeBackboardIntensity(value: unknown): string {
 	// Adaptive and provider-default were retired from the composer. Migrate

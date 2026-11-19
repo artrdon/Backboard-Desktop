@@ -3,8 +3,10 @@ import {
 	BYOK_PROVIDER_IDS,
 	type ByokProviderId,
 	isByokProviderId,
+	type ProviderKeyConfig,
 } from "../core/keys/ProviderKeyTypes.ts";
 import type { ModelCatalogItem } from "../providers/backboard/types.ts";
+import { normalizeCustomBaseUrl } from "../providers/byok/adapters/CustomAdapter.ts";
 import { ByokError } from "../providers/byok/ByokError.ts";
 import type { ProviderAdapter } from "../providers/byok/ByokTypes.ts";
 import { byokAdapter } from "../providers/byok/registry.ts";
@@ -16,6 +18,7 @@ import { scrubSecret } from "../providers/byok/scrubSecret.ts";
  */
 export type KeyValidationCategory =
 	| "invalid-key"
+	| "invalid-config"
 	| "insufficient-permissions"
 	| "offline-or-timeout"
 	| "rate-limited"
@@ -37,6 +40,8 @@ export const KEY_VALIDATION_TIMEOUT_MS = 15_000;
 export interface ValidateProviderKeyOptions {
 	provider: ByokProviderId;
 	key: string;
+	/** Custom API endpoint settings; only read by the custom adapter. */
+	config?: ProviderKeyConfig;
 	/** Overridable for tests; defaults to the registered vendor adapter. */
 	adapter?: ProviderAdapter;
 	timeoutMs?: number;
@@ -73,15 +78,37 @@ export async function validateProviderKey(
 			`That does not look like a ${adapter.label} key (expected ${adapter.keyHint}).`,
 		);
 	}
+	if (provider === "custom") {
+		if (!normalizeCustomBaseUrl(options.config?.baseUrl)) {
+			return fail(
+				"invalid-config",
+				"Enter a valid Custom API base URL, including http:// or https://.",
+			);
+		}
+		if (!options.config?.model?.trim()) {
+			return fail("invalid-config", "Enter the Custom API model ID.");
+		}
+	}
 
 	const controller = new AbortController();
 	const timer = setTimeout(
 		() => controller.abort(new Error("timed out")),
 		options.timeoutMs ?? KEY_VALIDATION_TIMEOUT_MS,
 	);
+	const credential = options.config
+		? {
+				key,
+				generation: 0,
+				baseUrl:
+					normalizeCustomBaseUrl(options.config.baseUrl) ??
+					options.config.baseUrl,
+				model: options.config.model,
+				assertCurrent: () => undefined,
+			}
+		: key;
 	try {
-		await adapter.validateKey(key, controller.signal);
-		const models = await adapter.listModels(key, controller.signal);
+		await adapter.validateKey(credential, controller.signal);
+		const models = await adapter.listModels(credential, controller.signal);
 		return { ok: true, provider, models };
 	} catch (err) {
 		const status = err instanceof ByokError ? err.status : undefined;
@@ -134,6 +161,7 @@ export async function runKeysValidateCommand(
 	readKey: () => Promise<string>,
 	write: (line: string) => void = (line) => process.stdout.write(line),
 	writeError: (line: string) => void = (line) => process.stderr.write(line),
+	config?: ProviderKeyConfig,
 ): Promise<number> {
 	if (!provider || !isByokProviderId(provider)) {
 		writeError(
@@ -141,7 +169,11 @@ export async function runKeysValidateCommand(
 		);
 		return 2;
 	}
-	const result = await validateProviderKey({ provider, key: await readKey() });
+	const result = await validateProviderKey({
+		provider,
+		key: await readKey(),
+		config,
+	});
 	write(`${JSON.stringify(result)}\n`);
 	return 0;
 }

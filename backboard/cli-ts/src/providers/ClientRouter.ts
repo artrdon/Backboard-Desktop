@@ -11,9 +11,6 @@ import type {
 	AssistantInfo,
 	BackboardResponse,
 	BackboardThread,
-	GenerateVideoRequest,
-	GenerateVideoResult,
-	ImageModelsListResponse,
 	ModelCatalogItem,
 	ModelSource,
 	ModelsListResponse,
@@ -23,7 +20,6 @@ import type {
 	SubmitToolOutputsRequest,
 	SystemOneRequest,
 	SystemOneResult,
-	VideoModelsListResponse,
 } from "./backboard/types.ts";
 import { byokAdapterFor } from "./byok/registry.ts";
 
@@ -253,38 +249,8 @@ export class ClientRouter implements AgentClient {
 	}
 
 	/**
-	 * Image/video generation catalogs live only on the Backboard backend,
-	 * so these forward there rather than merging across clients.
+	 * System One decisions (TypeSafe Jev) go to the Backboard backend.
 	 */
-	async listImageModels(
-		options?: RequestOptions,
-	): Promise<ImageModelsListResponse> {
-		const backboard = this.backboard();
-		if (!backboard?.listImageModels) return { models: [], total: 0 };
-		return backboard.listImageModels(options);
-	}
-
-	async listVideoModels(
-		options?: RequestOptions,
-	): Promise<VideoModelsListResponse> {
-		const backboard = this.backboard();
-		if (!backboard?.listVideoModels) return { models: [], total: 0 };
-		return backboard.listVideoModels(options);
-	}
-
-	async generateVideo(
-		request: GenerateVideoRequest,
-		options?: RequestOptions,
-	): Promise<GenerateVideoResult> {
-		const backboard = this.backboard();
-		if (!backboard?.generateVideo) {
-			throw new Error(
-				"Video generation requires a signed-in Backboard account.",
-			);
-		}
-		return backboard.generateVideo(request, options);
-	}
-
 	async systemOne(
 		request: SystemOneRequest,
 		options?: RequestOptions,

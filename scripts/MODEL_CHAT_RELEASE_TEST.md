@@ -23,7 +23,7 @@ written to reports. These requests consume normal model usage.
 Manual use:
 
 ```sh
-python3 scripts/test_model_chats.py --app '/path/to/Backboard Studio.app' \
+python3 scripts/test_model_chats.py --app '/path/to/DQuant Lab.app' \
   --report /tmp/chat-report.json
 ```
 

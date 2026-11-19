@@ -1,0 +1,364 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+/* ---------------------------------------------------------------------------
+ * DQuant welcome flow (new-session composer)
+ * ------------------------------------------------------------------------- */
+
+.dquant-welcome {
+	grid-row: 2 / span 3;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 0;
+	padding: 24px 24px 56px;
+	box-sizing: border-box;
+	overflow: auto;
+}
+
+.new-chat-widget-content.dquant-welcome-active > .new-chat-middle-section,
+.new-chat-widget-content.dquant-welcome-active > .new-chat-composer-stack {
+	display: none;
+}
+
+.dquant-welcome-inner {
+	width: min(760px, 100%);
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.dquant-welcome-step {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.dquant-welcome-brand {
+	align-self: center;
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 16px;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--vscode-textLink-foreground);
+}
+
+.dquant-welcome-title {
+	margin: 0;
+	text-align: center;
+	font-size: clamp(22px, 2.4vw, 30px);
+	font-weight: 500;
+	line-height: 1.2;
+	letter-spacing: -0.01em;
+	color: var(--vscode-foreground);
+}
+
+.dquant-welcome-subtitle {
+	margin: 0;
+	text-align: center;
+	font-size: 14px;
+	line-height: 1.5;
+	color: var(--vscode-foreground);
+	opacity: 0.9;
+}
+
+.dquant-welcome-hint {
+	margin: -8px 0 0;
+	text-align: center;
+	font-size: 12px;
+	line-height: 1.5;
+	color: var(--vscode-descriptionForeground);
+}
+
+.dquant-language-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 12px;
+}
+
+.dquant-language-card {
+	position: relative;
+	appearance: none;
+	display: flex;
+	align-items: flex-start;
+	gap: 14px;
+	min-height: 96px;
+	padding: 16px;
+	box-sizing: border-box;
+	text-align: left;
+	cursor: pointer;
+	border-radius: 10px;
+	border: 1px solid var(--vscode-widget-border, var(--vscode-contrastBorder, rgba(128, 128, 128, 0.35)));
+	background: var(--vscode-editorWidget-background);
+	color: var(--vscode-foreground);
+	transition: background-color 100ms ease, border-color 100ms ease;
+}
+
+.dquant-language-card:hover:not(:disabled) {
+	background: var(--vscode-list-hoverBackground);
+	border-color: var(--vscode-focusBorder);
+}
+
+.dquant-language-card:focus-visible {
+	outline: 1px solid var(--vscode-focusBorder);
+	outline-offset: 2px;
+}
+
+.dquant-language-card.selected {
+	border-color: var(--vscode-focusBorder);
+	background: var(--vscode-list-inactiveSelectionBackground);
+	box-shadow: inset 0 0 0 1px var(--vscode-focusBorder);
+}
+
+.dquant-language-card:disabled {
+	opacity: 0.6;
+	cursor: default;
+}
+
+.dquant-language-card-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 34px;
+	height: 34px;
+	flex: 0 0 34px;
+	border-radius: 8px;
+	font-size: 18px;
+	background: var(--vscode-toolbar-hoverBackground);
+	color: var(--vscode-textLink-foreground);
+}
+
+.dquant-language-card-body {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	min-width: 0;
+}
+
+.dquant-language-card-title {
+	font-size: 15px;
+	font-weight: 600;
+	line-height: 18px;
+}
+
+.dquant-language-card-description {
+	font-size: 12px;
+	line-height: 1.45;
+	color: var(--vscode-descriptionForeground);
+}
+
+.dquant-language-card-check {
+	position: absolute;
+	top: 12px;
+	right: 12px;
+	color: var(--vscode-focusBorder);
+	opacity: 0;
+}
+
+.dquant-language-card.selected .dquant-language-card-check {
+	opacity: 1;
+}
+
+.dquant-welcome-summary {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	font-size: 12px;
+	color: var(--vscode-descriptionForeground);
+}
+
+.dquant-welcome-summary-language {
+	padding: 2px 10px;
+	border-radius: 999px;
+	border: 1px solid var(--vscode-widget-border, var(--vscode-contrastBorder, rgba(128, 128, 128, 0.35)));
+	font-weight: 600;
+	color: var(--vscode-textLink-foreground);
+}
+
+.dquant-welcome-summary-change {
+	appearance: none;
+	border: 0;
+	background: transparent;
+	padding: 2px 4px;
+	font-size: 12px;
+	color: var(--vscode-textLink-foreground);
+	cursor: pointer;
+}
+
+
+.dquant-welcome-field {
+	position: relative;
+	display: flex;
+}
+
+.dquant-session-name {
+	width: 100%;
+	box-sizing: border-box;
+	padding: 12px 44px 12px 14px;
+	font-size: 15px;
+	border-radius: 8px;
+	border: 1px solid var(--vscode-input-border, var(--vscode-widget-border, rgba(128, 128, 128, 0.35)));
+	background: var(--vscode-input-background);
+	color: var(--vscode-input-foreground);
+}
+
+.dquant-session-name::placeholder {
+	color: var(--vscode-input-placeholderForeground);
+}
+
+.dquant-session-name:focus {
+	outline: none;
+	border-color: var(--vscode-focusBorder);
+}
+
+.dquant-session-name-regenerate {
+	position: absolute;
+	top: 50%;
+	right: 8px;
+	transform: translateY(-50%);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	border: 0;
+	border-radius: 6px;
+	background: transparent;
+	color: var(--vscode-icon-foreground);
+	cursor: pointer;
+}
+
+.dquant-session-name-regenerate:hover {
+	background: var(--vscode-toolbar-hoverBackground);
+	color: var(--vscode-foreground);
+}
+
+.dquant-welcome-actions {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.dquant-welcome-back {
+	appearance: none;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 7px 12px;
+	border-radius: 6px;
+	border: 1px solid transparent;
+	background: transparent;
+	color: var(--vscode-foreground);
+	font-size: 13px;
+	cursor: pointer;
+}
+
+.dquant-welcome-back:hover {
+	background: var(--vscode-toolbar-hoverBackground);
+}
+
+.dquant-welcome-create {
+	appearance: none;
+	margin-left: auto;
+	padding: 8px 18px;
+	border-radius: 6px;
+	border: 1px solid transparent;
+	background: var(--vscode-button-background);
+	color: var(--vscode-button-foreground);
+	font-size: 13px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.dquant-welcome-create:hover:not(:disabled) {
+	background: var(--vscode-button-hoverBackground);
+}
+
+.dquant-welcome-create:disabled {
+	opacity: 0.5;
+	cursor: default;
+}
+
+.dquant-welcome-status {
+	min-height: 16px;
+	font-size: 12px;
+	line-height: 16px;
+	text-align: center;
+	color: var(--vscode-descriptionForeground);
+}
+
+.dquant-welcome-status.error {
+	color: var(--vscode-errorForeground);
+}
+
+@media (max-width: 720px) {
+	.dquant-language-grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.dquant-welcome {
+		padding: 16px 16px 40px;
+	}
+}
+
+/* ---------------------------------------------------------------------------
+ * Session profile indicator (composer badge + session header chip)
+ * ------------------------------------------------------------------------- */
+
+.dquant-session-badge {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	margin-bottom: 6px;
+	font-size: 12px;
+	color: var(--vscode-descriptionForeground);
+}
+
+.dquant-session-badge-name {
+	font-weight: 600;
+	color: var(--vscode-foreground);
+}
+
+.dquant-session-badge-language {
+	padding: 1px 8px;
+	border-radius: 999px;
+	border: 1px solid var(--vscode-widget-border, var(--vscode-contrastBorder, rgba(128, 128, 128, 0.35)));
+	font-weight: 600;
+	color: var(--vscode-textLink-foreground);
+}
+
+.dquant-session-language-chip {
+	appearance: none;
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	height: 20px;
+	padding: 0 8px;
+	border-radius: 999px;
+	border: 1px solid var(--vscode-widget-border, var(--vscode-contrastBorder, rgba(128, 128, 128, 0.35)));
+	background: transparent;
+	color: var(--vscode-descriptionForeground);
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 18px;
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+.dquant-session-language-chip:hover {
+	background: var(--vscode-toolbar-hoverBackground);
+	color: var(--vscode-foreground);
+}
+
+.dquant-session-language-chip.unset {
+	font-style: italic;
+	font-weight: 400;
+}
+
+.dquant-welcome-summary-change:hover {
+	text-decoration: underline;
+}

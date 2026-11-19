@@ -4,13 +4,35 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { ProviderKeyController } from "../core/keys/ProviderKeyController.ts";
-import { isByokProviderId } from "../core/keys/ProviderKeyTypes.ts";
+import {
+	isByokProviderId,
+	type ProviderKeyConfig,
+} from "../core/keys/ProviderKeyTypes.ts";
 
 /** Credential setup runs before Config so a fresh install needs no Backboard auth. */
 export async function configureProviderKey(input: string): Promise<void> {
-	const request = JSON.parse(input) as { provider?: string; key?: string };
-	if (!request || typeof request.provider !== "string" || !isByokProviderId(request.provider) || typeof request.key !== "string") {
+	const request = JSON.parse(input) as {
+		provider?: string;
+		key?: string;
+		baseUrl?: string;
+		model?: string;
+	};
+	if (
+		!request ||
+		typeof request.provider !== "string" ||
+		!isByokProviderId(request.provider) ||
+		typeof request.key !== "string"
+	) {
 		throw new Error("Choose a supported provider and enter an API key.");
 	}
-	await new ProviderKeyController().add(request.provider, request.key, AbortSignal.timeout(30000));
+	const config: ProviderKeyConfig | undefined =
+		typeof request.baseUrl === "string" && typeof request.model === "string"
+			? { baseUrl: request.baseUrl, model: request.model }
+			: undefined;
+	await new ProviderKeyController().add(
+		request.provider,
+		request.key,
+		AbortSignal.timeout(30000),
+		config,
+	);
 }

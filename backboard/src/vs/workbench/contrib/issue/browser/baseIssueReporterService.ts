@@ -287,7 +287,7 @@ export class BaseIssueReporterService extends Disposable {
 			container.appendChild(filingNote);
 		}
 
-		filingNote.textContent = escape(localize('internalPreviewMessage', 'If your Backboard debug logs contain private information:'));
+		filingNote.textContent = escape(localize('internalPreviewMessage', 'If your DQuant Lab debug logs contain private information:'));
 	}
 
 	private updatePublicGithubButton(container: HTMLElement): void {
@@ -1053,8 +1053,8 @@ export class BaseIssueReporterService extends Disposable {
 
 		sourceSelect.innerText = '';
 		sourceSelect.append(this.makeOption('', localize('selectSource', "Select source"), true));
-		sourceSelect.append(this.makeOption(IssueSource.VSCode, localize('vscode', "Backboard IDE"), false));
-		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A Backboard IDE extension"), false));
+		sourceSelect.append(this.makeOption(IssueSource.VSCode, localize('vscode', "DQuant Lab"), false));
+		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A DQuant Lab extension"), false));
 		if (this.product.reportMarketplaceIssueUrl) {
 			sourceSelect.append(this.makeOption(IssueSource.Marketplace, localize('marketplace', "Extensions Marketplace"), false));
 		}
@@ -1157,7 +1157,7 @@ export class BaseIssueReporterService extends Disposable {
 		if (selectedExtension && this.nonGitHubIssueUrl) {
 			hide(titleTextArea);
 			hide(descriptionTextArea);
-			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of Backboard IDE"));
+			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of DQuant Lab"));
 			reset(descriptionSubtitle, localize('elsewhereDescription', "The '{0}' extension prefers to use an external issue reporter. To be taken to that issue reporting experience, click the button below.", selectedExtension.displayName));
 			this.publicGithubButton.label = localize('openIssueReporter', "Open External Issue Reporter");
 			return;

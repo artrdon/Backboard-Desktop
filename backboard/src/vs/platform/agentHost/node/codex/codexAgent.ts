@@ -88,7 +88,7 @@ import type { McpServerElicitationRequestResponse } from './protocol/generated/v
 
 const CLIENT_INFO = {
 	name: 'vscode_agent_host',
-	title: 'Backboard IDE Agent Host',
+	title: 'DQuant Lab Agent Host',
 	// The codex `clientInfo.version` is informational. Hardcoded to a
 	// non-empty placeholder; bumping it isn't required when our code
 	// changes.
@@ -2322,10 +2322,10 @@ export class CodexAgent extends Disposable implements IAgent {
 			await conn.client.request<'config/mcpServer/reload'>('config/mcpServer/reload', undefined as never);
 			await this._refreshMcpInventory(conn.client);
 		} catch (error) {
-			this._logService.error(`[Codex] Wrote ${serverCount} synced Backboard MCP server(s) to codex config, but reload/inventory refresh failed: ${error instanceof Error ? error.message : String(error)}`);
+			this._logService.error(`[Codex] Wrote ${serverCount} synced DQuant Lab MCP server(s) to codex config, but reload/inventory refresh failed: ${error instanceof Error ? error.message : String(error)}`);
 			return;
 		}
-		this._logService.info(`[Codex] Published ${serverCount} synced Backboard MCP server(s) to codex config`);
+		this._logService.info(`[Codex] Published ${serverCount} synced DQuant Lab MCP server(s) to codex config`);
 	}
 
 	// ---- MCP servers -------------------------------------------------------

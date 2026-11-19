@@ -61,19 +61,6 @@ suite('Backboard runtime configuration', () => {
 		);
 	});
 
-	test('keeps a Backboard media selection off key and subscription turns', () => {
-		const media = { imageModel: 'google/gemini-3.1-flash-image', videoModel: 'openrouter/google/veo-3.1-lite' };
-		const turns = ['openai/gpt-5.5', 'openai-key/gpt-5.5', 'openai-subscription/gpt-5.5', 'anthropic-subscription/opus[1m]']
-			.map(id => createBackboardTurnSettings(media, undefined, { id }));
-
-		assert.deepStrictEqual(turns.map(turn => [turn.imageGeneration, turn.imageModel, turn.videoGeneration, turn.videoModel]), [
-			[true, { provider: 'google', name: 'gemini-3.1-flash-image' }, true, { provider: 'openrouter', name: 'google/veo-3.1-lite' }],
-			[false, undefined, false, undefined],
-			[false, undefined, false, undefined],
-			[false, undefined, false, undefined],
-		]);
-	});
-
 	test('lists key-billed models beside the Backboard rows under their own provider label', () => {
 		const models = backboardModelInfos([
 			{ provider: 'openai-key', name: 'gpt-5.5', model_type: 'llm' },
@@ -261,47 +248,6 @@ suite('Backboard runtime configuration', () => {
 		}
 	});
 
-	test('advertises image and video generation as pickers that default to the best models', () => {
-		const resolved = resolveBackboardSessionConfig(undefined);
-		const images = resolved.schema.properties?.imageModel;
-		const video = resolved.schema.properties?.videoModel;
-		assert.deepStrictEqual(
-			[images?.type, images?.default, images?.enumDynamic, images?.enum, resolved.values.imageModel, video?.type, video?.default, video?.enumDynamic, video?.enum, resolved.values.videoModel],
-			['string', 'openrouter/openai/gpt-5.4-image-2', true, ['openrouter/openai/gpt-5.4-image-2'], 'openrouter/openai/gpt-5.4-image-2', 'string', 'openrouter/bytedance/seedance-2.5', true, ['openrouter/bytedance/seedance-2.5'], 'openrouter/bytedance/seedance-2.5'],
-		);
-	});
-
-	test('keeps image and video generation on for Backboard models, even for stored off values', () => {
-		const settings = (config: Record<string, unknown> | undefined, id = 'openai/gpt-5.5') => {
-			const turn = createBackboardTurnSettings(config, undefined, { id });
-			return [turn.imageGeneration, turn.imageModel, turn.videoGeneration, turn.videoModel];
-		};
-		const defaults = [true, { provider: 'openrouter', name: 'openai/gpt-5.4-image-2' }, true, { provider: 'openrouter', name: 'bytedance/seedance-2.5' }];
-		assert.deepStrictEqual([
-			settings(undefined),
-			settings({ imageModel: 'off', videoModel: 'off' }),
-			settings({ imageGeneration: false, videoGeneration: false }),
-		], [defaults, defaults, defaults]);
-	});
-
-	test('asks before generating by default, only where Backboard media runs', () => {
-		const resolved = resolveBackboardSessionConfig(undefined);
-		const schema = resolved.schema.properties?.askBeforeGenerating;
-		assert.deepStrictEqual(
-			[schema?.type, schema?.title, schema?.default, schema?.sessionMutable, resolved.values.askBeforeGenerating, resolveBackboardSessionConfig({ askBeforeGenerating: false }).values.askBeforeGenerating],
-			['boolean', 'Ask Before Generating', true, true, true, false],
-		);
-		// Listed right after the media pickers so the + menu shows it beside them.
-		const keys = Object.keys(resolved.schema.properties ?? {});
-		assert.strictEqual(keys.indexOf('askBeforeGenerating'), keys.indexOf('videoModel') + 1);
-
-		const turnAsks = (config: Record<string, unknown> | undefined, id = 'openai/gpt-5.5') => createBackboardTurnSettings(config, undefined, { id }).askBeforeGenerating;
-		assert.deepStrictEqual(
-			[turnAsks(undefined), turnAsks({ askBeforeGenerating: false }), turnAsks({ askBeforeGenerating: true }), turnAsks(undefined, 'openai-key/gpt-5.5'), turnAsks(undefined, 'anthropic-subscription/opus[1m]')],
-			[true, false, true, false, false],
-		);
-	});
-
 	test('keeps web search automatic and out of composer configuration', () => {
 		const resolved = resolveBackboardSessionConfig({ webSearch: false });
 		assert.strictEqual(resolved.schema.properties?.webSearch, undefined);
@@ -313,28 +259,6 @@ suite('Backboard runtime configuration', () => {
 			{ id: 'openai/gpt-5.5' },
 		);
 		assert.strictEqual(settings.webSearch, true);
-	});
-
-	test('keeps the image and video pickers independent from the conversation model', () => {
-		const settings = createBackboardTurnSettings(
-			{ imageModel: 'google/gemini-3.1-flash-image' },
-			undefined,
-			{ id: 'openrouter/moonshotai/kimi-k3' },
-		);
-		assert.strictEqual(settings.provider, 'openrouter');
-		assert.strictEqual(settings.model, 'moonshotai/kimi-k3');
-		assert.strictEqual(settings.imageGeneration, true);
-		assert.deepStrictEqual(settings.imageModel, { provider: 'google', name: 'gemini-3.1-flash-image' });
-		assert.deepStrictEqual(settings.videoModel, { provider: 'openrouter', name: 'bytedance/seedance-2.5' });
-
-		const video = createBackboardTurnSettings(
-			{ videoModel: 'openrouter/google/veo-3.1' },
-			undefined,
-			{ id: 'openai/gpt-5.5' },
-		);
-		assert.strictEqual(video.videoGeneration, true);
-		assert.deepStrictEqual(video.videoModel, { provider: 'openrouter', name: 'google/veo-3.1' });
-		assert.deepStrictEqual(video.imageModel, { provider: 'openrouter', name: 'openai/gpt-5.4-image-2' });
 	});
 
 	test('defaults to the fast direct folder path while keeping explicit worktree isolation available', () => {

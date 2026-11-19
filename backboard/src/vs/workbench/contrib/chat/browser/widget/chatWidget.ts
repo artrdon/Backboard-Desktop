@@ -1483,7 +1483,7 @@ export class ChatWidget extends Disposable implements IChatWidget {
 		}));
 
 		const welcome = dom.append(home, $('.backboard-panel-welcome-copy'));
-		dom.append(welcome, $('div.backboard-panel-welcome-title', undefined, localize('chat.emptyHome.brand', "Backboard Studio")));
+		dom.append(welcome, $('div.backboard-panel-welcome-title', undefined, localize('chat.emptyHome.brand', "DQuant Lab")));
 		dom.append(welcome, $('div.backboard-panel-welcome-subtitle', undefined, localize('chat.emptyHome.prompt', "What would you like to build?")));
 
 		this.renderBackboardPanelAnimatedMark(welcome);

@@ -11,7 +11,7 @@ export default function content(accessor: ServicesAccessor) {
 	const isServerless = platform.isWeb && !accessor.get(IWorkbenchEnvironmentService).remoteAuthority;
 	return `
 ## Interactive Editor Playground
-The core editor in Backboard IDE is packed with features. This page highlights a number of them and lets you interactively try them out through the use of embedded editors. For full details on editor features, head over to the documentation.
+The core editor in DQuant Lab is packed with features. This page highlights a number of them and lets you interactively try them out through the use of embedded editors. For full details on editor features, head over to the documentation.
 
 * [Multi-cursor Editing](#multi-cursor-editing) - block selection, select all occurrences, add additional cursors and more.
 * [IntelliSense](#intellisense) - get code assistance and parameter suggestions for your code and external modules.
@@ -44,7 +44,7 @@ That is the tip of the iceberg for multi-cursor editing. Have a look at the sele
 
 ### IntelliSense
 
-Backboard IDE comes with powerful IntelliSense for JavaScript and TypeScript pre-installed. In the below example, position the text cursor right after the dot and press kb(editor.action.triggerSuggest) to invoke IntelliSense. Notice how the suggestions come from the Canvas API.
+DQuant Lab comes with powerful IntelliSense for JavaScript and TypeScript pre-installed. In the below example, position the text cursor right after the dot and press kb(editor.action.triggerSuggest) to invoke IntelliSense. Notice how the suggestions come from the Canvas API.
 
 |||js
 const canvas = document.querySelector('canvas');
@@ -95,7 +95,7 @@ function Book(title, author) {
 }
 |||
 
-> **JSDoc Tip:** Backboard IDE's IntelliSense uses JSDoc comments to provide richer suggestions. The types and documentation from JSDoc comments show up when you hover over a reference to |Book| or in IntelliSense when you create a new instance of |Book|.
+> **JSDoc Tip:** DQuant Lab's IntelliSense uses JSDoc comments to provide richer suggestions. The types and documentation from JSDoc comments show up when you hover over a reference to |Book| or in IntelliSense when you create a new instance of |Book|.
 
 ` : ''}
 ### Formatting
@@ -181,7 +181,7 @@ easy = 42;
 
 
 ## Thanks!
-Well if you have got this far then you will have touched on some of the editing features in Backboard IDE. But don't stop now. While you are here, here are a few additional things you can try:
+Well if you have got this far then you will have touched on some of the editing features in DQuant Lab. But don't stop now. While you are here, here are a few additional things you can try:
 - Open the Integrated Terminal by pressing kb(workbench.action.terminal.toggleTerminal), then see what's possible by reviewing the terminal documentation
 - Work with version control by pressing kb(workbench.view.scm). Understand how to stage, commit, change branches, and view diffs and more by reviewing the version control documentation
 - Browse thousands of extensions in our integrated gallery by pressing kb(workbench.view.extensions). The documentation will show you how to see the most popular extensions, disable installed ones and more.

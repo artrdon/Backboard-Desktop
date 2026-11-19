@@ -15,8 +15,50 @@ import { NativeParsedArgs } from '../common/argv.js';
 // the built-in `path` lib for the time being.
 // eslint-disable-next-line local/code-import-patterns
 import { resolve, isAbsolute, join } from 'path';
+// eslint-disable-next-line local/code-import-patterns
+import { cpSync, existsSync, renameSync } from 'fs';
 
 const cwd = process.env['VSCODE_CWD'] || process.cwd();
+
+/**
+ * Directories the application used before the DQuant Lab rebrand.
+ *
+ * Renaming the product changes the on-disk locations that are derived from the
+ * product name, so a one-time migration keeps existing settings, extensions,
+ * chat sessions and history available after the update. The legacy directory is
+ * moved, never deleted: when it cannot be moved (a different volume, a locked
+ * file) it is copied instead and the original is left in place.
+ */
+const LEGACY_APP_DATA_NAMES: { readonly [newName: string]: readonly string[] } = {
+	'DQuant Lab': ['Backboard Studio', 'Backboard Studio Dev'],
+	'DQuant Lab Sandbox': ['Backboard Studio Sandbox'],
+	'.dquant-lab': ['.backboard-studio', '.backboard-studio-dev'],
+	'.dquant-lab-sandbox': ['.backboard-studio-sandbox'],
+	'.dquant-lab-shared': ['.backboard-studio-shared', '.backboard-studio-dev-shared'],
+};
+
+function migrateLegacyAppData(newPath: string, newName: string): void {
+	for (const legacyName of LEGACY_APP_DATA_NAMES[newName] ?? []) {
+		const legacyPath = join(resolve(newPath, '..'), legacyName);
+		migrateDirectory(legacyPath, newPath);
+	}
+}
+
+function migrateDirectory(legacyPath: string, newPath: string): void {
+	try {
+		if (existsSync(newPath) || !existsSync(legacyPath)) {
+			return;
+		}
+		try {
+			renameSync(legacyPath, newPath);
+		} catch {
+			// Moving across volumes fails; copy and keep the original.
+			cpSync(legacyPath, newPath, { recursive: true, errorOnExist: false, force: false });
+		}
+	} catch {
+		// Never let a migration problem block startup.
+	}
+}
 
 /**
  * Returns the user data path to use with some rules:
@@ -69,7 +111,26 @@ function doGetUserDataPath(cliArgs: NativeParsedArgs, productName: string): stri
 		return cliPath;
 	}
 
-	return getDefaultUserDataPath(productName);
+	// 4. Otherwise use the default location, after moving data from the
+	// pre-rebrand application name (see LEGACY_APP_DATA_NAMES).
+	const defaultUserDataPath = getDefaultUserDataPath(productName);
+	migrateLegacyAppData(defaultUserDataPath, productName);
+
+	return defaultUserDataPath;
+}
+
+/**
+ * Migrates a home-folder data directory (`argv.json`, extensions,
+ * `policy.json`, shared storage) from the pre-rebrand name to
+ * `product.dataFolderName`. Only directories this build actually uses are
+ * migrated, so a build that still stamps an older folder name keeps reading the
+ * directory it wrote.
+ */
+export function migrateLegacyDataFolder(dataFolderName: string | undefined, home: string = homedir()): void {
+	if (!dataFolderName) {
+		return;
+	}
+	migrateLegacyAppData(join(home, dataFolderName), dataFolderName);
 }
 
 /**

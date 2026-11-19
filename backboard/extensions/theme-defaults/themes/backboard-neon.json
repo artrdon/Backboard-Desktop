@@ -1,6 +1,6 @@
 {
 	"$schema": "vscode://schemas/color-theme",
-	"name": "Backboard Neon",
+	"name": "DQuant Neon",
 	"include": "./backboard-obsidian.json",
 	"type": "dark",
 	"colors": {

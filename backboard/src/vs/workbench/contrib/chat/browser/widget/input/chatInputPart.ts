@@ -158,7 +158,6 @@ import { IChatInputPickerOptions } from './chatInputPickerActionItem.js';
 import { ChatSelectedTools } from './chatSelectedTools.js';
 import { DelegationSessionPickerActionItem } from './delegationSessionPickerActionItem.js';
 import { ModelPickerActionItem, IModelPickerDelegate } from './modelPickerActionItem.js';
-import { BackboardModelPicker } from './backboardModelPicker.js';
 import { CombinedModelProviderPickerActionItem, resolveExplicitReasoningOptions } from './combinedModelProviderPickerActionItem.js';
 import { ChatThinkingPickerActionItem } from './chatThinkingPickerActionItem.js';
 import { IModePickerDelegate, ModePickerActionItem } from './modePickerActionItem.js';
@@ -1531,7 +1530,7 @@ export class ChatInputPart extends Disposable implements IHistoryNavigationWidge
 				: localize('backboardUsageMetrics.notAvailable', "Not available");
 
 		return {
-			title: localize('backboardUsageMetrics.title', "Backboard run metrics"),
+			title: localize('backboardUsageMetrics.title', "DQuant Lab run metrics"),
 			description: responses.length
 				? localize('backboardUsageMetrics.descriptionWithResponse', "Session totals from response usage and live output tokens.")
 				: localize('backboardUsageMetrics.descriptionNoResponse', "Send a message to populate response metrics."),
@@ -1563,7 +1562,7 @@ export class ChatInputPart extends Disposable implements IHistoryNavigationWidge
 			})
 			.catch(error => ({
 				title: localize('backboardRecentUsage.errorTitle', "Recent Usage"),
-				description: localize('backboardRecentUsage.errorDescription', "Could not load Backboard billing activity."),
+				description: localize('backboardRecentUsage.errorDescription', "Could not load DQuant Lab billing activity."),
 				rows: [
 					{ label: localize('backboardRecentUsage.endpoint', "Endpoint"), value: 'GET /billing/usage/recent' },
 					{ label: localize('backboardRecentUsage.error', "Error"), value: error instanceof Error ? error.message : String(error) },
@@ -1582,7 +1581,7 @@ export class ChatInputPart extends Disposable implements IHistoryNavigationWidge
 		if (!authHeaders) {
 			return {
 				title: localize('backboardRecentUsage.noCredentialsTitle', "Recent Usage"),
-				description: localize('backboardRecentUsage.noCredentialsDescription', "No Backboard API key or OAuth token was found on this machine."),
+				description: localize('backboardRecentUsage.noCredentialsDescription', "No DQuant Lab API key or OAuth token was found on this machine."),
 				rows: [
 					{ label: localize('backboardRecentUsage.configPath', "Config"), value: '~/.backboard_ide/config.json' },
 					{ label: localize('backboardRecentUsage.endpoint', "Endpoint"), value: 'GET /billing/usage/recent' },
@@ -1618,7 +1617,7 @@ export class ChatInputPart extends Disposable implements IHistoryNavigationWidge
 
 		return {
 			title: localize('backboardRecentUsage.title', "Recent Usage"),
-			description: localize('backboardRecentUsage.description', "Live billing activity from Backboard."),
+			description: localize('backboardRecentUsage.description', "Live billing activity from DQuant Lab."),
 			rows: [
 				{ label: localize('backboardRecentUsage.endpoint', "Endpoint"), value: 'GET /billing/usage/recent' },
 				{ label: localize('backboardRecentUsage.events', "Events"), value: this._formatNumber(events.length) },
@@ -5521,26 +5520,16 @@ function getBackboardGenericOptionIcon(property: string): ThemeIcon {
 		case 'notifications':
 		case 'notify':
 			return ThemeIcon.fromId('backboard-capability-notifications');
-		case 'imageGeneration':
-		case 'images':
-		case 'imageModel':
-			return ThemeIcon.fromId('backboard-capability-image-generation');
 		default:
 			return Codicon.layersActive;
 	}
 }
 
-/** Options that never render as chips above the input: always-on media, its confirmation switch, and notifications. */
+/** Options that never render as chips above the input: notifications. */
 function isBackboardUnchippedOption(id: string): boolean {
 	switch (id) {
 		case 'notifications':
 		case 'notify':
-		case 'imageGeneration':
-		case 'images':
-		case 'imageModel':
-		case 'videoGeneration':
-		case 'videoModel':
-		case 'askBeforeGenerating':
 			return true;
 		default:
 			return false;
@@ -5574,12 +5563,6 @@ function getBackboardCapabilityAvatar(property: string): CodexAvatarName {
 		case 'notifications':
 		case 'notify':
 			return '08-sunbeam';
-		case 'imageGeneration':
-		case 'images':
-		case 'imageModel':
-			return '20-coral-pop-clover';
-		case 'videoModel':
-			return '12-coral-pop-knot';
 		default:
 			return '24-sprout-bud';
 	}
@@ -5596,12 +5579,6 @@ function getBackboardActiveOptionLabel(option: IAgentHostGenericConfigOption): s
 		case 'webSearch':
 		case 'web':
 			return localize('backboardActiveOption.webSearch', "Web search");
-		case 'imageGeneration':
-		case 'images':
-		case 'imageModel':
-			return localize('backboardActiveOption.images', "Images");
-		case 'videoModel':
-			return localize('backboardActiveOption.video', "Video");
 		default:
 			return option.label;
 	}
@@ -5872,12 +5849,12 @@ class BackboardComposerOptionsActionViewItem extends ActionWidgetDropdownActionV
 			actions.push({
 				id: 'backboardComposerOptions.empty',
 				label: loading
-					? localize('backboardComposerOptions.loading', "Loading Backboard options…")
-					: localize('backboardComposerOptions.empty', "No Backboard options"),
+					? localize('backboardComposerOptions.loading', "Loading DQuant Lab options…")
+					: localize('backboardComposerOptions.empty', "No DQuant Lab options"),
 				class: undefined,
 				tooltip: loading
-					? localize('backboardComposerOptions.loadingTooltip', "Backboard options are still loading. Reopen this menu in a moment.")
-					: localize('backboardComposerOptions.emptyTooltip', "No configurable Backboard options are available for this session."),
+					? localize('backboardComposerOptions.loadingTooltip', "DQuant Lab options are still loading. Reopen this menu in a moment.")
+					: localize('backboardComposerOptions.emptyTooltip', "No configurable DQuant Lab options are available for this session."),
 				icon: loading ? Codicon.loading : Codicon.info,
 				category: featuresCategory,
 				enabled: false,
@@ -6008,11 +5985,6 @@ class BackboardComposerOptionsActionViewItem extends ActionWidgetDropdownActionV
 	}
 
 	private showEnumOption(option: IAgentHostGenericConfigOption): void {
-		const live = option.getDynamicEnumInfo?.();
-		if (live) {
-			this.showModelPicker(option, live);
-			return;
-		}
 		const body = this.openFlow(option.label);
 		this.flowButton(body, localize('composer.back', "Back"), () => this.showDrawer());
 		const info = option.getEnumInfo();
@@ -6029,16 +6001,6 @@ class BackboardComposerOptionsActionViewItem extends ActionWidgetDropdownActionV
 				this.flowDisposables.add(dom.addDisposableListener(button, 'mousedown', event => event.preventDefault()));
 			}
 		}
-	}
-
-	/**
-	 * Model picker for `enumDynamic` catalogs (image and video generation).
-	 * Renders as a single-column modal matching the composer's context menu
-	 * and the model provider routing dialog.
-	 */
-	private showModelPicker(option: IAgentHostGenericConfigOption, live: Promise<{ values: string[]; labels: string[]; descriptions: (string | undefined)[]; current: string | undefined }>): void {
-		const body = this.openFlow(option.label);
-		this.flowDisposables.add(new BackboardModelPicker(body, option, live));
 	}
 
 	private openFlow(title: string, menu = false): HTMLElement {
@@ -6364,9 +6326,6 @@ class BackboardComposerOptionsActionViewItem extends ActionWidgetDropdownActionV
 				case 'computerUse': case 'cua': return Codicon.deviceDesktop;
 				case 'browserUse': case 'browser': case 'webSearch': case 'web': return Codicon.globe;
 				case 'notifications': case 'notify': return Codicon.bell;
-				case 'imageGeneration': case 'images': case 'imageModel': return Codicon.fileMedia;
-				case 'videoModel': return Codicon.deviceCameraVideo;
-				case 'askBeforeGenerating': return Codicon.question;
 			}
 		}
 		return getBackboardGenericOptionIcon(property);

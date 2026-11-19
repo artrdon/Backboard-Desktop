@@ -1,6 +1,6 @@
 import type { ByokProviderId } from "../core/keys/ProviderKeyTypes.ts";
-import type { PermissionMode } from "../core/permissions/PermissionMode.ts";
 import type { McpServerFileEntry } from "../core/mcp/config.ts";
+import type { PermissionMode } from "../core/permissions/PermissionMode.ts";
 import type {
 	ClientToolDefinition,
 	ClientToolResultPayload,
@@ -30,6 +30,10 @@ export const SERVE_CAPABILITIES: readonly string[] = [
 export interface ServeProviderKey {
 	provider: ByokProviderId;
 	key: string;
+	/** Custom API base URL; non-secret, carried with the credential. */
+	baseUrl?: string;
+	/** Custom API model id; non-secret. */
+	model?: string;
 }
 
 /** A binary attachment sent by the IDE and staged for the public R-CLI. */
@@ -74,16 +78,6 @@ export type ServeControl =
 			computerUse?: boolean;
 			browserUse?: boolean;
 			notify?: boolean;
-			/** Enables Backboard's built-in image generation for the turn. */
-			imageGeneration?: boolean;
-			/** Selected image model as `provider/name`; absent uses the built-in default. */
-			imageModel?: string;
-			/** Enables Backboard's built-in video generation for the turn. */
-			videoGeneration?: boolean;
-			/** Selected video model as `provider/name`; required for video generation. */
-			videoModel?: string;
-			/** Confirm each image/video generation with the user before spending credits. */
-			askBeforeGenerating?: boolean;
 			/** Pins an OpenRouter upstream; absent uses automatic routing. */
 			openRouterProvider?: string;
 			/**
@@ -153,8 +147,6 @@ export type ServeControl =
 			providerKeys: ServeProviderKey[];
 	  }
 	| { op: "listModels"; requestId: string }
-	| { op: "listImageModels"; requestId: string }
-	| { op: "listVideoModels"; requestId: string }
 	| { op: "listTools"; requestId: string }
 	| { op: "listSkills"; requestId: string }
 	| { op: "archiveWorkers"; requestId: string }
@@ -182,8 +174,6 @@ export type ServeRecordType =
 	| "serve:turn"
 	| "serve:models"
 	| "serve:mcp"
-	| "serve:imageModels"
-	| "serve:videoModels"
 	| "serve:tools"
 	| "serve:skills"
 	| "serve:warm"

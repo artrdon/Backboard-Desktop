@@ -25,7 +25,7 @@ export class CopilotCLICustomizationProvider extends Disposable implements vscod
 
 	static get metadata(): vscode.ChatSessionCustomizationProviderMetadata {
 		return {
-			label: 'Backboard Agent',
+			label: 'DQuant Agent',
 			iconId: 'sparkle',
 			supportedTypes: [
 				vscode.ChatSessionCustomizationType.Agent,

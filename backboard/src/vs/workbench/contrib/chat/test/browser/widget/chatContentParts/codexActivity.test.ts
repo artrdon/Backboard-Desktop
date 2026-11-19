@@ -60,18 +60,6 @@ suite('Codex transcript activity', () => {
 		assert.deepStrictEqual([describeCodexActivity(tool)?.text, describeCodexActivity(named)?.text], ['Open browser page', 'Opened the docs page']);
 	});
 
-	test('treats image and video generation alike: a placeholder while running, no row once done', () => {
-		const running = (toolId: string) => ({ ...serialized(toolId, undefined), isComplete: false } as IChatToolInvocationSerialized);
-		assert.deepStrictEqual(['generate_image', 'generate_video', 'GenerateVideo'].map(toolId => {
-			const activity = describeCodexActivity(serialized(toolId, undefined));
-			return { toolId, media: activity?.generatedMedia, text: activity?.text, live: describeCodexActivity(running(toolId))?.live };
-		}), [
-			{ toolId: 'generate_image', media: 'image', text: 'Generated image', live: 'Generating image' },
-			{ toolId: 'generate_video', media: 'video', text: 'Generated video', live: 'Generating video' },
-			{ toolId: 'GenerateVideo', media: 'video', text: 'Generated video', live: 'Generating video' },
-		]);
-	});
-
 	test('unwraps shell wrappers from displayed commands', () => {
 		assert.deepStrictEqual([
 			codexDisplayCommand(`/bin/zsh -lc 'npm test'`),

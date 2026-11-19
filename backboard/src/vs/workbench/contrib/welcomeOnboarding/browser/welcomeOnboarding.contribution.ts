@@ -28,7 +28,7 @@ registerAction2(class extends Action2 {
 	constructor() {
 		super({
 			id: 'workbench.action.welcomeOnboarding2026',
-			title: localize2('welcomeOnboarding2026', "Backboard Onboarding"),
+			title: localize2('welcomeOnboarding2026', "DQuant Lab Onboarding"),
 			category: Categories.Help,
 			f1: true,
 		});
@@ -44,7 +44,7 @@ registerAction2(class extends Action2 {
 	constructor() {
 		super({
 			id: 'workbench.action.resetBackboardOnboarding',
-			title: localize2('resetBackboardOnboarding', "Reset Backboard Onboarding"),
+			title: localize2('resetBackboardOnboarding', "Reset DQuant Lab Onboarding"),
 			category: Categories.Developer,
 			f1: true,
 		});

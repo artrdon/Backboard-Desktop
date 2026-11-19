@@ -567,7 +567,7 @@ export class ChangeAppIconAction extends Action2 {
 
 		const current = configurationService.getValue<string>('window.dockIcon') ?? 'classic';
 		const items: (IQuickPickItem & { id: string })[] = [
-			{ id: 'classic', label: localize('appIcon.classic', "Classic"), description: localize('appIcon.classic.description', "The Backboard bar mark") },
+			{ id: 'classic', label: localize('appIcon.classic', "Classic"), description: localize('appIcon.classic.description', "The DQuant Lab bar mark") },
 			{ id: 'octopus', label: localize('appIcon.octopus', "Octopus"), description: localize('appIcon.octopus.description', "8-bit octopus in front of the riso sun") },
 			{ id: 'peek', label: localize('appIcon.peek', "Octopus Peek"), description: localize('appIcon.peek.description', "8-bit octopus peeking in from the corner") },
 			{ id: 'terminal', label: localize('appIcon.terminal', "Terminal"), description: localize('appIcon.terminal.description', "Cyan terminal octopus with a painted sun and sea") },

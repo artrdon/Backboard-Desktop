@@ -14,7 +14,6 @@ import { IChatToolInvocation } from '../../../../common/chatService/chatService.
 import { CodexActivityKind, CodexActivityMetadata, codexGroupSummary, describeCodexActivity, ICodexActivity } from './codexActivity.js';
 import { animateCodexBody, applyCodexRoot, CodexCadencedShimmer, codexGap, codexIcon, codexRowChevron, codexNestedScroll, collapseCodexBodyInstantly, cxEl, renderCodexDiffStats, renderCodexRowLabel, setCodexChevronOpen } from './codexDom.js';
 import { CodexIconName } from './codexIcons.js';
-import { renderGeneratedImagePlaceholder } from '../../chatGeneratedImageGallery.js';
 
 /** A live header label is held at least this long before swapping (SPEC §3.3). */
 const LIVE_LABEL_HOLD_MS = 1000;
@@ -48,9 +47,6 @@ export class CodexActivityGroup extends Disposable {
 	private readonly bodyOuter: HTMLElement;
 	private readonly bodyList: HTMLElement;
 	private readonly singleSlot: HTMLElement;
-	/** Standalone slot for generating-image placeholders (never grouped). */
-	private readonly imageSlot: HTMLElement;
-	private readonly imagePlaceholders = new Map<string, HTMLElement>();
 	private readonly chevron: SVGSVGElement;
 	private readonly headerIcon: HTMLElement;
 	private readonly headerLabel: HTMLElement;
@@ -103,8 +99,7 @@ export class CodexActivityGroup extends Disposable {
 		groupRoot.append(this.headerSlot, this.bodyOuter);
 
 		this.singleSlot = cxEl('div', 'contents');
-		this.imageSlot = cxEl('div', 'flex flex-col gap-3');
-		this.element.append(groupRoot, this.singleSlot, this.imageSlot);
+		this.element.append(groupRoot, this.singleSlot);
 
 		this._register(toDisposable(() => this.rows.forEach(r => r.store.dispose())));
 		this.headerButton.addEventListener('click', () => this.setExpanded(!this.expanded));
@@ -204,8 +199,7 @@ export class CodexActivityGroup extends Disposable {
 	}
 
 	private render(): void {
-		this.renderImagePlaceholders();
-		const listed = this.rows.filter(r => !r.activity.generatedMedia);
+		const listed = this.rows;
 		const finished = listed.filter(r => !r.activity.running);
 		const running = this.complete ? undefined : this.runningRow();
 		const live = !this.complete && (!!running || !!this.thinkingLabel);
@@ -221,7 +215,7 @@ export class CodexActivityGroup extends Disposable {
 		} else {
 			clearNode(this.singleSlot);
 			for (const row of this.rows) {
-				if (row.activity.running || row.activity.generatedMedia) {
+				if (row.activity.running) {
 					row.element.remove();
 					continue;
 				}
@@ -251,23 +245,6 @@ export class CodexActivityGroup extends Disposable {
 		this.headerButton.disabled = finished.length === 0;
 		this.chevron.style.display = finished.length === 0 ? 'none' : '';
 		this._onDidChangeHeight.fire();
-	}
-
-	/** Running image generations show Codex's generating-image card; finished ones leave for the gallery. */
-	private renderImagePlaceholders(): void {
-		for (const row of this.rows) {
-			const placeholder = this.imagePlaceholders.get(row.id);
-			const wanted = !!row.activity.generatedMedia && row.activity.running;
-			if (wanted && !placeholder) {
-				const holder = cxEl('div');
-				renderGeneratedImagePlaceholder(holder, row.activity.generatedMedia);
-				this.imageSlot.appendChild(holder);
-				this.imagePlaceholders.set(row.id, holder);
-			} else if (!wanted && placeholder) {
-				placeholder.remove();
-				this.imagePlaceholders.delete(row.id);
-			}
-		}
 	}
 
 	private showLive(key: string, text: string, icon: CodexIconName | undefined): void {

@@ -104,6 +104,14 @@ describe("validateProviderKey", () => {
 		expect(limited).toMatchObject({ category: "rate-limited", status: 429 });
 	});
 
+	it("requires a base URL and model id for Custom API", async () => {
+		const result = await validateProviderKey({
+			provider: "custom",
+			key: "custom-secret",
+		});
+		expect(result).toMatchObject({ ok: false, category: "invalid-config" });
+	});
+
 	it("treats a vendor that never answers as unreachable", async () => {
 		const result = await validateProviderKey({
 			provider: "openai",
@@ -161,7 +169,10 @@ describe("runKeysValidateCommand", () => {
 describe("scrubSecret", () => {
 	it("removes the known secret and anything shaped like a key", () => {
 		expect(
-			scrubSecret(`bad key ${KEY} and sk-ant-abcdefghijklmnopqrstuvwxyz0123`, KEY),
+			scrubSecret(
+				`bad key ${KEY} and sk-ant-abcdefghijklmnopqrstuvwxyz0123`,
+				KEY,
+			),
 		).toBe("bad key <redacted> and <redacted>");
 		expect(scrubSecret("AIzaSyA1234567890abcdefghijklmnop", undefined)).toBe(
 			"<redacted>",

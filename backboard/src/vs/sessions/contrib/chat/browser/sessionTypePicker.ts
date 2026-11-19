@@ -38,7 +38,7 @@ const STORAGE_KEY_LAST_SESSION_TYPE = 'sessions.userSelectedSessionType';
 function knownAgentPresentation(sessionTypeId: string): { readonly label: string; readonly icon: ThemeIcon } | undefined {
 	switch (sessionTypeId) {
 		case 'backboard':
-			return { label: 'Backboard', icon: ThemeIcon.fromId('backboard-logo') };
+			return { label: 'DQuant Lab', icon: ThemeIcon.fromId('backboard-logo') };
 		case 'claude':
 			return { label: 'Claude', icon: Codicon.claude };
 		case 'codex':

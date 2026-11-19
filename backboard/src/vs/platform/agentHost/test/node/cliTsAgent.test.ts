@@ -8,7 +8,6 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { createHash } from 'crypto';
-import { DeferredPromise } from '../../../../base/common/async.js';
 import type { CliTsAgentEvent, CliTsWorkerState, CliTsWorkerIntegrationChange } from '../../node/cliTs/cliTsProtocol.js';
 import { URI } from '../../../../base/common/uri.js';
 import { Schemas } from '../../../../base/common/network.js';
@@ -111,44 +110,6 @@ suite('CliTsAgent tool metadata', () => {
 		Reflect.set(agent, '_refreshModelCatalog', async () => { calls++; });
 		await agent.executeCommand('models.refresh');
 		assert.strictEqual(calls, 2);
-	});
-
-	test('media config renders cached catalogs while both background refreshes are pending', async () => {
-		const agent = createAgent();
-		const pending = new DeferredPromise<readonly { value: string; label: string }[]>();
-		const warmed: string[] = [];
-		Reflect.set(agent, '_generativeCatalog', {
-			peek: (property: string) => [{ value: `provider/${property}`, label: property }],
-			get: (property: string) => { warmed.push(property); return pending.p; },
-		});
-		const config = await agent.resolveSessionConfig({ config: { videoModel: 'provider/videoModel' } });
-		assert.deepStrictEqual({
-			images: config.schema.properties.imageModel.enum,
-			videos: config.schema.properties.videoModel.enum,
-			labels: config.schema.properties.videoModel.enumLabels,
-			selected: config.values.videoModel,
-			warmed,
-		}, {
-			images: ['provider/imageModel'], videos: ['provider/videoModel'],
-			labels: ['videoModel'], selected: 'provider/videoModel', warmed: ['imageModel', 'videoModel'],
-		});
-		await pending.complete([]);
-	});
-
-	test('media completions preserve the full local-filter catalog and propagate refresh errors', async () => {
-		const agent = createAgent();
-		const items = Array.from({ length: 205 }, (_, i) => ({ value: `provider/${i}`, label: `Model ${i}` }));
-		const calls: Array<{ property: string; refresh: boolean | undefined }> = [];
-		Reflect.set(agent, '_generativeCatalog', {
-			get: async (property: string, refresh?: boolean) => {
-				calls.push({ property, refresh });
-				if (refresh) { throw new Error('offline'); }
-				return items;
-			},
-		});
-		assert.deepStrictEqual((await agent.sessionConfigCompletions({ property: 'videoModel' })).items, items);
-		await assert.rejects(agent.sessionConfigCompletions({ property: 'videoModel', refresh: true }), /offline/);
-		assert.deepStrictEqual(calls, [{ property: 'videoModel', refresh: undefined }, { property: 'videoModel', refresh: true }]);
 	});
 
 	test('pushes client-synced MCP servers to the session runtime and publishes them as customizations', async () => {
@@ -1563,7 +1524,7 @@ suite('CliTsAgent tool metadata', () => {
 			const deleting = agent.disposeSession(sessionUri);
 			releaseAdd();
 
-			await assert.rejects(materializing, /disposed Backboard session/);
+			await assert.rejects(materializing, /disposed DQuant Lab session/);
 			await deleting;
 			assert.strictEqual(metadataWrites, 0);
 			assert.strictEqual(captures, 0);
@@ -1787,7 +1748,7 @@ suite('CliTsAgent tool metadata', () => {
 					? 'Provider response contained inconsistent tool calls.'
 					: scenario === 'send-rejection'
 						? 'The serve process closed before completing the request.'
-						: scenario === 'failed-payload' ? 'The Backboard agent reported a failed turn.' : undefined;
+						: scenario === 'failed-payload' ? 'The DQuant Lab agent reported a failed turn.' : undefined;
 				assert.strictEqual(persisted.sessions[0].turns[0].error?.message, expectedMessage);
 				assert.strictEqual(failureNotes(progress).length, expectedMessage ? 1 : 0, 'A later generic failure must not add a second note');
 				const reopened = createAgent();
@@ -1817,9 +1778,9 @@ suite('CliTsAgent tool metadata', () => {
 		try {
 			const onGemini = " You're on gemini-3-pro, billed to Backboard credits.";
 			const cases: Array<[string, string, string?, boolean?]> = [
-				['Backboard request failed: HTTP 401: Not authenticated', `_Your Backboard sign-in has expired, so models billed to Backboard credits can't run._ [Sign In Again](command:backboard.signIn) or pick a different model in the model picker.${onGemini}`],
+				['Backboard request failed: HTTP 401: Not authenticated', `_Your DQuant Lab sign-in has expired, so models billed to DQuant Lab credits can't run._ [Sign In Again](command:backboard.signIn) or pick a different model in the model picker.${onGemini}`],
 				// The boss's case: a Backboard-billed Claude model while the Claude plan is connected.
-				['Backboard request failed: HTTP 401: Not authenticated', "_Your Backboard sign-in has expired, so models billed to Backboard credits can't run._ [Sign In Again](command:backboard.signIn) or pick a model under **Claude subscription** in the model picker to use your own plan. You're on claude-opus-5-5, billed to Backboard credits (not your Claude subscription).", 'anthropic/claude-opus-5-5', true],
+				['Backboard request failed: HTTP 401: Not authenticated', "_Your DQuant Lab sign-in has expired, so models billed to DQuant Lab credits can't run._ [Sign In Again](command:backboard.signIn) or pick a model under **Claude subscription** in the model picker to use your own plan. You're on claude-opus-5-5, billed to DQuant Lab credits (not your Claude subscription).", 'anthropic/claude-opus-5-5', true],
 				['This conversation is bound to a subscription, but this request bills to Backboard. Start a new conversation to switch.', `_This chat runs on a subscription, but the selected model bills to Backboard._ Pick a model from a subscription in the model picker to continue here, or start a new chat to use this one.${onGemini}`],
 				['Claude Code returned prompt is too long: 1204331 tokens > 1000000 maximum.', '_This chat is too long for the model now._ Start a new chat to keep going; this one stays as it is.'],
 				['Claude Code returned invalid_request_error: bad_thing.', `_This response stopped before it finished: Claude Code returned invalid\\_request\\_error: bad\\_thing._\n\nSend your message again to retry. If it keeps stopping, pick a different model in the model picker, or start a new chat.${onGemini}`],

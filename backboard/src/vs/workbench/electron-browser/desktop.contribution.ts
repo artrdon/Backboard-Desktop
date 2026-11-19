@@ -322,7 +322,7 @@ registerWorkbenchContribution2(PreloadEditorWindowModesContribution.ID, PreloadE
 				'type': 'string',
 				'enum': ['classic', 'octopus', 'peek', 'terminal', 'face'],
 				'enumDescriptions': [
-					localize('window.dockIcon.classic', "The classic Backboard mark."),
+					localize('window.dockIcon.classic', "The classic DQuant Lab mark."),
 					localize('window.dockIcon.octopus', "The 8-bit octopus in front of the riso sun."),
 					localize('window.dockIcon.peek', "The 8-bit octopus peeking in from the corner."),
 					localize('window.dockIcon.terminal', "The cyan terminal octopus with a painted sun and sea."),

@@ -9,9 +9,9 @@ import { makeTextResult } from './utils';
 import { ILogger } from '../../../../../platform/log/common/logService';
 
 export function registerGetVscodeInfoTool(server: McpServer, logger: ILogger): void {
-	server.registerTool('get_vscode_info', { description: 'Get information about the current Backboard IDE instance' }, async () => {
-		logger.debug('Getting Backboard IDE info');
-		logger.trace(`Backboard IDE version: ${vscode.version}, app: ${vscode.env.appName}`);
+	server.registerTool('get_vscode_info', { description: 'Get information about the current DQuant Lab instance' }, async () => {
+		logger.debug('Getting DQuant Lab info');
+		logger.trace(`DQuant Lab version: ${vscode.version}, app: ${vscode.env.appName}`);
 		return makeTextResult({
 			version: vscode.version,
 			appName: vscode.env.appName,

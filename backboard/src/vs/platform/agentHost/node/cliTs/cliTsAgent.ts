@@ -4,14 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 
 import type { AgentRewindRequest, IAgentRewindBuffer, IAgentRewindResult } from '../../common/agentRewind.js';
-import * as cp from 'child_process';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { createHash } from 'crypto';
 import { raceTimeout, RunOnceScheduler } from '../../../../base/common/async.js';
 import { Emitter } from '../../../../base/common/event.js';
-import { Disposable, DisposableStore, MutableDisposable, toDisposable, type IReference } from '../../../../base/common/lifecycle.js';
+import { Disposable, MutableDisposable, toDisposable, type IReference } from '../../../../base/common/lifecycle.js';
 import { type IObservable, observableValue } from '../../../../base/common/observable.js';
 import { URI } from '../../../../base/common/uri.js';
 import { generateUuid } from '../../../../base/common/uuid.js';
@@ -36,8 +35,9 @@ import { buildSessionDbUri, FileEditTracker } from '../shared/fileEditTracker.js
 import { claudeCodeVersionStatus, ensureClaudeCodeReady, type IClaudeCodeVersionStatus, isClaudeLoggedIn, isClaudeLoggedInRecently, resolveClaudeBinary, updateClaudeCode } from '../shared/agentLoginProbes.js';
 import { IAgentConfigurationService } from '../agentConfigurationService.js';
 import { IAgentHostGitService, META_DIFF_BASE_BRANCH } from '../agentHostGitService.js';
-import { BYOK_COMMANDS, BYOK_GENERATION_ARG, BYOK_KEY_ARG, BYOK_PROVIDER_ARG, BYOK_PROVIDERS, byokProviderDefinition, type ByokProviderId, isByokProviderId, isKeyBilledProvider, keyBilledProviderId, parseBillingRoute, routeProviderFamily, subscriptionPlanOfModelId, vendorOfProvider } from '../../common/byokProviders.js';
-import { BACKBOARD_ACCESS_FULL, BACKBOARD_ACCESS_MANUAL, BACKBOARD_GENERATIVE_MEDIA_OFF, BACKBOARD_IMAGE_MODEL_CONFIG_KEY, BACKBOARD_MODE_PLAN, BACKBOARD_VIDEO_MODEL_CONFIG_KEY, BUNDLED_CHATGPT_SUBSCRIPTION_MODELS, BUNDLED_CLAUDE_SUBSCRIPTION_MODELS, type BridgeModel, backboardAccessSystemContext, backboardModelInfos, backboardMultitaskSystemContext, bridgeConfig, createBackboardTurnSettings, fallbackModel, isBridgeModel, resolveBackboardSessionConfig } from './backboardRuntimeShared.js';
+import { BYOK_BASE_URL_ARG, BYOK_COMMANDS, BYOK_GENERATION_ARG, BYOK_KEY_ARG, BYOK_MODEL_ARG, BYOK_PROVIDER_ARG, BYOK_PROVIDERS, byokProviderDefinition, type ByokProviderId, isByokProviderId, isKeyBilledProvider, keyBilledProviderId, parseBillingRoute, routeProviderFamily, subscriptionPlanOfModelId, validateProviderConfig, vendorOfProvider } from '../../common/byokProviders.js';
+import { BACKBOARD_ACCESS_FULL, BACKBOARD_ACCESS_MANUAL, BACKBOARD_MODE_PLAN, BUNDLED_CHATGPT_SUBSCRIPTION_MODELS, BUNDLED_CLAUDE_SUBSCRIPTION_MODELS, type BridgeModel, backboardAccessSystemContext, backboardModelInfos, backboardMultitaskSystemContext, bridgeConfig, createBackboardTurnSettings, fallbackModel, isBridgeModel, resolveBackboardSessionConfig } from './backboardRuntimeShared.js';
+import { buildDquantAgentContext } from '../dquant/dquantAgentContext.js';
 import { ensureBackboardGuestKey } from './backboardGuest.js';
 
 /** cli-ts tool name excluded from the turn when Web Search is toggled off. */
@@ -46,41 +46,6 @@ import { rgDiskPath } from '../../../../base/node/ripgrep.js';
 import { type CliTsCredentialSnapshot, CliTsServeProcess, cliTsCredentialFingerprint, runCliTsCommand } from './cliTsProcess.js';
 import type { CliTsRecord, CliTsAgentEvent, CliTsClientToolDefinition, CliTsClientToolResultContent, CliTsClientToolResultPayload, CliTsFileAttachment, CliTsMcpListPayload, CliTsMcpServerEntry, CliTsMcpServerStatus, CliTsPermissionMode, CliTsReadyPayload, CliTsTurnStatus, CliTsWorkerIntegrationChange, CliTsWorkerIntegrationSnapshot, CliTsWorkerState } from './cliTsProtocol.js';
 import { CLI_TS_MCP_STATUS_EVENTS_CAPABILITY } from './cliTsProtocol.js';
-import { GenerativeModelCatalog, type GenerativeModelItem, type GenerativeModelProperty } from './generativeModelCatalog.js';
-import { describeVideoModel, videoModelCapabilities } from '../../common/generativeMediaCapabilities.js';
-
-/** Formats a selected generative model for the serve control, or `off`. */
-function generativeModelSelection(model: { provider: string; name: string } | undefined): string {
-	return model ? `${model.provider}/${model.name}` : BACKBOARD_GENERATIVE_MEDIA_OFF;
-}
-
-function isPlainRecord(value: unknown): value is Record<string, unknown> {
-	return !!value && typeof value === 'object' && !Array.isArray(value);
-}
-
-/**
- * Maps one catalog row to a `provider/name` picker item. Image catalogs expose
- * `name`; video catalogs expose the OpenRouter model `id` alongside `name`.
- */
-function generativeModelCompletionItem(
-	model: Record<string, unknown>,
-	property: string,
-): GenerativeModelItem | undefined {
-	const provider = typeof model.provider === 'string' ? model.provider.trim() : '';
-	const identifier = property === BACKBOARD_VIDEO_MODEL_CONFIG_KEY
-		? (typeof model.id === 'string' ? model.id : typeof model.name === 'string' ? model.name : '')
-		: (typeof model.name === 'string' ? model.name : '');
-	const name = identifier.trim();
-	if (!provider || !name) {
-		return undefined;
-	}
-	const display = typeof model.name === 'string' && model.name.trim() ? model.name.trim() : name;
-	// Video rows carry what the model accepts, so pickers (and Canvas's edit
-	// bar) can tell a video editor like Aleph from a text-to-video model.
-	return property === BACKBOARD_VIDEO_MODEL_CONFIG_KEY
-		? { value: `${provider}/${name}`, label: display, description: describeVideoModel(videoModelCapabilities(model)) }
-		: { value: `${provider}/${name}`, label: display };
-}
 
 /**
  * Maps a cli-ts MCP runtime status onto the protocol's server lifecycle
@@ -715,9 +680,6 @@ export class CliTsAgent extends Disposable implements IAgent {
 	private _modelsRefreshed = false;
 	private _modelRefreshPromise: Promise<void> | undefined;
 	private readonly _modelRefreshProcess = this._register(new MutableDisposable<CliTsServeProcess>());
-	/** Each concurrent catalog fetch owns its process until that request completes. */
-	private readonly _generativeCatalogProcesses = this._register(new DisposableStore());
-	private readonly _generativeCatalog: GenerativeModelCatalog;
 	private _rgDir: Promise<string | undefined> | undefined;
 	private _chatGptSubscriptionLoginPromise: Promise<void> | undefined;
 	private _claudeSubscriptionEnablePromise: Promise<void> | undefined;
@@ -728,6 +690,8 @@ export class CliTsAgent extends Disposable implements IAgent {
 	private _claudeSubscriptionStatusRevision = 0;
 	/** Validated provider keys pushed by the IDE. Held in memory only; never persisted or logged. */
 	private readonly _providerKeys = new Map<ByokProviderId, string>();
+	/** Non-secret Custom API settings, keyed beside the credential they belong to. */
+	private readonly _providerConfigs = new Map<ByokProviderId, { readonly baseUrl?: string; readonly model?: string }>();
 	/** The newest key-change generation applied per provider; older ones are refused. */
 	private readonly _providerKeyGenerations = new Map<ByokProviderId, number>();
 	/** Vendor catalogs discovered with a key. Model names only; cached so rows survive restarts. */
@@ -735,7 +699,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 	/** Model names the vendor's current key can reach; absent until its catalog was discovered. */
 	private readonly _byokAvailability = new Map<ByokProviderId, Set<string>>();
 	/** Successful validations waiting for the IDE to persist and activate the key. */
-	private readonly _pendingValidation = new Map<ByokProviderId, { readonly key: string; readonly models: readonly BridgeModel[] }>();
+	private readonly _pendingValidation = new Map<ByokProviderId, { readonly key: string; readonly models: readonly BridgeModel[]; readonly baseUrl?: string; readonly model?: string }>();
 	/** One background catalog discovery per vendor. */
 	private readonly _byokDiscovery = new Map<ByokProviderId, Promise<void>>();
 	/** Monotonic revision of the credential snapshot; acks echo it. */
@@ -757,12 +721,6 @@ export class CliTsAgent extends Disposable implements IAgent {
 	) {
 		super();
 		this._hydrateModelsFromCache();
-		this._generativeCatalog = this._register(new GenerativeModelCatalog(
-			path.join(path.dirname(this._modelsCachePath()), 'generative-models-cache.json'),
-			() => this._currentApiUrl(),
-			property => this._fetchGenerativeCatalog(property),
-			this._logService,
-		));
 		void this._refreshClaudeSubscriptionConnectionState();
 		this._watchCredentials();
 		this._scheduleSubscriptionChecks();
@@ -940,8 +898,8 @@ export class CliTsAgent extends Disposable implements IAgent {
 	getDescriptor(): IAgentDescriptor {
 		return {
 			provider: this.id,
-			displayName: localize('cliTsAgent.displayName', "Backboard"),
-			description: localize('cliTsAgent.description', "Backboard agent backed by the cli-ts runtime"),
+			displayName: localize('cliTsAgent.displayName', "DQuant Lab"),
+			description: localize('cliTsAgent.description', "DQuant Lab agent backed by the cli-ts runtime"),
 		};
 	}
 
@@ -954,7 +912,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 			case CHATGPT_SUBSCRIPTION_LOGIN_COMMAND:
 				await this._ensureChatGptSubscriptionLogin(true);
 				return {
-					message: localize('cliTsAgent.chatGptSubscription.connected', "ChatGPT subscription connected to the Backboard harness."),
+					message: localize('cliTsAgent.chatGptSubscription.connected', "ChatGPT subscription connected to the DQuant Lab harness."),
 				};
 			case CLAUDE_SUBSCRIPTION_LOGIN_COMMAND:
 				throw new Error(localize(
@@ -967,7 +925,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 			case CLAUDE_SUBSCRIPTION_ENABLE_COMMAND:
 				await this._enableClaudeSubscription();
 				return {
-					message: localize('cliTsAgent.claudeSubscription.connected', "Claude subscription connected to the Backboard harness."),
+					message: localize('cliTsAgent.claudeSubscription.connected', "Claude subscription connected to the DQuant Lab harness."),
 				};
 			case CLAUDE_CODE_VERSION_COMMAND: {
 				const status = await this._claudeCodeVersionStatus();
@@ -988,7 +946,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 			case BYOK_COMMANDS.status:
 				return this._providerKeyStatusCommand();
 			default:
-				throw new Error(`Unsupported Backboard command: ${command}`);
+				throw new Error(`Unsupported DQuant Lab command: ${command}`);
 		}
 	}
 
@@ -999,7 +957,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 	// the whole snapshot to the running serve processes. Nothing in this class
 	// writes a key to disk or to a log.
 
-	private _byokCommandArgs(args: Readonly<Record<string, unknown>> | undefined, requireKey: boolean): { provider: ByokProviderId; key: string | undefined } {
+	private _byokCommandArgs(args: Readonly<Record<string, unknown>> | undefined, requireKey: boolean): { provider: ByokProviderId; key: string | undefined; baseUrl?: string; model?: string } {
 		const provider = args?.[BYOK_PROVIDER_ARG];
 		if (!isByokProviderId(provider)) {
 			throw new Error(localize('cliTsAgent.byok.unsupportedProvider', "API keys are not supported for provider '{0}'.", String(provider)));
@@ -1009,18 +967,29 @@ export class CliTsAgent extends Disposable implements IAgent {
 		if (requireKey && !key) {
 			throw new Error(localize('cliTsAgent.byok.keyMissing', "Enter a {0} API key.", byokProviderDefinition(provider).label));
 		}
+		const rawBaseUrl = args?.[BYOK_BASE_URL_ARG];
+		const rawModel = args?.[BYOK_MODEL_ARG];
+		const baseUrl = typeof rawBaseUrl === 'string' ? rawBaseUrl.trim() : undefined;
+		const model = typeof rawModel === 'string' ? rawModel.trim() : undefined;
+		if (provider === 'custom') {
+			const settings = validateProviderConfig(provider, { baseUrl, model });
+			if (settings.error || !settings.config) {
+				throw new Error(settings.error ?? localize('cliTsAgent.byok.endpointRequired', "Enter the Custom API base URL and model ID."));
+			}
+			return { provider, key, baseUrl: settings.config.baseUrl, model: settings.config.model };
+		}
 		return { provider, key };
 	}
 
 	private async _validateProviderKeyCommand(args: Readonly<Record<string, unknown>> | undefined): Promise<IAgentCommandResult> {
-		const { provider, key } = this._byokCommandArgs(args, true);
+		const { provider, key, baseUrl, model } = this._byokCommandArgs(args, true);
 		const label = byokProviderDefinition(provider).label;
-		const result = await this._validateProviderKey(provider, key!);
+		const result = await this._validateProviderKey(provider, key!, baseUrl, model);
 		if (!result.ok) {
 			this._logService.info(`[cli-ts] ${provider} key rejected during validation (${result.category})`);
 			return { message: result.error, data: { ok: false, category: result.category, error: result.error } };
 		}
-		this._pendingValidation.set(provider, { key: key!, models: result.models });
+		this._pendingValidation.set(provider, { key: key!, models: result.models, baseUrl, model });
 		return {
 			message: localize('cliTsAgent.byok.validated', "{0} key verified.", label),
 			data: { ok: true, modelCount: result.models.length },
@@ -1049,12 +1018,18 @@ export class CliTsAgent extends Disposable implements IAgent {
 	}
 
 	private async _setProviderKeyCommand(args: Readonly<Record<string, unknown>> | undefined): Promise<IAgentCommandResult> {
-		const { provider, key } = this._byokCommandArgs(args, true);
+		const { provider, key, baseUrl, model } = this._byokCommandArgs(args, true);
 		this._applyProviderKeyGeneration(provider, args);
 		const pending = this._pendingValidation.get(provider);
 		this._pendingValidation.delete(provider);
 		this._providerKeys.set(provider, key!);
-		if (pending && pending.key === key) {
+		if (baseUrl || model) {
+			this._providerConfigs.set(provider, { ...(baseUrl ? { baseUrl } : {}), ...(model ? { model } : {}) });
+		} else {
+			this._providerConfigs.delete(provider);
+		}
+		const sameEndpoint = pending?.baseUrl === baseUrl && pending?.model === model;
+		if (pending && pending.key === key && sameEndpoint) {
 			this._recordByokCatalog(provider, pending.models);
 		} else {
 			// Activated without a fresh validation (window start): the key is usable
@@ -1075,6 +1050,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 		const { provider } = this._byokCommandArgs(args, false);
 		this._applyProviderKeyGeneration(provider, args);
 		this._providerKeys.delete(provider);
+		this._providerConfigs.delete(provider);
 		this._pendingValidation.delete(provider);
 		this._credentialRevision++;
 		// The catalog stays so sessions pinned to these models keep a visible,
@@ -1085,7 +1061,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 		// it; the push makes sure no running turn keeps using it either.
 		const push = await this._pushCredentials();
 		if (push.unconfirmed > 0) {
-			throw new Error(localize('cliTsAgent.byok.removeUnconfirmed', "The {0} key was removed, but {1} running session(s) could not confirm dropping it. Restart Backboard to be sure no session still uses it.", label, push.unconfirmed));
+			throw new Error(localize('cliTsAgent.byok.removeUnconfirmed', "The {0} key was removed, but {1} running session(s) could not confirm dropping it. Restart DQuant Lab to be sure no session still uses it.", label, push.unconfirmed));
 		}
 		return {
 			message: localize('cliTsAgent.byok.removed', "{0} key removed.", label),
@@ -1109,14 +1085,17 @@ export class CliTsAgent extends Disposable implements IAgent {
 	 * runtime answers with one JSON line and never echoes the key. Overridden
 	 * in tests.
 	 */
-	private async _validateProviderKey(provider: ByokProviderId, key: string): Promise<CliTsKeyValidation> {
-		const output = await runCliTsCommand(this._logService, ['keys', 'validate', '--provider', provider], { stdin: key, timeoutMs: CLI_TS_KEY_VALIDATION_TIMEOUT_MS });
+	private async _validateProviderKey(provider: ByokProviderId, key: string, baseUrl?: string, model?: string): Promise<CliTsKeyValidation> {
+		const args = ['keys', 'validate', '--provider', provider];
+		if (baseUrl) args.push('--base-url', baseUrl);
+		if (model) args.push('--model', model);
+		const output = await runCliTsCommand(this._logService, args, { stdin: key, timeoutMs: CLI_TS_KEY_VALIDATION_TIMEOUT_MS });
 		const line = output.trim().split('\n').at(-1) ?? '';
 		let parsed: { ok?: unknown; category?: unknown; error?: unknown; models?: unknown };
 		try {
 			parsed = JSON.parse(line) as typeof parsed;
 		} catch {
-			throw new Error(localize('cliTsAgent.byok.unreadableValidation', "The Backboard runtime returned an unreadable key validation result. Update Backboard and try again."));
+			throw new Error(localize('cliTsAgent.byok.unreadableValidation', "The DQuant Lab runtime returned an unreadable key validation result. Update DQuant Lab and try again."));
 		}
 		if (parsed.ok === true) {
 			return { ok: true, models: (Array.isArray(parsed.models) ? parsed.models : []).filter(isBridgeModel) };
@@ -1135,9 +1114,11 @@ export class CliTsAgent extends Disposable implements IAgent {
 		if (inFlight) {
 			return inFlight;
 		}
-		const run = this._validateProviderKey(provider, key)
+		const config = this._providerConfigs.get(provider);
+		const run = this._validateProviderKey(provider, key, config?.baseUrl, config?.model)
 			.then(result => {
-				if (this._providerKeys.get(provider) !== key) {
+				const current = this._providerConfigs.get(provider);
+				if (this._providerKeys.get(provider) !== key || current?.baseUrl !== config?.baseUrl || current?.model !== config?.model) {
 					return; // replaced or removed while discovering
 				}
 				if (result.ok) {
@@ -1162,7 +1143,15 @@ export class CliTsAgent extends Disposable implements IAgent {
 		return {
 			op: 'setCredentials',
 			revision: this._credentialRevision,
-			providerKeys: [...this._providerKeys].map(([provider, key]) => ({ provider, key })),
+			providerKeys: [...this._providerKeys].map(([provider, key]) => {
+				const config = this._providerConfigs.get(provider);
+				return {
+					provider,
+					key,
+					...(config?.baseUrl ? { baseUrl: config.baseUrl } : {}),
+					...(config?.model ? { model: config.model } : {}),
+				};
+			}),
 		};
 	}
 
@@ -1401,7 +1390,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 		const sourceStoredSession = sourceSessionId ? this._readStore(sourceSessionId).find(entry => entry.id === sourceSessionId) : undefined;
 		const sourceTurns = sourceSession?.storedTurns ?? sourceStoredSession?.turns;
 		if (config.fork && !sourceTurns) {
-			throw new Error(`Cannot fork missing Backboard session: ${config.fork.session.toString()}`);
+			throw new Error(`Cannot fork missing DQuant Lab session: ${config.fork.session.toString()}`);
 		}
 		const forkedTurns = config.fork
 			? cloneStoredTurns(sourceTurns!.slice(0, config.fork.turnIndex + 1))
@@ -1507,21 +1496,6 @@ export class CliTsAgent extends Disposable implements IAgent {
 	async resolveSessionConfig(params: IAgentResolveSessionConfigParams): Promise<ResolveSessionConfigResult> {
 		const repository = params.workingDirectory ? await this._getGitInfo(params.workingDirectory) : undefined;
 		const result = resolveBackboardSessionConfig(params.config, repository);
-		for (const property of [BACKBOARD_IMAGE_MODEL_CONFIG_KEY, BACKBOARD_VIDEO_MODEL_CONFIG_KEY] as const) {
-			const cached = this._generativeCatalog.peek(property);
-			if (cached) {
-				const schema = result.schema.properties[property];
-				result.schema.properties[property] = {
-					...schema,
-					// Media is always available on Backboard models, so there is no Off entry.
-					enum: cached.map(item => item.value),
-					enumLabels: cached.map(item => item.label),
-					enumDescriptions: cached.some(item => item.description) ? cached.map(item => item.description ?? '') : undefined,
-				};
-			}
-			// Warm both catalogs without making composer configuration wait for the network.
-			void this._generativeCatalog.get(property).catch(() => { /* A picker open can retry and display the error. */ });
-		}
 		return result;
 	}
 
@@ -1535,59 +1509,11 @@ export class CliTsAgent extends Disposable implements IAgent {
 	}
 
 	async sessionConfigCompletions(params: IAgentSessionConfigCompletionsParams): Promise<SessionConfigCompletionsResult> {
-		if (params.property === BACKBOARD_IMAGE_MODEL_CONFIG_KEY || params.property === BACKBOARD_VIDEO_MODEL_CONFIG_KEY) {
-			return this._generativeModelCompletions(params.property, params.query, params.refresh);
-		}
 		if (params.property !== SessionConfigKey.Branch || !params.workingDirectory) {
 			return { items: [] };
 		}
 		const branches = await this._gitService.getBranches(params.workingDirectory, { query: params.query, limit: 200 });
 		return { items: branches.map(branch => ({ value: branch, label: branch })) };
-	}
-
-	/**
-	 * Live image/video catalog for the composer pickers. Media is always
-	 * available on Backboard models, so the list has no Off entry.
-	 */
-	private async _generativeModelCompletions(property: GenerativeModelProperty, query: string | undefined, refresh?: boolean): Promise<SessionConfigCompletionsResult> {
-		const items = await this._generativeCatalog.get(property, refresh);
-		const filter = query?.trim().toLowerCase();
-		const filtered = filter
-			? items.filter(item => item.value.toLowerCase().includes(filter) || item.label.toLowerCase().includes(filter))
-			: items;
-		// The composer filters locally, so its unfiltered snapshot must match the cached schema.
-		return { items: filter ? filtered.slice(0, 200) : [...filtered] };
-	}
-
-	private async _fetchGenerativeCatalog(property: GenerativeModelProperty): Promise<readonly GenerativeModelItem[]> {
-		// A short-lived catalog process reads current credentials and avoids
-		// touching the provider routers owned by running conversations.
-		const proc = this._generativeCatalogProcesses.add(new CliTsServeProcess(this._logService, { onEvent: () => { } }));
-		try {
-			const op = property === BACKBOARD_IMAGE_MODEL_CONFIG_KEY ? 'listImageModels' : 'listVideoModels';
-			const record = await raceTimeout(proc.request({ op, requestId: proc.nextRequestId() }), 30_000);
-			if (!record) {
-				throw new Error('Model catalog request timed out.');
-			}
-			const payload = record.payload;
-			const expectedType = property === BACKBOARD_IMAGE_MODEL_CONFIG_KEY ? 'serve:imageModels' : 'serve:videoModels';
-			if (record.type !== expectedType || !isPlainRecord(payload) || !Array.isArray(payload.models)) {
-				throw new Error('Invalid model catalog response.');
-			}
-			const items = payload.models
-				.filter(isPlainRecord)
-				.map(model => generativeModelCompletionItem(model, property))
-				.filter((item): item is GenerativeModelItem => item !== undefined);
-			if (payload.models.length > 0 && items.length === 0) {
-				throw new Error('Invalid model catalog entries.');
-			}
-			return items;
-		} catch (error) {
-			this._logService.warn(`[cli-ts] Failed to load the ${property} catalog: ${error instanceof Error ? error.message : String(error)}`);
-			throw error;
-		} finally {
-			this._generativeCatalogProcesses.delete(proc);
-		}
 	}
 
 	sendMessage(sessionUri: URI, prompt: string, attachments?: readonly MessageAttachment[], turnId?: string): Promise<void> {
@@ -1795,10 +1721,10 @@ export class CliTsAgent extends Disposable implements IAgent {
 		};
 		mark('queue');
 		if (session.disposed) {
-			throw new Error(`Cannot send to disposed Backboard session: ${session.sessionUri.toString()}`);
+			throw new Error(`Cannot send to disposed DQuant Lab session: ${session.sessionUri.toString()}`);
 		}
 		if (session.archived) {
-			throw new Error(`Cannot send to archived Backboard session: ${session.sessionUri.toString()}`);
+			throw new Error(`Cannot send to archived DQuant Lab session: ${session.sessionUri.toString()}`);
 		}
 		await this._applyPendingModel(session);
 		mark('applyModel');
@@ -1827,18 +1753,14 @@ export class CliTsAgent extends Disposable implements IAgent {
 		let prepared = prepareSubmitAttachments(prompt, attachments);
 		const storedConfig = this._configurationService.getSessionConfigValues(session.sessionUri.toString());
 		const settings = createBackboardTurnSettings(storedConfig, session.config, session.model);
-		if (settings.videoGeneration || settings.imageGeneration) {
-			// Hosted generation reads its inputs from the message's files, so a
-			// clip or image attached from disk (Canvas edits, "replace the dog
-			// with a cat") must travel as bytes, not as a path to read.
-			const mediaNote = await addLocalMediaFiles(prepared, attachments, this._logService);
-			if (mediaNote) {
-				prepared = { ...prepared, prompt: `${prepared.prompt}\n\n${mediaNote}` };
-			}
-		}
 		const systemContext = [
 			backboardMultitaskSystemContext(settings.rawMode),
 			backboardAccessSystemContext(settings.accessMode),
+			// DQuant language profile + links to the official reference and the
+			// requirement to verify signatures there. Reads the session's own
+			// config bag, so the guidance follows the session and never leaks
+			// into another chat.
+			buildDquantAgentContext(storedConfig, message => this._logService.info(message)),
 		].filter(Boolean).join('\n\n') || undefined;
 		// Default maps to the R-CLI's `auto` tier (file edits and safe commands
 		// run unprompted; dangerous commands and outward-facing tools still
@@ -1910,7 +1832,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 			await this._materialize(session, prompt, storedConfig);
 			mark('materialize');
 			if (session.disposed) {
-				throw new Error(localize('cliTsAgent.sessionDisposedDuringMaterialization', "The Backboard session was deleted before it finished starting."));
+				throw new Error(localize('cliTsAgent.sessionDisposedDuringMaterialization', "The DQuant Lab session was deleted before it finished starting."));
 			}
 			if (session.cancelBeforeSubmit) {
 				return;
@@ -1955,14 +1877,6 @@ export class CliTsAgent extends Disposable implements IAgent {
 				computerUse: settings.computerUse,
 				browserUse: settings.browserUse,
 				notify: settings.notifications,
-				imageGeneration: settings.imageGeneration,
-				// Always sent so returning a picker to Off clears a previously
-				// selected generation model on the persistent serve process.
-				imageModel: generativeModelSelection(settings.imageModel),
-				videoGeneration: settings.videoGeneration,
-				videoModel: generativeModelSelection(settings.videoModel),
-				// Always sent so switching it off reaches the persistent serve process.
-				askBeforeGenerating: settings.askBeforeGenerating,
 				openRouterProvider: settings.openRouterProvider,
 				excludedTools,
 				// Advertise IDE-executed tools (integrated browser, tasks, …).
@@ -1980,7 +1894,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 			}
 			if (status === 'failed' && !turn.error) {
 				turn.failed = true;
-				turn.error = { errorType: 'BackboardSendFailed', message: localize('cliTsAgent.turnFailed', "The Backboard agent reported a failed turn.") };
+				turn.error = { errorType: 'BackboardSendFailed', message: localize('cliTsAgent.turnFailed', "The DQuant Lab agent reported a failed turn.") };
 				this._fireFailureNote(session, effectiveTurnId, turn.error);
 			}
 			this._refreshModelsOnce(session);
@@ -1990,7 +1904,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 			// A terminal serve rejection may follow the more useful run:error.
 			// Keep that original failure in both the live row and durable history.
 			if (!turn.error) {
-				turn.error = { errorType: 'BackboardSendFailed', message: message.trim() ? message : localize('cliTsAgent.requestFailed', "Backboard request failed.") };
+				turn.error = { errorType: 'BackboardSendFailed', message: message.trim() ? message : localize('cliTsAgent.requestFailed', "DQuant Lab request failed.") };
 				this._fireFailureNote(session, effectiveTurnId, turn.error);
 			}
 		} finally {
@@ -2009,7 +1923,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 				usage: turn.usage,
 				prompt,
 				response: turn.responseText || (session.disposed
-					? localize('cliTsAgent.interruptedTurn', "This response was interrupted when Backboard closed.")
+					? localize('cliTsAgent.interruptedTurn', "This response was interrupted when DQuant Lab closed.")
 					: ''),
 				failed: turn.failed,
 				...(turn.error ? { error: turn.error } : {}),
@@ -2702,7 +2616,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 			return session;
 		}
 		if (session?.disposed) {
-			throw new Error(`Backboard session was disposed: ${sessionUri.toString()}`);
+			throw new Error(`DQuant Lab session was disposed: ${sessionUri.toString()}`);
 		}
 		const restored = this._readStore(sessionId).find(entry => entry.id === sessionId);
 		const recreated = this._createSessionEntry(sessionUri, restored);
@@ -2790,7 +2704,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 		this._throwIfDisposed(session);
 		let registered = worktreeRoots.some(root => root.toString() === worktree.path.toString());
 		if (pathExists && !registered) {
-			throw new Error(localize('cliTsAgent.worktreePathOccupied', "The saved Backboard worktree path exists but is no longer registered with Git: {0}", worktree.path.fsPath));
+			throw new Error(localize('cliTsAgent.worktreePathOccupied', "The saved DQuant Lab worktree path exists but is no longer registered with Git: {0}", worktree.path.fsPath));
 		}
 		if (!pathExists) {
 			if (registered) {
@@ -2801,7 +2715,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 			const branchExists = await this._gitService.branchExists(worktree.repositoryRoot, worktree.branchName);
 			this._throwIfDisposed(session);
 			if (!branchExists) {
-				throw new Error(localize('cliTsAgent.worktreeBranchMissing', "The isolated branch '{0}' no longer exists. Restore it or start a new Backboard session.", worktree.branchName));
+				throw new Error(localize('cliTsAgent.worktreeBranchMissing', "The isolated branch '{0}' no longer exists. Restore it or start a new DQuant Lab session.", worktree.branchName));
 			}
 			await fs.promises.mkdir(path.dirname(worktree.path.fsPath), { recursive: true });
 			this._throwIfDisposed(session);
@@ -2948,7 +2862,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 
 	private _throwIfDisposed(session: CliTsSession): void {
 		if (session.disposed) {
-			throw new Error(`Cannot materialize disposed Backboard session: ${session.sessionUri.toString()}`);
+			throw new Error(`Cannot materialize disposed DQuant Lab session: ${session.sessionUri.toString()}`);
 		}
 	}
 
@@ -2977,7 +2891,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 				return false;
 			}
 			if (await this._gitService.hasUncommittedChanges(worktreePath)) {
-				throw new Error(`A previous Backboard startup left changes in '${worktreePath.fsPath}'. The worktree was retained for recovery.`);
+				throw new Error(`A previous DQuant Lab startup left changes in '${worktreePath.fsPath}'. The worktree was retained for recovery.`);
 			}
 			this._logService.info(`[cli-ts] Reusing existing clean worktree '${worktreePath.fsPath}' for branch ${branchName}.`);
 			return true;
@@ -2988,7 +2902,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 		}
 		if (await this._gitService.branchExists(repositoryRoot, branchName)) {
 			if (await pathExists()) {
-				throw new Error(`Cannot restore Backboard branch '${branchName}' because '${worktreePath.fsPath}' already exists outside Git's worktree registry.`);
+				throw new Error(`Cannot restore DQuant Lab branch '${branchName}' because '${worktreePath.fsPath}' already exists outside Git's worktree registry.`);
 			}
 			await this._gitService.addExistingWorktree(repositoryRoot, worktreePath, branchName);
 			return;
@@ -3213,7 +3127,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 				if (!entry.disabled && !states.has(name)) {
 					states.set(name, {
 						kind: McpServerStatus.Error,
-						error: { errorType: 'mcp-server-failed', message: localize('cliTsAgent.mcpRejected', "The Backboard runtime could not use this server's configuration.") },
+						error: { errorType: 'mcp-server-failed', message: localize('cliTsAgent.mcpRejected', "The DQuant Lab runtime could not use this server's configuration.") },
 					});
 				}
 			}
@@ -3438,7 +3352,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 					storedTurn = withoutStoredFileEdits(storedTurn);
 				}
 				if (status === 'failed' && !storedTurn.error) {
-					storedTurn = { ...storedTurn, error: { errorType: 'BackboardSubagentFailed', message: localize('cliTsAgent.subagentFailed', "The Backboard subagent reported a failed turn.") } };
+					storedTurn = { ...storedTurn, error: { errorType: 'BackboardSubagentFailed', message: localize('cliTsAgent.subagentFailed', "The DQuant Lab subagent reported a failed turn.") } };
 				}
 				session.storedSubagentTurns.set(toolCallId, [storedTurn]);
 				// Public child progress omits the final text. Publish the durable
@@ -4368,7 +4282,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 				fire({
 					type: ActionType.ChatResponsePart,
 					turnId,
-					part: { kind: ResponsePartKind.SystemNotification, content: localize('cliTsAgent.warning', "Backboard: {0}", event.message) },
+					part: { kind: ResponsePartKind.SystemNotification, content: localize('cliTsAgent.warning', "DQuant Lab: {0}", event.message) },
 				});
 				return;
 			}
@@ -4381,7 +4295,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 				turn.failed = true;
 				// An actionable failure (no credit left) says what to do; any
 				// other failure keeps the calm generic note.
-				turn.error = { errorType: event.actionable ? 'BackboardSendFailed' : 'BackboardError', message: event.error?.trim() ? event.error : localize('cliTsAgent.requestFailed', "Backboard request failed.") };
+				turn.error = { errorType: event.actionable ? 'BackboardSendFailed' : 'BackboardError', message: event.error?.trim() ? event.error : localize('cliTsAgent.requestFailed', "DQuant Lab request failed.") };
 				this._fireFailureNote(session, turnId, turn.error);
 				return;
 			}
@@ -4977,7 +4891,7 @@ function readStoredSessions(storePath: string): CliTsStoredSession[] {
 				...session,
 				turns: [{
 					prompt: session.title,
-					response: localize('cliTsAgent.interruptedTurn', "This response was interrupted when Backboard closed."),
+					response: localize('cliTsAgent.interruptedTurn', "This response was interrupted when DQuant Lab closed."),
 					failed: true,
 				}],
 			}
@@ -5120,7 +5034,7 @@ function activeTurnToStoredTurn(turn: CliTsTurnState): CliTsStoredTurn {
 		// The failure note says it was interrupted; see cliTsFailureNote.
 		response: turn.responseText,
 		failed: true,
-		error: turn.error ?? { errorType: 'BackboardInterrupted', message: localize('cliTsAgent.interruptedTurn', "This response was interrupted when Backboard closed.") },
+		error: turn.error ?? { errorType: 'BackboardInterrupted', message: localize('cliTsAgent.interruptedTurn', "This response was interrupted when DQuant Lab closed.") },
 		...(turn.toolSummaries.length ? { tools: [...turn.toolSummaries] } : {}),
 		...(turn.storedParts.length ? { parts: cloneStoredParts(turn.storedParts) } : {}),
 	};
@@ -5581,7 +5495,7 @@ function runtimeSubagentRecoveryFromEvents(prompt: string, eventsRaw: string): C
 				break;
 			case 'run:error':
 				failed = true;
-				error = { errorType: event.actionable ? 'BackboardSendFailed' : 'BackboardError', message: event.error?.trim() ? event.error : localize('cliTsAgent.requestFailed', "Backboard request failed.") };
+				error = { errorType: event.actionable ? 'BackboardSendFailed' : 'BackboardError', message: event.error?.trim() ? event.error : localize('cliTsAgent.requestFailed', "DQuant Lab request failed.") };
 				break;
 			case 'turn:end':
 				failed = !!error || (event.status !== undefined && event.status !== 'completed');
@@ -6010,156 +5924,6 @@ const LOCAL_MEDIA_MIME_TYPES: Readonly<Record<string, string>> = {
 	'.gif': 'image/gif',
 };
 
-/** Larger clips stay path-only: the whole file crosses stdin as one base64 JSON line. */
-const LOCAL_MEDIA_MAX_BYTES = 96 * 1024 * 1024;
-
-/**
- * Longest reference clip the hosted video models accepted in live tests
- * (2026-10-02): 5s and 10s 720p clips worked on Hailuo 3 / FLUX Video Edit /
- * Aleph 2, while the same footage at 15s or 30s 1080p failed with a bare
- * "Media generation failed".
- */
-const VIDEO_REFERENCE_MAX_SECONDS = 10;
-
-/** Reads an MP4/MOV's length from its `mvhd` box, or undefined when it has none. */
-function mp4DurationSeconds(data: Uint8Array): number | undefined {
-	const view = new DataView(data.buffer, data.byteOffset, data.byteLength);
-	for (let index = 4; index + 32 <= data.length; index++) {
-		// 'mvhd'
-		if (data[index] !== 0x6d || data[index + 1] !== 0x76 || data[index + 2] !== 0x68 || data[index + 3] !== 0x64) {
-			continue;
-		}
-		const version = data[index + 4];
-		const timescale = view.getUint32(index + (version === 1 ? 24 : 16));
-		const duration = version === 1
-			? Number(view.getBigUint64(index + 28))
-			: view.getUint32(index + 20);
-		return timescale ? duration / timescale : undefined;
-	}
-	return undefined;
-}
-
-/**
- * The clip to upload for a hosted video model: on macOS, longer or larger clips
- * are re-encoded with the built-in `avconvert` to their first
- * {@link VIDEO_REFERENCE_MAX_SECONDS} seconds at no more than 720p, since the
- * models reject longer references. Elsewhere, or when conversion fails, the
- * original goes as is.
- */
-async function videoReference(filePath: string, data: Buffer, logService: ILogService): Promise<{ readonly data: Buffer; readonly trimmedFrom?: number }> {
-	if (process.platform !== 'darwin') {
-		return { data };
-	}
-	const seconds = mp4DurationSeconds(data);
-	const output = path.join(os.tmpdir(), `backboard-video-reference-${createHash('sha256').update(data).digest('hex').slice(0, 16)}.mp4`);
-	try {
-		await runTool('/usr/bin/avconvert', [
-			'--source', filePath, '--output', output, '--preset', 'Preset1280x720', '--replace',
-			'--duration', String(VIDEO_REFERENCE_MAX_SECONDS),
-		]);
-		const converted = await fs.promises.readFile(output);
-		return {
-			data: converted,
-			trimmedFrom: seconds !== undefined && seconds > VIDEO_REFERENCE_MAX_SECONDS + 0.5 ? seconds : undefined,
-		};
-	} catch (error) {
-		logService.info(`[cli-ts] Could not prepare video reference ${filePath}: ${error instanceof Error ? error.message : String(error)}`);
-		return { data };
-	} finally {
-		fs.promises.rm(output, { force: true }).catch(() => undefined);
-	}
-}
-
-/**
- * Reference photos smaller than this on their short edge are scaled up before
- * upload: a 200x200 face photo made Hailuo 3 fail with a bare "Media
- * generation failed" (2026-10-03), and the same photo at 600x600 worked.
- */
-const IMAGE_REFERENCE_MIN_EDGE = 400;
-const IMAGE_REFERENCE_TARGET_EDGE = 600;
-
-/** Runs a macOS command-line tool, resolving with its stdout. */
-function runTool(command: string, args: readonly string[]): Promise<string> {
-	return new Promise((resolve, reject) => cp.execFile(command, args, { timeout: 120_000 }, (error, stdout) => error ? reject(error) : resolve(stdout)));
-}
-
-/**
- * The photo to upload for a hosted video model: on macOS, one whose short edge
- * is under {@link IMAGE_REFERENCE_MIN_EDGE} pixels is scaled up with the
- * built-in `sips` (as a PNG). Larger photos, GIFs, other platforms, and failed
- * conversions keep the original.
- */
-async function imageReference(filePath: string, data: Buffer, mimeType: string, logService: ILogService): Promise<{ readonly data: Buffer; readonly mimeType: string }> {
-	if (process.platform !== 'darwin' || mimeType === 'image/gif') {
-		return { data, mimeType };
-	}
-	const output = path.join(os.tmpdir(), `backboard-image-reference-${createHash('sha256').update(data).digest('hex').slice(0, 16)}.png`);
-	try {
-		const info = await runTool('/usr/bin/sips', ['-g', 'pixelWidth', '-g', 'pixelHeight', filePath]);
-		const width = Number(/pixelWidth: (?<value>\d+)/.exec(info)?.groups?.value);
-		const height = Number(/pixelHeight: (?<value>\d+)/.exec(info)?.groups?.value);
-		if (!width || !height || Math.min(width, height) >= IMAGE_REFERENCE_MIN_EDGE) {
-			return { data, mimeType };
-		}
-		const longest = Math.ceil(Math.max(width, height) * IMAGE_REFERENCE_TARGET_EDGE / Math.min(width, height));
-		await runTool('/usr/bin/sips', ['-s', 'format', 'png', '-Z', String(longest), filePath, '--out', output]);
-		return { data: await fs.promises.readFile(output), mimeType: 'image/png' };
-	} catch (error) {
-		logService.info(`[cli-ts] Could not prepare image reference ${filePath}: ${error instanceof Error ? error.message : String(error)}`);
-		return { data, mimeType };
-	} finally {
-		fs.promises.rm(output, { force: true }).catch(() => undefined);
-	}
-}
-
-/**
- * Adds the bytes of images and videos attached by path, for turns whose hosted
- * media tools take their inputs from the message's files. Files that are
- * missing, too large or not media keep only their path mention. Clips are
- * trimmed and scaled to what the video models accept, and the prompt says so.
- */
-export async function addLocalMediaFiles(prepared: PreparedSubmitAttachments, attachments: readonly MessageAttachment[] | undefined, logService: ILogService): Promise<string | undefined> {
-	const trimmed: string[] = [];
-	for (const attachment of attachments ?? []) {
-		if (attachment.type !== MessageAttachmentKind.Resource) {
-			continue;
-		}
-		let uri: URI;
-		try {
-			uri = URI.parse(attachment.uri);
-		} catch {
-			continue;
-		}
-		const mimeType = LOCAL_MEDIA_MIME_TYPES[path.extname(uri.path).toLowerCase()];
-		if (uri.scheme !== 'file' || !mimeType) {
-			continue;
-		}
-		try {
-			const stat = await fs.promises.stat(uri.fsPath);
-			if (!stat.isFile() || stat.size > LOCAL_MEDIA_MAX_BYTES) {
-				continue;
-			}
-			const data = await fs.promises.readFile(uri.fsPath);
-			if (mimeType.startsWith('video/')) {
-				const reference = await videoReference(uri.fsPath, data, logService);
-				if (reference.trimmedFrom !== undefined) {
-					trimmed.push(`${path.basename(uri.fsPath)} (${Math.round(reference.trimmedFrom)}s)`);
-				}
-				const fileName = reference.data === data ? path.basename(uri.fsPath) : `${path.parse(uri.fsPath).name}.mp4`;
-				prepared.files.push({ fileName, mimeType: reference.data === data ? mimeType : 'video/mp4', dataBase64: reference.data.toString('base64') });
-				continue;
-			}
-			const image = await imageReference(uri.fsPath, data, mimeType, logService);
-			const fileName = image.data === data ? path.basename(uri.fsPath) : `${path.parse(uri.fsPath).name}.png`;
-			prepared.files.push({ fileName, mimeType: image.mimeType, dataBase64: image.data.toString('base64') });
-		} catch (error) {
-			logService.info(`[cli-ts] Could not attach media ${uri.fsPath}: ${error instanceof Error ? error.message : String(error)}`);
-		}
-	}
-	return trimmed.length
-		? `Uploaded clips were cut to their first ${VIDEO_REFERENCE_MAX_SECONDS} seconds at 720p, the longest reference the video models accept: ${trimmed.join(', ')}. Tell the user the edit covers only that part.`
-		: undefined;
-}
 
 /**
  * Splits IDE message attachments into inline prompt context (text snippets and
@@ -6179,8 +5943,7 @@ function prepareSubmitAttachments(prompt: string, attachments?: readonly Message
 			try {
 				const uri = URI.parse(attachment.uri);
 				if (uri.scheme === 'file') {
-					// A clip is binary: reading it only floods the context. With a video
-					// model on it travels with the message as bytes (addLocalMediaFiles).
+					// A clip is binary: reading it only floods the context.
 					parts.push(LOCAL_MEDIA_MIME_TYPES[path.extname(uri.path).toLowerCase()]?.startsWith('video/')
 						? `Attached video (a binary clip; do not open it with Read): ${uri.fsPath}`
 						: `Attached file (read it with the Read tool): ${uri.fsPath}`);
@@ -6262,7 +6025,7 @@ function cliTsNoteRoute(model: CliTsNoteModel): string {
 		case 'claude': return localize('cliTsAgent.route.claude', "on your Claude subscription");
 		case 'chatgpt': return localize('cliTsAgent.route.chatGpt', "on your ChatGPT subscription");
 		case 'byok': return localize('cliTsAgent.route.byok', "billed to your own API key");
-		default: return localize('cliTsAgent.route.backboard', "billed to Backboard credits");
+		default: return localize('cliTsAgent.route.backboard', "billed to DQuant Lab credits");
 	}
 }
 
@@ -6277,7 +6040,7 @@ function cliTsPickModelHint(model: CliTsNoteModel | undefined): string {
 	return localize('cliTsAgent.pick.any', "pick a different model in the model picker");
 }
 
-/** " You're on Claude Opus 5.5, billed to Backboard credits (not your Claude subscription)." */
+/** " You're on Claude Opus 5.5, billed to DQuant Lab credits (not your Claude subscription)." */
 function cliTsModelSentence(model: CliTsNoteModel | undefined): string {
 	if (!model) {
 		return '';
@@ -6304,7 +6067,7 @@ function cliTsFailureNote(error: CliTsTurnError | undefined, model?: CliTsNoteMo
 		return localize('cliTsAgent.note.subagent', "_This subagent stopped early and handed its task back to the main agent._");
 	}
 	if (error?.errorType === 'BackboardInterrupted') {
-		return localize('cliTsAgent.note.interrupted', "_Backboard closed before this response finished. Send a message to continue from here._");
+		return localize('cliTsAgent.note.interrupted', "_DQuant Lab closed before this response finished. Send a message to continue from here._");
 	}
 	const reason = error ? cliTsFailureReason(error.message) : undefined;
 	if (error?.errorType === 'BackboardSendFailed' && reason) {
@@ -6320,7 +6083,7 @@ function cliTsFailureNote(error: CliTsTurnError | undefined, model?: CliTsNoteMo
 function cliTsFailureReason(message: unknown): string | undefined {
 	// Legacy stores may hold a non-string message.
 	const text = typeof message === 'string' ? message.trim() : '';
-	if (!text || text === localize('cliTsAgent.turnFailed', "The Backboard agent reported a failed turn.") || text === localize('cliTsAgent.requestFailed', "Backboard request failed.")) {
+	if (!text || text === localize('cliTsAgent.turnFailed', "The DQuant Lab agent reported a failed turn.") || text === localize('cliTsAgent.requestFailed', "DQuant Lab request failed.")) {
 		return undefined;
 	}
 	const firstLine = text.split('\n')[0].replace(/\s+/g, ' ').trim();
@@ -6352,15 +6115,15 @@ function cliTsConnectQuickFix(message: string, model?: CliTsNoteModel): string |
 		return localize('cliTsAgent.quickFix.key', "_This model needs an API key that isn't set up._ [Add API Key]({0}) or pick a different model in the model picker.", command('backboard.openApiKeys'));
 	}
 	if (/No backend can serve/.test(message)) {
-		return localize('cliTsAgent.quickFix.backboard', "_This model is billed to Backboard credits and needs a Backboard sign-in._ [Sign In]({0}) or {1}.{2}", command('backboard.signIn'), pick, onModel);
+		return localize('cliTsAgent.quickFix.backboard', "_This model is billed to DQuant Lab credits and needs a DQuant Lab sign-in._ [Sign In]({0}) or {1}.{2}", command('backboard.signIn'), pick, onModel);
 	}
 	// An expired sign-in (its refresh token rejected) leaves the account looking
 	// signed in while Backboard answers every turn with 401.
 	if (/Backboard request failed: HTTP 401\b/.test(message)) {
-		return localize('cliTsAgent.quickFix.signInExpired', "_Your Backboard sign-in has expired, so models billed to Backboard credits can't run._ [Sign In Again]({0}) or {1}.{2}", command('backboard.signIn'), pick, onModel);
+		return localize('cliTsAgent.quickFix.signInExpired', "_Your DQuant Lab sign-in has expired, so models billed to DQuant Lab credits can't run._ [Sign In Again]({0}) or {1}.{2}", command('backboard.signIn'), pick, onModel);
 	}
 	if (isLostCliTsConversation(message)) {
-		return localize('cliTsAgent.quickFix.lostConversation', "_This chat's saved conversation couldn't be loaded, so Backboard reconnected it._ Send your message again to continue; the chat keeps its history.");
+		return localize('cliTsAgent.quickFix.lostConversation', "_This chat's saved conversation couldn't be loaded, so DQuant Lab reconnected it._ Send your message again to continue; the chat keeps its history.");
 	}
 	if (/doesn't offer this model|model_not_found|model (?:is )?not (?:found|available)/i.test(message)) {
 		return localize('cliTsAgent.quickFix.modelUnavailable', "_This model isn't available on your account right now._ {0}.{1}", cliTsCapitalize(pick), onModel);
@@ -6376,7 +6139,7 @@ function cliTsConnectQuickFix(message: string, model?: CliTsNoteModel): string |
 		return localize('cliTsAgent.quickFix.busy', "_The model is busy or you've hit a usage limit._ Wait a minute and send your message again, or {0}.{1}", pick, onModel);
 	}
 	if (/ECONNREFUSED|ENOTFOUND|ETIMEDOUT|ECONNRESET|fetch failed|socket hang up|network error/i.test(message)) {
-		return localize('cliTsAgent.quickFix.network', "_Backboard couldn't reach the server._ Check your internet connection, then send your message again.");
+		return localize('cliTsAgent.quickFix.network', "_DQuant Lab couldn't reach the server._ Check your internet connection, then send your message again.");
 	}
 	return undefined;
 }

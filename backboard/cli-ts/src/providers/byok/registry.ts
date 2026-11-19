@@ -4,6 +4,7 @@ import {
 	isByokProviderId,
 } from "../../core/keys/ProviderKeyTypes.ts";
 import { anthropicAdapter } from "./adapters/AnthropicAdapter.ts";
+import { customAdapter } from "./adapters/CustomAdapter.ts";
 import { googleAdapter } from "./adapters/GoogleAdapter.ts";
 import { openaiAdapter } from "./adapters/OpenAIAdapter.ts";
 import { openRouterAdapter } from "./adapters/OpenRouterAdapter.ts";
@@ -21,6 +22,7 @@ export const BYOK_ADAPTERS: Record<ByokProviderId, ProviderAdapter> = {
 	google: googleAdapter,
 	openrouter: openRouterAdapter,
 	xai: xaiAdapter,
+	custom: customAdapter,
 };
 
 /** Adapters in a stable display order for pickers. */

@@ -1,5 +1,5 @@
 
-name: Build Backboard Desktop Linux
+name: Build DQuant Lab Linux
 
 on:
   workflow_dispatch:
@@ -51,7 +51,7 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
 
-      - name: Install Backboard dependencies
+      - name: Install DQuant Lab dependencies
         working-directory: backboard
         run: npm ci --no-audit --no-fund
 
@@ -92,7 +92,7 @@ jobs:
       - name: Upload Debian package
         uses: actions/upload-artifact@v4
         with:
-          name: backboard-linux-deb
+          name: dquant-lab-linux-deb
           path: backboard/.build/linux/deb/amd64/deb/*.deb
           if-no-files-found: error
           retention-days: 3

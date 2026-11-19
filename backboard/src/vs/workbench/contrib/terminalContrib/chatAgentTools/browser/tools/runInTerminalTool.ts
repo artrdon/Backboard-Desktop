@@ -345,7 +345,7 @@ export async function createRunInTerminalToolData(
 			type: 'boolean',
 			const: allowToRunUnsandboxedCommands,
 			default: allowToRunUnsandboxedCommands,
-			description: 'Whether this tool invocation is allowed to run commands outside the terminal sandbox. This value is set by Backboard IDE based on chat.agent.sandbox.allowUnsandboxedCommands.'
+			description: 'Whether this tool invocation is allowed to run commands outside the terminal sandbox. This value is set by DQuant Lab based on chat.agent.sandbox.allowUnsandboxedCommands.'
 		},
 		requestUnsandboxedExecution: {
 			type: 'boolean',

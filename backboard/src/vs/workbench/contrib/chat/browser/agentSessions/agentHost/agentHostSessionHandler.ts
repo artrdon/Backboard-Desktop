@@ -169,7 +169,7 @@ function userBillingRouteLabel(modelId: string | undefined): string | undefined 
 				default: return localize('agentHost.responseDetails.subscription', "your subscription");
 			}
 		case 'backboard':
-			return localize('agentHost.responseDetails.backboardCredits', "Backboard credits");
+			return localize('agentHost.responseDetails.backboardCredits', "DQuant Lab credits");
 		default:
 			return undefined;
 	}

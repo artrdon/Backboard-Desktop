@@ -243,7 +243,7 @@ export function runCliTsCommand(logService: ILogService, args: readonly string[]
 		child.once('close', code => {
 			clearTimeout(timer);
 			if (timedOut) {
-				reject(new Error(`Backboard CLI command timed out after ${options.timeoutMs}ms`));
+				reject(new Error(`DQuant Lab CLI command timed out after ${options.timeoutMs}ms`));
 				return;
 			}
 			if (code === 0) {
@@ -251,7 +251,7 @@ export function runCliTsCommand(logService: ILogService, args: readonly string[]
 				return;
 			}
 			const detail = stderr.trim() || stdout.trim() || `exit code ${code ?? 'unknown'}`;
-			reject(new Error(`Backboard CLI command failed: ${detail}`));
+			reject(new Error(`DQuant Lab CLI command failed: ${detail}`));
 		});
 		// stdin is always a pipe so the child never inherits the host's. It is
 		// closed immediately when there is nothing to hand over.
@@ -600,7 +600,7 @@ export class CliTsServeProcess extends Disposable {
 		try {
 			const payload = await this.startupDeadline(ready, this.options.readyTimeoutMs ?? 30_000, localize('cliTsProcess.readyTimeout', "Runtime did not become ready. Retry to restart it."));
 			if (!payload.capabilities?.includes(CLI_TS_HOST_MANAGED_BYOK_CAPABILITY)) {
-				throw new Error(localize('cliTsProcess.runtimeTooOld', "The bundled Backboard runtime does not support the current API key protocol. Update Backboard, or rebuild it with: npm --prefix extensions/backboard run package-cli-ts"));
+				throw new Error(localize('cliTsProcess.runtimeTooOld', "The bundled DQuant Lab runtime does not support the current API key protocol. Update DQuant Lab, or rebuild it with: npm --prefix extensions/backboard run package-cli-ts"));
 			}
 			const control = { ...snapshot(), requestId: this.nextRequestId() };
 			this.snapshotWritten = true;
@@ -779,7 +779,7 @@ export function cliTsCredentialFingerprint(): string {
 }
 
 /**
- * Lets the backend count cli-ts runs as Backboard Studio activity. Kept out of
+ * Lets the backend count cli-ts runs as DQuant Lab activity. Kept out of
  * `cliTsCredentialEnv`, whose fingerprint decides when the runtime restarts.
  */
 function studioClientEnv(): Record<string, string> {

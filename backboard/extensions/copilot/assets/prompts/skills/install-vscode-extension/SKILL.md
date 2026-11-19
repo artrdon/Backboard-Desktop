@@ -1,12 +1,12 @@
 ---
 name: install-vscode-extension
-description: 'How to install a Backboard IDE extension from an extension ID. Useful when the user wants to add new capabilities to their Backboard IDE environment by installing extensions.'
+description: 'How to install a DQuant Lab extension from an extension ID. Useful when the user wants to add new capabilities to their DQuant Lab environment by installing extensions.'
 ---
 
-# Installing Backboard IDE extensions
+# Installing DQuant Lab extensions
 
-1. Backboard IDE extensions are identified by their unique extension ID, which typically follows the format `publisher.extensionName`. For example, the Python extension by Microsoft has the ID `ms-python.python`.
-2. To install a Backboard IDE extension, you need to use the command `workbench.extensions.installExtension` and pass in the extension ID. The args are of the format:
+1. DQuant Lab extensions are identified by their unique extension ID, which typically follows the format `publisher.extensionName`. For example, the Python extension by Microsoft has the ID `ms-python.python`.
+2. To install a DQuant Lab extension, you need to use the command `workbench.extensions.installExtension` and pass in the extension ID. The args are of the format:
 ```
 [extensionId, { enable: true, installPreReleaseVersion: boolean }]
 ```

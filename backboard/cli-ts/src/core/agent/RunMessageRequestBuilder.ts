@@ -26,17 +26,6 @@ export interface RunMessageRequestContext {
 	memory: MemoryMode;
 	memoryProfile: MemoryProfile;
 	workspaceId?: string;
-	/** Enables Backboard's built-in image generation for the turn. */
-	imageGeneration?: boolean;
-	/** Image model to use; falls back to the built-in default when omitted. */
-	imageModel?: { provider: string; name: string };
-	/** Enables Backboard's built-in video generation for the turn. */
-	videoGeneration?: boolean;
-	/**
-	 * Video model to use. Video generation has no universal default model, so
-	 * the turn only enables it when an explicit model was selected.
-	 */
-	videoModel?: { provider: string; name: string };
 	/** Pins an OpenRouter upstream; undefined ranks upstreams by latency. */
 	openRouterProvider?: string;
 	/**
@@ -74,27 +63,6 @@ export function buildRunMessageRequest(
 		...(context.model.provider === "openrouter"
 			? { openrouter: openRouterRouting(context.openRouterProvider) }
 			: {}),
-		...(context.imageGeneration
-			? {
-					image_generation: "auto",
-					image_model_provider:
-						context.imageModel?.provider ?? DEFAULT_IMAGE_MODEL_PROVIDER,
-					image_model_name:
-						context.imageModel?.name ?? DEFAULT_IMAGE_MODEL_NAME,
-				}
-			: {}),
-		// Video generation is Backboard's built-in hosted tool: like
-		// `image_generation: "auto"`, these fields activate the server-side
-		// `generate_video` tool inside the run instead of a client function.
-		// Declaring our own function with the same name makes the server run
-		// the hosted one without this configuration, which fails the turn.
-		...(context.videoGeneration && context.videoModel
-			? {
-					video_generation: "auto",
-					video_model_provider: context.videoModel.provider,
-					video_model_name: context.videoModel.name,
-				}
-			: {}),
 		tools: context.tools,
 	};
 }
@@ -116,9 +84,3 @@ export function openRouterRouting(
 		: { sort: "latency" };
 }
 
-/**
- * Model used when image generation is on. Mirrors the retired Rust bridge's
- * defaults for the Backboard `image_generation: "auto"` path.
- */
-const DEFAULT_IMAGE_MODEL_PROVIDER = "google";
-const DEFAULT_IMAGE_MODEL_NAME = "gemini-3.1-flash-image";

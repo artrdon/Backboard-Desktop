@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds, signs and lays out live updates for Backboard Studio.
+// Builds, signs and lays out live updates for DQuant Lab.
 //
 // A live update ships JavaScript to installed apps without a new signed app:
 //   app    the application JavaScript (out/ and extensions/) from an unsigned
@@ -161,7 +161,7 @@ function resolveAppRoot(input) {
 	];
 	const root = candidates.find(candidate => fs.existsSync(path.join(candidate, 'product.json')) && fs.existsSync(path.join(candidate, 'out')));
 	if (!root) {
-		fail(`${input} is not a Backboard Studio app (no product.json and out/ under it)`);
+		fail(`${input} is not a DQuant Lab app (no product.json and out/ under it)`);
 	}
 	return root;
 }

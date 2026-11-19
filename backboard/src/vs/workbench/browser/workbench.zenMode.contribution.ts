@@ -9,7 +9,7 @@ import { Registry } from '../../platform/registry/common/platform.js';
 
 // --- Configuration
 //
-// Zen Mode is not offered in Backboard Studio: there is no command, keybinding
+// Zen Mode is not offered in DQuant Lab: there is no command, keybinding
 // or menu entry that can enter it (see the removed entrypoints below). The
 // `zenMode.*` settings stay registered so the layout code that still reads them
 // keeps resolving its defaults, and so re-enabling the feature is a matter of

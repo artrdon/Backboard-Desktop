@@ -45,7 +45,7 @@ function createHarness(directory: string, events: string[], acceptInstall = fals
 		}
 	};
 	runInNewContext(fs.readFileSync(filename, 'utf8') + `
-currentMacAppPath = () => '/Applications/Backboard Studio.app';
+currentMacAppPath = () => '/Applications/DQuant Lab.app';
 readCurrentAppVersion = () => versions.installed;
 backboardUpdateCacheDirectory = async () => directory;
 acquireBackboardUpdateInstallLock = async () => { events.push('lock'); return {}; };

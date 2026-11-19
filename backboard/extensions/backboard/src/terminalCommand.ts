@@ -7,7 +7,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 
-const PROFILE_MARKER = '# Added by Backboard Studio';
+const PROFILE_MARKER = '# Added by DQuant Lab';
 
 /**
  * Puts the app's launcher on the user's PATH without asking for

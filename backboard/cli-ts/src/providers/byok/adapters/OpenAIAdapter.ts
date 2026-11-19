@@ -297,7 +297,7 @@ function numberOf(value: unknown): number {
 	return typeof value === "number" && Number.isFinite(value) ? value : 0;
 }
 
-function toOpenAIMessages(request: ByokStreamRequest): unknown[] {
+export function toOpenAIMessages(request: ByokStreamRequest): unknown[] {
 	const out: unknown[] = [{ role: "system", content: request.systemPrompt }];
 	for (const message of request.messages) {
 		if (message.role === "user") {

@@ -25,9 +25,9 @@ VERSION="${VERSION:-}"
 ARCH="${ARCH:-aarch64}"
 CHANNEL="${CHANNEL:-stable}"
 if [[ "${ARCH}" == "x86_64" ]]; then
-  DEFAULT_VSAPP="${REPO_ROOT}/VSCode-darwin-x64/Backboard Studio.app"
+  DEFAULT_VSAPP="${REPO_ROOT}/VSCode-darwin-x64/DQuant Lab.app"
 else
-  DEFAULT_VSAPP="${REPO_ROOT}/VSCode-darwin-arm64/Backboard Studio.app"
+  DEFAULT_VSAPP="${REPO_ROOT}/VSCode-darwin-arm64/DQuant Lab.app"
 fi
 VSAPP="${VSAPP:-${DEFAULT_VSAPP}}"
 OUT="${OUT:-${REPO_ROOT}/vscode-release/${VERSION:-unversioned}/${ARCH}}"
@@ -82,10 +82,10 @@ case "${CHANNEL}" in
 esac
 
 if [[ "${CHANNEL}" == "sandbox" ]]; then
-  APP_DISPLAY_NAME="Backboard Studio Sandbox"
+  APP_DISPLAY_NAME="DQuant Lab Sandbox"
   BUNDLE_IDENTIFIER="io.backboard.studio.sandbox"
 else
-  APP_DISPLAY_NAME="Backboard Studio"
+  APP_DISPLAY_NAME="DQuant Lab"
   BUNDLE_IDENTIFIER="io.backboard.studio"
 fi
 
@@ -530,7 +530,7 @@ rename_helper_app() {
   local source_app=""
   local candidate
 
-  for candidate in "${old_name}" "${old_name/Code - OSS/Backboard IDE}" "${old_name/Code - OSS/Backboard Studio Dev}" "${old_name/Code - OSS/Backboard Studio}" "${new_name}"; do
+  for candidate in "${old_name}" "${old_name/Code - OSS/DQuant Lab}" "${old_name/Code - OSS/DQuant Lab Sandbox}" "${old_name/Code - OSS/Backboard Studio}" "${new_name}"; do
     if [[ -d "${frameworks_dir}/${candidate}.app" ]]; then
       source_name="${candidate}"
       source_app="${frameworks_dir}/${candidate}.app"
@@ -539,7 +539,7 @@ rename_helper_app() {
   done
 
   if [[ -z "${source_app}" ]]; then
-    echo "Missing Electron helper app: expected ${old_name}.app, ${old_name/Code - OSS/Backboard IDE}.app, ${old_name/Code - OSS/Backboard Studio Dev}.app, ${old_name/Code - OSS/Backboard Studio}.app, or ${new_name}.app" >&2
+    echo "Missing Electron helper app: expected ${old_name}.app, ${old_name/Code - OSS/DQuant Lab}.app, ${old_name/Code - OSS/DQuant Lab Sandbox}.app, ${old_name/Code - OSS/Backboard Studio}.app, or ${new_name}.app" >&2
     exit 1
   fi
 

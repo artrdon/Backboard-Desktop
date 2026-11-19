@@ -551,7 +551,7 @@ export class InstallAction extends ExtensionAction {
 					}
 				});
 			} else if (this.extension.deprecationInfo.settings) {
-				detail = localize('deprecated with alternate settings message', "This extension is deprecated as this functionality is now built-in to Backboard IDE.");
+				detail = localize('deprecated with alternate settings message', "This extension is deprecated as this functionality is now built-in to DQuant Lab.");
 
 				const settings = this.extension.deprecationInfo.settings;
 				buttons.push({
@@ -940,7 +940,7 @@ export class UninstallAction extends ExtensionAction {
 
 		try {
 			await this.extensionsWorkbenchService.uninstall(this.extension);
-			alert(localize('uninstallExtensionComplete', "Please reload Backboard IDE to complete the uninstallation of the extension {0}.", this.extension.displayName));
+			alert(localize('uninstallExtensionComplete', "Please reload DQuant Lab to complete the uninstallation of the extension {0}.", this.extension.displayName));
 		} catch (error) {
 			if (!isCancellationError(error)) {
 				this.dialogService.error(getErrorMessage(error));
@@ -2823,7 +2823,7 @@ export class ExtensionStatusAction extends ExtensionAction {
 				this.updateStatus({ icon: warningIcon, message: new MarkdownString(localize('deprecated with alternate extension tooltip', "This extension is deprecated. Use the {0} extension instead.", link)) }, true);
 			} else if (this.extension.deprecationInfo.settings) {
 				const link = `[${localize('settings', "settings")}](${createCommandUri('workbench.action.openSettings', this.extension.deprecationInfo.settings.map(setting => `@id:${setting}`).join(' '))}})`;
-				this.updateStatus({ icon: warningIcon, message: new MarkdownString(localize('deprecated with alternate settings tooltip', "This extension is deprecated as this functionality is now built-in to Backboard IDE. Configure these {0} to use this functionality.", link)) }, true);
+				this.updateStatus({ icon: warningIcon, message: new MarkdownString(localize('deprecated with alternate settings tooltip', "This extension is deprecated as this functionality is now built-in to DQuant Lab. Configure these {0} to use this functionality.", link)) }, true);
 			} else {
 				const message = new MarkdownString(localize('deprecated tooltip', "This extension is deprecated as it is no longer being maintained."));
 				if (this.extension.deprecationInfo.additionalInfo) {
@@ -2922,7 +2922,7 @@ export class ExtensionStatusAction extends ExtensionAction {
 
 		// Unification
 		if (this.extension.enablementState === EnablementState.DisabledByUnification) {
-			this.updateStatus({ icon: infoIcon, message: new MarkdownString(localize('extension disabled because of unification', "All Backboard assistant functionality is now served from the Backboard Chat extension. To temporarily opt out of this extension unification, toggle the {0} setting.", '`chat.extensionUnification.enabled`')) }, true);
+			this.updateStatus({ icon: infoIcon, message: new MarkdownString(localize('extension disabled because of unification', "All DQuant Lab assistant functionality is now served from the DQuant Chat extension. To temporarily opt out of this extension unification, toggle the {0} setting.", '`chat.extensionUnification.enabled`')) }, true);
 			return;
 		}
 

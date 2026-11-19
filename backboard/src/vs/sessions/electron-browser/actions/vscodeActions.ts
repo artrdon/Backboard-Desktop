@@ -259,7 +259,7 @@ export class OpenVSCodeWindowAction extends Action2 {
 	constructor() {
 		super({
 			id: OpenVSCodeWindowAction.ID,
-			title: localize2('openVSCodeWindow', 'Open Backboard IDE Window'),
+			title: localize2('openVSCodeWindow', 'Open DQuant Lab Window'),
 			f1: true,
 			keybinding: {
 				primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KeyA,
@@ -297,7 +297,7 @@ export class OpenOptimusWindowAction extends Action2 {
 	constructor() {
 		super({
 			id: OpenOptimusWindowAction.ID,
-			title: localize2('openCanvasWindow', "Open Canvas"),
+			title: localize2('openAgentsAdvancedWindow', "Open Agents Window"),
 			f1: false, // Canvas is hidden for now.
 		});
 	}
@@ -318,7 +318,7 @@ export class OpenInVSCodeWidgetContribution extends Disposable implements IWorkb
 	) {
 		super();
 		this._register(actionViewItemService.register(Menus.TitleBarLeftLayout, OpenSessionInVSCodeAction.ID, (action, options) => {
-			return instantiationService.createInstance(OpenInVSCodeTitleBarWidget, action, options, OpenVSCodeWindowAction.ID, OpenAgentsWindowAction.ID, OpenOptimusWindowAction.ID);
+			return instantiationService.createInstance(OpenInVSCodeTitleBarWidget, action, options, OpenVSCodeWindowAction.ID, OpenAgentsWindowAction.ID);
 		}, undefined));
 	}
 }

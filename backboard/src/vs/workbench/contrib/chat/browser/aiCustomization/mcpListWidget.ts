@@ -879,7 +879,7 @@ export class McpListWidget extends Disposable {
 				icon: extensionIcon,
 				count: extensionServers.length,
 				isFirst,
-				description: localize('extensionGroupDescription', "Connectors contributed by installed Backboard IDE extensions."),
+				description: localize('extensionGroupDescription', "Connectors contributed by installed DQuant Lab extensions."),
 				collapsed,
 			});
 			if (!collapsed) {
@@ -906,7 +906,7 @@ export class McpListWidget extends Disposable {
 				icon: builtinIcon,
 				count: otherBuiltinServers.length,
 				isFirst,
-				description: localize('builtInGroupDescription', "Connectors built into Backboard IDE. These are available automatically."),
+				description: localize('builtInGroupDescription', "Connectors built into DQuant Lab. These are available automatically."),
 				collapsed,
 			});
 			if (!collapsed) {

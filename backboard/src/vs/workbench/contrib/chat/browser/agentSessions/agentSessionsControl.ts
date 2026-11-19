@@ -188,7 +188,7 @@ export class AgentSessionsControl extends Disposable implements IAgentSessionsCo
 		this.createBackboardAuthGate(this.sessionsContainer);
 		this.updateBackboardAuthGate();
 		this.refreshBackboardAuthGateFromConfig().catch(error => {
-			this.logService.error(`[Backboard] Failed to refresh agents auth gate: ${error instanceof Error ? error.message : String(error)}`);
+			this.logService.error(`[DQuant Lab] Failed to refresh agents auth gate: ${error instanceof Error ? error.message : String(error)}`);
 		});
 	}
 
@@ -215,7 +215,7 @@ export class AgentSessionsControl extends Disposable implements IAgentSessionsCo
 		title.textContent = localize('backboard.auth.agents.title', "Connect Your AI");
 
 		const description = append(card, $('p.backboard-auth-gate-description'));
-		description.textContent = localize('backboard.auth.agents.description', "Use Backboard, an API key, or a subscription.");
+		description.textContent = localize('backboard.auth.agents.description', "Use DQuant Lab, an API key, or a subscription.");
 
 		this._register(renderBackboardAuthSetup(card, this.commandService, () => this.refreshBackboardAuthGateFromConfig()));
 

@@ -77,8 +77,8 @@ export class GrowthSessionController extends Disposable implements IChatSessionI
 
 		return [{
 			resource: GrowthSessionController.SESSION_URI,
-			label: localize('growthSession.label', "Try Backboard"),
-			description: localize('growthSession.description', "Backboard is available. Try it now."),
+			label: localize('growthSession.label', "Try DQuant Lab"),
+			description: localize('growthSession.description', "DQuant Lab is available. Try it now."),
 			status: ChatSessionStatus.NeedsInput,
 			iconPath: Codicon.lightbulb,
 			timing: {
@@ -128,9 +128,9 @@ export class GrowthSessionOpenerParticipant implements ISessionOpenerParticipant
 			query: '',
 			isPartialQuery: true,
 			previousRequests: [{
-				request: localize('growthSession.previousRequest', "Tell me about Backboard!"),
+				request: localize('growthSession.previousRequest', "Tell me about DQuant Lab!"),
 				// allow-any-unicode-next-line
-				response: localize('growthSession.previousResponse', "Welcome to Backboard, your AI coding assistant. Here are some things you can try:\n\n- \"Help me debug this error\" - paste an error message and get a fix\n- \"Write tests for my function\" - select code and ask for unit tests\n- \"Explain this code\" - highlight something unfamiliar and ask what it does\n- \"Scaffold a REST API\" - describe what you want and let Agent mode build it\n- \"Refactor this to be more readable\" - select messy code and clean it up\n\nType anything below to get started!"),
+				response: localize('growthSession.previousResponse', "Welcome to DQuant Lab, your AI coding assistant. Here are some things you can try:\n\n- \"Help me debug this error\" - paste an error message and get a fix\n- \"Write tests for my function\" - select code and ask for unit tests\n- \"Explain this code\" - highlight something unfamiliar and ask what it does\n- \"Scaffold a REST API\" - describe what you want and let Agent mode build it\n- \"Refactor this to be more readable\" - select messy code and clean it up\n\nType anything below to get started!"),
 			}],
 		};
 		await commandService.executeCommand(CHAT_OPEN_ACTION_ID, opts);

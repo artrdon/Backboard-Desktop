@@ -16,7 +16,7 @@ $observations = [System.Collections.Generic.List[object]]::new()
 function Get-BackboardRegistration {
 	foreach ($root in @('HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall', 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall', 'HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall')) {
 		Get-ItemProperty "$root\*" -ErrorAction SilentlyContinue |
-			Where-Object { $_.PSObject.Properties['DisplayName'] -and $_.DisplayName -like 'Backboard Studio*' }
+			Where-Object { $_.PSObject.Properties['DisplayName'] -and $_.DisplayName -like 'DQuant Lab*' }
 	}
 }
 
@@ -63,7 +63,7 @@ function Assert-Registration([string]$Label) {
 	$entries = @(Get-BackboardRegistration)
 	if ($entries.Count -ne 1) { throw "${Label}: expected one uninstall registration, got $($entries.Count)" }
 	$entry = $entries[0]
-	if ($entry.DisplayName -notin @('Backboard Studio', 'Backboard Studio (User)')) { throw "Unexpected DisplayName: $($entry.DisplayName)" }
+	if ($entry.DisplayName -notin @('DQuant Lab', 'DQuant Lab (User)')) { throw "Unexpected DisplayName: $($entry.DisplayName)" }
 	if ($entry.Publisher -ne $publisher) { throw "Unexpected Publisher: $($entry.Publisher)" }
 	if ($entry.DisplayVersion -ne $Version) { throw "Unexpected DisplayVersion: $($entry.DisplayVersion)" }
 	$uninstaller = $entry.UninstallString.Trim('"')

@@ -92,14 +92,6 @@ export class Config {
 	private browserUseEnabled = false;
 	private skillDiscoveryEnabled = false;
 	private notifyEnabled = false;
-	private imageGenerationEnabled = false;
-	/** Selected image model as `provider/name`; undefined keeps the built-in default. */
-	private imageModel: { provider: string; name: string } | undefined;
-	private videoGenerationEnabled = false;
-	/** Selected video model as `provider/name`; video generation has no default model. */
-	private videoModel: { provider: string; name: string } | undefined;
-	/** The composer's "Ask Before Generating" switch; off unless a host turns it on. */
-	private askBeforeGenerating = false;
 	private openRouterProvider: string | undefined;
 	private verboseEnabled = true;
 	private readonly currentMemoryProfile: MemoryProfile;
@@ -149,6 +141,15 @@ export class Config {
 			this.auth.backboard === null && persistedConfig.model === undefined
 				? keyOnlyDefaultModel(this.auth.providerKeys[0]?.provider)
 				: null;
+		const firstProviderKey = this.auth.providerKeys[0];
+		const customEndpointDefault =
+			this.auth.backboard === null &&
+			this.auth.providerKeys.length === 1 &&
+			firstProviderKey?.provider === "custom" &&
+			firstProviderKey.model &&
+			persistedConfig.model === undefined
+				? { provider: "custom", model: firstProviderKey.model }
+				: null;
 		const subscriptionOnlyDefault =
 			this.auth.backboard === null &&
 			this.auth.providerKeys.length === 0 &&
@@ -169,6 +170,7 @@ export class Config {
 			: (persistedConfig.model ??
 				subscriptionOnlyDefault ??
 				claudeSubscriptionOnlyDefault ??
+				customEndpointDefault ??
 				keyOnlyDefault ??
 				this.profile.model);
 		this.successfulModelRefs = persistedConfig.successfulModels ?? [];
@@ -237,14 +239,17 @@ export class Config {
 
 	/** Captures a lease, invalidated synchronously by every key mutation. */
 	providerCredential(provider: ByokProviderId): ProviderCredential | null {
-		const key = this.auth.providerKeys.find(
+		const entry = this.auth.providerKeys.find(
 			(entry) => entry.provider === provider,
-		)?.key;
+		);
+		const key = entry?.key;
 		if (!key) return null;
 		const generation = this.credentialGenerations.get(provider) ?? 0;
 		return {
 			key,
 			generation,
+			...(entry?.baseUrl ? { baseUrl: entry.baseUrl } : {}),
+			...(entry?.model ? { model: entry.model } : {}),
 			assertCurrent: () => {
 				if (
 					(this.credentialGenerations.get(provider) ?? 0) !== generation ||
@@ -354,8 +359,6 @@ export class Config {
 			computerUseEnabled: this.computerUseEnabled,
 			browserUseEnabled: this.browserUseEnabled,
 			skillDiscoveryEnabled: this.skillDiscoveryEnabled,
-			videoGenerationEnabled:
-				this.videoGenerationEnabled && this.videoModel !== undefined,
 		});
 	}
 
@@ -397,47 +400,6 @@ export class Config {
 
 	setNotifyEnabled(enabled: boolean): void {
 		this.notifyEnabled = enabled;
-	}
-
-	get isImageGenerationEnabled(): boolean {
-		return this.imageGenerationEnabled;
-	}
-
-	setImageGenerationEnabled(enabled: boolean): void {
-		this.imageGenerationEnabled = enabled;
-	}
-
-	get selectedImageModel(): { provider: string; name: string } | undefined {
-		return this.imageModel;
-	}
-
-	setImageModel(model: { provider: string; name: string } | undefined): void {
-		this.imageModel = model;
-	}
-
-	get isVideoGenerationEnabled(): boolean {
-		return this.videoGenerationEnabled;
-	}
-
-	setVideoGenerationEnabled(enabled: boolean): void {
-		this.videoGenerationEnabled = enabled;
-	}
-
-	get selectedVideoModel(): { provider: string; name: string } | undefined {
-		return this.videoModel;
-	}
-
-	setVideoModel(model: { provider: string; name: string } | undefined): void {
-		this.videoModel = model;
-	}
-
-	/** Whether the agent must confirm each image/video generation with the user first. */
-	get isAskBeforeGeneratingEnabled(): boolean {
-		return this.askBeforeGenerating;
-	}
-
-	setAskBeforeGeneratingEnabled(enabled: boolean): void {
-		this.askBeforeGenerating = enabled;
 	}
 
 	get selectedOpenRouterProvider(): string | undefined {

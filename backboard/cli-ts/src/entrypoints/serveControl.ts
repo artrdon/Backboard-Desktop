@@ -14,8 +14,6 @@ const KNOWN_OPS = new Set<ServeControl["op"]>([
 	"authenticateMcpServer",
 	"setCredentials",
 	"listModels",
-	"listImageModels",
-	"listVideoModels",
 	"listTools",
 	"listSkills",
 	"archiveWorkers",
@@ -167,7 +165,10 @@ export function parseControlLine(line: string): ParsedControlLine | null {
 						typeof entry.provider !== "string" ||
 						!isByokProviderId(entry.provider) ||
 						typeof entry.key !== "string" ||
-						entry.key.trim().length === 0,
+						entry.key.trim().length === 0 ||
+						(entry.baseUrl !== undefined &&
+							typeof entry.baseUrl !== "string") ||
+						(entry.model !== undefined && typeof entry.model !== "string"),
 				)
 			) {
 				return missing("providerKeys");
@@ -199,8 +200,6 @@ export function parseControlLine(line: string): ParsedControlLine | null {
 			break;
 		case "listModels":
 		case "waitForIdle":
-		case "listImageModels":
-		case "listVideoModels":
 		case "listTools":
 		case "listSkills":
 		case "archiveWorkers":

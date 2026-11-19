@@ -277,18 +277,4 @@ describe("parseControlLine", () => {
 		});
 	});
 
-	it("accepts the generative-model catalog ops", () => {
-		// These back the composer's image/video model pickers; if they are not in
-		// the allowlist the catalog request is dropped and the picker times out.
-		for (const op of ["listImageModels", "listVideoModels"] as const) {
-			expect(parseControlLine(JSON.stringify({ op, requestId: "r1" }))).toEqual({
-				ok: true,
-				control: { op, requestId: "r1" },
-			});
-			expect(parseControlLine(JSON.stringify({ op }))).toEqual({
-				ok: false,
-				error: `invalid ${op} op: missing requestId`,
-			});
-		}
-	});
 });

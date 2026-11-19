@@ -1,16 +1,16 @@
 {
-	"nameShort": "Backboard Studio",
-	"nameLong": "Backboard Studio",
-	"companyName": "Espri.ai",
-	"applicationName": "backboard-studio-dev",
+	"nameShort": "DQuant Lab",
+	"nameLong": "DQuant Lab",
+	"companyName": "DQuant Lab",
+	"applicationName": "dquant-lab",
 	"backboardVersion": "3.1.27",
 	"extensionsGallery": {
 		"serviceUrl": "https://open-vsx.org/vscode/gallery",
 		"itemUrl": "https://open-vsx.org/vscode/item",
 		"resourceUrlTemplate": "https://open-vsx.org/vscode/unpkg/{publisher}/{name}/{version}/{path}"
 	},
-	"dataFolderName": ".backboard-studio-dev",
-	"sharedDataFolderName": ".backboard-studio-dev-shared",
+	"dataFolderName": ".dquant-lab",
+	"sharedDataFolderName": ".dquant-lab-shared",
 	"win32MutexName": "vscodeoss",
 	"licenseName": "MIT",
 	"licenseUrl": "",
@@ -21,25 +21,25 @@
 	"serverApplicationName": "code-server-oss",
 	"serverDataFolderName": ".vscode-server-oss",
 	"tunnelApplicationName": "code-tunnel-oss",
-	"win32DirName": "Backboard Studio",
-	"win32NameVersion": "Backboard Studio",
-	"win32RegValueName": "BackboardStudioDev",
+	"win32DirName": "DQuant Lab",
+	"win32NameVersion": "DQuant Lab",
+	"win32RegValueName": "DQuantLab",
 	"win32x64AppId": "{{D77B7E06-80BA-4137-BCF4-654B95CCEBC5}",
 	"win32arm64AppId": "{{D1ACE434-89C5-48D1-88D3-E2991DF85475}",
 	"win32x64UserAppId": "{{CC6B787D-37A0-49E8-AE24-8559A032BE0C}",
 	"win32arm64UserAppId": "{{3AEBF0C8-F733-4AD4-BADE-FDB816D53D7B}",
-	"win32AppUserModelId": "Microsoft.CodeOSS",
-	"win32ShellNameShort": "Backboard Studio",
+	"win32AppUserModelId": "DQuant.Lab",
+	"win32ShellNameShort": "DQuant Lab",
 	"win32TunnelServiceMutex": "vscodeoss-tunnelservice",
 	"win32TunnelMutex": "vscodeoss-tunnel",
-	"darwinBundleIdentifier": "io.backboard.studio.dev",
+	"darwinBundleIdentifier": "io.dquant.lab",
 	"darwinProfileUUID": "47827DD9-4734-49A0-AF80-7E19B11495CC",
 	"darwinProfilePayloadUUID": "CF808BE7-53F3-46C6-A7E2-7EDB98A5E959",
-	"linuxIconName": "code-oss",
+	"linuxIconName": "dquant-lab",
 	"licenseFileName": "LICENSE.txt",
 	"reportIssueUrl": "",
 	"nodejsRepository": "https://nodejs.org",
-	"urlProtocol": "backboard",
+	"urlProtocol": "dquant-lab",
 	"linkProtectionTrustedDomains": [
 		"https://app.backboard.io",
 		"https://*.backboard.io",
@@ -126,19 +126,19 @@
 		"provider": {
 			"default": {
 				"id": "backboard",
-				"name": "Backboard"
+				"name": "DQuant Lab"
 			},
 			"enterprise": {
 				"id": "backboard",
-				"name": "Backboard"
+				"name": "DQuant Lab"
 			},
 			"google": {
 				"id": "backboard",
-				"name": "Backboard"
+				"name": "DQuant Lab"
 			},
 			"apple": {
 				"id": "backboard",
-				"name": "Backboard"
+				"name": "DQuant Lab"
 			}
 		},
 		"providerExtensionId": "",
@@ -206,73 +206,73 @@
 	"onboardingThemes": [
 		{
 			"id": "backboard-obsidian",
-			"label": "Backboard Obsidian",
+			"label": "DQuant Obsidian",
 			"themeId": "Backboard Obsidian",
 			"type": "dark"
 		},
 		{
 			"id": "backboard-porcelain",
-			"label": "Backboard Porcelain",
+			"label": "DQuant Porcelain",
 			"themeId": "Backboard Porcelain",
 			"type": "light"
 		},
 		{
 			"id": "backboard-linen",
-			"label": "Backboard Linen",
+			"label": "DQuant Linen",
 			"themeId": "Backboard Linen",
 			"type": "light"
 		},
 		{
 			"id": "backboard-sage",
-			"label": "Backboard Sage",
+			"label": "DQuant Sage",
 			"themeId": "Backboard Sage",
 			"type": "light"
 		},
 		{
 			"id": "backboard-mist",
-			"label": "Backboard Mist",
+			"label": "DQuant Mist",
 			"themeId": "Backboard Mist",
 			"type": "light"
 		},
 		{
 			"id": "backboard-midnight",
-			"label": "Backboard Midnight",
+			"label": "DQuant Midnight",
 			"themeId": "Backboard Midnight",
 			"type": "dark"
 		},
 		{
 			"id": "backboard-forest",
-			"label": "Backboard Forest",
+			"label": "DQuant Forest",
 			"themeId": "Backboard Forest",
 			"type": "dark"
 		},
 		{
 			"id": "backboard-ember",
-			"label": "Backboard Ember",
+			"label": "DQuant Ember",
 			"themeId": "Backboard Ember",
 			"type": "dark"
 		},
 		{
 			"id": "backboard-bloom",
-			"label": "Backboard Bloom",
+			"label": "DQuant Bloom",
 			"themeId": "Backboard Bloom",
 			"type": "light"
 		},
 		{
 			"id": "backboard-parchment",
-			"label": "Backboard Parchment",
+			"label": "DQuant Parchment",
 			"themeId": "Backboard Parchment",
 			"type": "light"
 		},
 		{
 			"id": "backboard-neon",
-			"label": "Backboard Neon",
+			"label": "DQuant Neon",
 			"themeId": "Backboard Neon",
 			"type": "dark"
 		},
 		{
 			"id": "backboard-aubergine",
-			"label": "Backboard Aubergine",
+			"label": "DQuant Aubergine",
 			"themeId": "Backboard Aubergine",
 			"type": "dark"
 		}

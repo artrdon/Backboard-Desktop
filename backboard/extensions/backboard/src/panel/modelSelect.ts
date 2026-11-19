@@ -49,7 +49,6 @@ export function renderModelSelectScript(iconBase: string): string {
 				model: controls.model.value,
 				mode: controls.mode.value,
 				intensity: controls.intensity.value,
-				imageGeneration: controls.imageGeneration.value,
 				voiceMode: controls.voiceMode.value,
 				mcpFigma: controls.mcpFigma.checked,
 				mcpNotion: controls.mcpNotion.checked,
@@ -767,10 +766,8 @@ export function renderModelSelectScript(iconBase: string): string {
 		}
 			function syncComposerButtons() {
 			const hasMode = controls.mode.value !== 'free';
-			const hasImage = controls.imageGeneration.value === 'auto';
 			setActive(buttons.mode, activePopover === 'reasoning' || hasMode);
 			setActive(buttons.model, activePopover === 'model');
-			setActive(buttons.image, activePopover === 'image' || hasImage);
 			setActive(buttons.voice, activePopover === 'voice' || voiceRecording || controls.voiceMode.value !== 'off');
 			buttons.stop.classList.toggle('visible', runInProgress);
 			buttons.stop.disabled = !runInProgress || stopRequested;

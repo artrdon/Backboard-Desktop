@@ -30,7 +30,6 @@ export const BACKBOARD_STREAM_EVENTS = {
 	contentStreaming: "content_streaming",
 	reasoningStreaming: "reasoning_streaming",
 	reasoningDelta: "reasoning_delta",
-	mediaGenerated: "media_generated",
 	toolCallStart: "tool_call_start",
 	toolCallReady: "tool_call_ready",
 	toolCalls: "tool_calls",

@@ -56,7 +56,7 @@ export class ChatQuotaExceededPart extends Disposable implements IChatContentPar
 				primaryButtonLabel = localize('manageBudget', "Manage Budget");
 				break;
 			case ChatEntitlement.Free:
-				primaryButtonLabel = localize('upgradeToCopilotPro', "Upgrade Backboard");
+				primaryButtonLabel = localize('upgradeToCopilotPro', "Upgrade DQuant Lab");
 				break;
 		}
 

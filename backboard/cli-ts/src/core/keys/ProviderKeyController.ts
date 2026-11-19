@@ -13,6 +13,7 @@ import {
 import {
 	type ByokProviderId,
 	maskProviderKey,
+	type ProviderKeyConfig,
 	type ProviderKeyControllerOptions,
 	type ProviderKeyStatus,
 } from "./ProviderKeyTypes.ts";
@@ -37,6 +38,8 @@ export class ProviderKeyController {
 				masked: entry ? maskProviderKey(entry.key) : adapter.keyHint,
 				enabled: entry?.enabled ?? false,
 				addedAt: entry?.addedAt ?? null,
+				...(entry?.baseUrl ? { baseUrl: entry.baseUrl } : {}),
+				...(entry?.model ? { model: entry.model } : {}),
 			};
 		});
 	}
@@ -50,6 +53,7 @@ export class ProviderKeyController {
 		provider: ByokProviderId,
 		key: string,
 		signal?: AbortSignal,
+		config?: ProviderKeyConfig,
 	): Promise<void> {
 		const adapter = byokAdapter(provider);
 		const trimmed = key.trim();
@@ -61,14 +65,32 @@ export class ProviderKeyController {
 				`That does not look like a ${adapter.label} key (expected ${adapter.keyHint}).`,
 			);
 		}
+		if (provider === "custom" && (!config?.baseUrl || !config.model)) {
+			throw new Error("Custom API requires a base URL and model ID.");
+		}
 
+		const credential = config
+			? {
+					key: trimmed,
+					generation: 0,
+					baseUrl: config.baseUrl,
+					model: config.model,
+					assertCurrent: () => undefined,
+				}
+			: trimmed;
 		try {
-			await adapter.validateKey(trimmed, signal);
+			await adapter.validateKey(credential, signal);
 		} catch (err) {
 			throw new Error(validationMessage(adapter.label, err));
 		}
 
-		await setProviderKey(provider, trimmed, this.options.homeDir);
+		await setProviderKey(
+			provider,
+			trimmed,
+			this.options.homeDir,
+			new Date(),
+			config,
+		);
 		this.options.onChange?.();
 	}
 

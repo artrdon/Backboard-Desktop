@@ -980,7 +980,7 @@ export class GettingStartedPage extends EditorPane {
 					$('.backboard-welcome-header', {},
 						createLogo(),
 						$('.backboard-welcome-header-copy', {},
-							$('h1.backboard-welcome-title', {}, localize('backboardWelcome.title', "Welcome to Backboard Studio")),
+							$('h1.backboard-welcome-title', {}, localize('backboardWelcome.title', "Welcome to DQuant Lab")),
 							$('p.backboard-welcome-subtitle', {}, localize('backboardWelcome.subtitle', "The editor for what's next")),
 						),
 					),

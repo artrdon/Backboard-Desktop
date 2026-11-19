@@ -85,7 +85,7 @@ suite('getLatestTurnEditedFiles', () => {
 	});
 
 	test('hides persisted watcher cards on any path while preserving tool edits', () => {
-		const path = '/project/vscode-release-stable/3.1.4/aarch64/dmg/Backboard Studio.app/Contents/Resources/triangle_bg.svg';
+		const path = '/project/vscode-release-stable/3.1.4/aarch64/dmg/DQuant Lab.app/Contents/Resources/triangle_bg.svg';
 		const uri = toAgentHostUri(URI.file(path), 'local');
 		const watcher: IChatExternalEdit = {
 			kind: 'externalEdit', uri, editKind: 'edit',

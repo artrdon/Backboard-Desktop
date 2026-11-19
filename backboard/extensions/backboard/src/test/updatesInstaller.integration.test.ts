@@ -106,8 +106,8 @@ function makeStubApp(rootDir: string, name: string, version: string): StubAppPat
 		'<?xml version="1.0" encoding="UTF-8"?>',
 		'<plist version="1.0"><dict>',
 		'<key>CFBundleIdentifier</key><string>io.backboard.studio</string>',
-		'<key>CFBundleName</key><string>Backboard Studio</string>',
-		'<key>CFBundleExecutable</key><string>Backboard Studio</string>',
+		'<key>CFBundleName</key><string>DQuant Lab</string>',
+		'<key>CFBundleExecutable</key><string>DQuant Lab</string>',
 		'<key>CFBundleShortVersionString</key>',
 		`<string>${version}</string>`,
 		'<key>CFBundleVersion</key>',
@@ -134,7 +134,7 @@ function makeStubApp(rootDir: string, name: string, version: string): StubAppPat
 	execFileSync('clang', ['-O2', '-o', helperExecutable, `${helperExecutable}.c`], { stdio: 'pipe' });
 	fs.rmSync(`${helperExecutable}.c`, { force: true });
 
-	const mainExecutable = path.join(macOSPath, 'Backboard Studio');
+	const mainExecutable = path.join(macOSPath, 'DQuant Lab');
 	compileStubBinary(mainExecutable);
 
 	const result = spawnSync('/usr/bin/codesign', ['--force', '--deep', '--sign', '-', path.join(rootDir, name)], { encoding: 'utf8' });
@@ -143,12 +143,12 @@ function makeStubApp(rootDir: string, name: string, version: string): StubAppPat
 }
 
 function findMainPid(appPath: string): number | undefined {
-	const executablePaths = [path.join(appPath, 'Contents/MacOS/Backboard Studio')];
+	const executablePaths = [path.join(appPath, 'Contents/MacOS/DQuant Lab')];
 	if (fs.existsSync(appPath)) {
 		// LaunchServices launches the fully resolved bundle path, which can
 		// differ from the symlinked path the test passed in (e.g. /var ->
 		// /private/var).
-		executablePaths.push(path.join(fs.realpathSync(appPath), 'Contents/MacOS/Backboard Studio'));
+		executablePaths.push(path.join(fs.realpathSync(appPath), 'Contents/MacOS/DQuant Lab'));
 	}
 	const processList = execFileSync('/bin/ps', ['-axo', 'pid=,command='], { encoding: 'utf8' });
 	for (const line of processList.split(/\r?\n/)) {
@@ -285,10 +285,10 @@ async function runInstallerToEnd(options: RunInstallerOptions): Promise<{ log: s
 
 	assert.equal(code, 0, `${finalLog}\n=== processes ===\n${processSnapshot}`);
 	assert.equal(readStatus(statusPath), 'installed', finalLog);
-	assert.match(finalLog, /Prepared and verified Backboard Studio/);
-	assert.match(finalLog, /Confirmed current Backboard Studio processes exited cleanly/);
+	assert.match(finalLog, /Prepared and verified DQuant Lab/);
+	assert.match(finalLog, /Confirmed current DQuant Lab processes exited cleanly/);
 	assert.match(finalLog, /Confirmed stable after launch/);
-	assert.match(finalLog, /Installed and launched Backboard Studio/);
+	assert.match(finalLog, /Installed and launched DQuant Lab/);
 	assert.doesNotMatch(finalLog, /did not quit cleanly|restoring the previous version/);
 
 	// The next version is now the installed one and it relaunched itself.
@@ -311,10 +311,10 @@ test('installer swaps a running app after clean quit and relaunches the updated 
 		const newVersion = '3.0.5';
 		const newApp = makeStubApp(workspaceRoot, `${newVersion}.app`, newVersion);
 		const dmgSource = fs.mkdtempSync(path.join(workspaceRoot, 'dmg-src.'));
-		const mountedAppName = 'Backboard Studio.app';
+		const mountedAppName = 'DQuant Lab.app';
 		fs.renameSync(newApp.appPath, path.join(dmgSource, mountedAppName));
 		const dmgPath = path.join(workspaceRoot, 'Backboard-Studio-aarch64.dmg');
-		const hdiutil = spawnSync('/usr/bin/hdiutil', ['create', '-volname', 'Backboard Studio', '-srcfolder', dmgSource, '-ov', '-format', 'UDZO', dmgPath], { encoding: 'utf8', timeout: 30_000 });
+		const hdiutil = spawnSync('/usr/bin/hdiutil', ['create', '-volname', 'DQuant Lab', '-srcfolder', dmgSource, '-ov', '-format', 'UDZO', dmgPath], { encoding: 'utf8', timeout: 30_000 });
 		if (hdiutil.status !== 0) {
 			// Sandboxed hosts deny disk-image access; the source-app variant below
 			// covers everything except the mount itself.
@@ -328,7 +328,7 @@ test('installer swaps a running app after clean quit and relaunches the updated 
 		execFileSync('/usr/bin/ditto', [oldApp.appPath, installedAppPath]);
 		assert.equal(readPlistVersion(installedAppPath), '3.0.4');
 
-		const initialExecutable = path.join(installedAppPath, 'Contents/MacOS/Backboard Studio');
+		const initialExecutable = path.join(installedAppPath, 'Contents/MacOS/DQuant Lab');
 		const initialChild = spawn(initialExecutable, [], { detached: true, stdio: 'ignore' });
 		initialChild.unref();
 		try {
@@ -368,13 +368,13 @@ test('installer swaps a running app after clean quit and relaunches the updated 
 		const oldApp = makeStubApp(workspaceRoot, 'Old Version.app', '3.0.4');
 		const newVersion = '3.0.5';
 		const newApp = makeStubApp(workspaceRoot, 'New Version.app', newVersion);
-		const mountedAppName = 'Backboard Studio.app';
+		const mountedAppName = 'DQuant Lab.app';
 
 		const installRoot = fs.mkdtempSync(path.join(workspaceRoot, 'install.'));
 		const installedAppPath = path.join(installRoot, mountedAppName);
 		execFileSync('/usr/bin/ditto', [oldApp.appPath, installedAppPath]);
 
-		const initialExecutable = path.join(installedAppPath, 'Contents/MacOS/Backboard Studio');
+		const initialExecutable = path.join(installedAppPath, 'Contents/MacOS/DQuant Lab');
 		const initialChild = spawn(initialExecutable, [], { detached: true, stdio: 'ignore' });
 		initialChild.unref();
 		try {

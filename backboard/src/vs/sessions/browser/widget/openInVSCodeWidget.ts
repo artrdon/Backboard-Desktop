@@ -24,7 +24,6 @@ export class OpenInVSCodeTitleBarWidget extends BaseActionViewItem {
 		options: IBaseActionViewItemOptions | undefined,
 		private readonly keybindingCommandId: string,
 		private readonly openSimpleCommandId: string | undefined,
-		private readonly openAdvancedCommandId: string | undefined,
 		@IHoverService private readonly hoverService: IHoverService,
 		@IKeybindingService private readonly keybindingService: IKeybindingService,
 		@ICommandService private readonly commandService: ICommandService,
@@ -38,7 +37,7 @@ export class OpenInVSCodeTitleBarWidget extends BaseActionViewItem {
 
 		container.classList.add('open-in-vscode-titlebar-widget');
 
-		const hoverText = this.keybindingService.appendKeybinding(localize('openInVSCodeHover', "Switch Backboard mode"), this.keybindingCommandId);
+		const hoverText = this.keybindingService.appendKeybinding(localize('openInVSCodeHover', "Switch mode"), this.keybindingCommandId);
 		container.setAttribute('aria-label', hoverText);
 		this._register(this.hoverService.setupManagedHover(getDefaultHoverDelegate('element'), container, hoverText));
 		container.classList.toggle('optimus-mode', this.environmentService.isOptimusWindow);
@@ -49,8 +48,6 @@ export class OpenInVSCodeTitleBarWidget extends BaseActionViewItem {
 		const modes = [
 			{ label: localize('openInVSCodeSwitcher.agentTab', "Simple"), active: !this.environmentService.isOptimusWindow, run: () => this.openSimpleCommandId ? this.commandService.executeCommand(this.openSimpleCommandId) : undefined },
 			{ label: localize('openInVSCodeSwitcher.editor', "Editor"), active: false, run: () => this.action.run() },
-			// Canvas is hidden for now; the button only shows inside the Canvas window itself.
-			...(this.environmentService.isOptimusWindow ? [{ label: localize('openInVSCodeSwitcher.canvas', "Canvas"), active: true, run: () => this.openAdvancedCommandId ? this.commandService.executeCommand(this.openAdvancedCommandId) : undefined }] : []),
 		];
 		for (const mode of modes) {
 			const button = append(segments, $('button.backboard-mode-segment'));

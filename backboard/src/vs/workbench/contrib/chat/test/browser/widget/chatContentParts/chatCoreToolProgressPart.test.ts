@@ -484,12 +484,12 @@ suite('ChatCoreToolProgressPart', () => {
 	test('renders a completed computer screenshot as only an image', () => {
 		const part = createPart({
 			kind: 'coreTool', toolKind: 'computer', input: { actions: [{ action: 'screenshot' }] },
-			output: { results: [{ action: 'screenshot', success: true, screenshotPath: '/tmp/capture with spaces.png', imageSize: { width: 1280, height: 832 }, windowTitle: 'Backboard Studio' }] },
+			output: { results: [{ action: 'screenshot', success: true, screenshotPath: '/tmp/capture with spaces.png', imageSize: { width: 1280, height: 832 }, windowTitle: 'DQuant Lab' }] },
 		});
 		const image = part.domNode.querySelector('img')!;
 		assert.ok(image);
 		assert.ok(image.src.includes('/tmp/capture'));
-		assert.strictEqual(image.alt, 'Backboard Studio');
+		assert.strictEqual(image.alt, 'DQuant Lab');
 		assert.strictEqual(image.width, 1280);
 		assert.strictEqual(image.height, 832);
 		assert.strictEqual(part.domNode.textContent, '');

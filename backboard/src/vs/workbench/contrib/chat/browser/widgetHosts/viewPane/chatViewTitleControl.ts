@@ -37,7 +37,7 @@ export interface IChatViewTitleDelegate {
 
 export class ChatViewTitleControl extends Disposable {
 
-	private static readonly DEFAULT_TITLE = localize('backboard', "Backboard");
+	private static readonly DEFAULT_TITLE = localize('backboard', "DQuant Lab");
 	/** An untitled draft reads as a new chat in the strip, not as the product name. */
 	private static readonly DRAFT_TITLE = localize('chat.draftTab', "New Chat");
 	private static readonly PICK_AGENT_SESSION_ACTION_ID = 'workbench.action.chat.pickAgentSession';

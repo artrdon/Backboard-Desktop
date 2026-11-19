@@ -64,7 +64,7 @@ suite('AgentHostFileMonitorService', () => {
 			fileService.fire(URI.file('/repo/.git/index.lock'));
 			fileService.fire(URI.file('/repo/node_modules/pkg/index.js'));
 			fileService.fire(URI.file('/repo/out/main.js'));
-			fileService.fire(URI.file('/repo/VSCode-darwin-arm64/Backboard Studio'));
+			fileService.fire(URI.file('/repo/VSCode-darwin-arm64/DQuant Lab'));
 			fileService.fire(URI.file('/repo/.watchman-cookie-123'));
 			await timeout(11);
 			assert.strictEqual(calls, 0);

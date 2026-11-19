@@ -217,7 +217,6 @@ import './contrib/providers/remoteAgentHost/browser/wslAgentHost.contribution.js
 // Chat
 import './contrib/agentFeedback/browser/agentFeedback.contribution.js';
 import './contrib/chat/electron-browser/chat.contribution.js';
-import './contrib/rightWorkbench/electron-browser/canvasMediaTime.js';
 import '../workbench/contrib/chat/electron-browser/backboardSso.contribution.js';
 import '../workbench/contrib/backboardBilling/electron-browser/backboardBillingUrl.contribution.js';
 import '../workbench/contrib/backboardAnalytics/electron-browser/backboardAttribution.contribution.js';

@@ -21,7 +21,7 @@ usage() {
 Usage:
   $0 --version 2.5.5 --arch aarch64 --channel stable --expected-team-id M4UYB6AG86 --dmg /path/to/Backboard-Studio-aarch64.dmg
 
-Validates a Backboard Studio macOS release before upload. Sandbox releases may
+Validates a DQuant Lab macOS release before upload. Sandbox releases may
 explicitly opt out of signing checks with --allow-unsigned-sandbox.
 EOF
 }
@@ -85,11 +85,11 @@ esac
 
 case "${CHANNEL}" in
   stable)
-    EXPECTED_APP_NAME="Backboard Studio.app"
+    EXPECTED_APP_NAME="DQuant Lab.app"
     EXPECTED_BUNDLE_IDENTIFIER="io.backboard.studio"
     ;;
   sandbox)
-    EXPECTED_APP_NAME="Backboard Studio Sandbox.app"
+    EXPECTED_APP_NAME="DQuant Lab Sandbox.app"
     EXPECTED_BUNDLE_IDENTIFIER="io.backboard.studio.sandbox"
     ;;
   *)
@@ -214,7 +214,7 @@ if [[ ! -f "${UPDATER_JS}" ]]; then
   exit 1
 fi
 for marker in \
-  'Prepared and verified Backboard Studio' \
+  'Prepared and verified DQuant Lab' \
   'codesign --verify --deep --strict' \
   'spctl --assess --type execute' \
   'rollback_app' \
@@ -223,7 +223,7 @@ for marker in \
   'app_version_matches' \
   'no longer belongs to the installed bundle during post-launch stability check' \
   'retrying the exact executable directly' \
-  'Installed and launched Backboard Studio'; do
+  'Installed and launched DQuant Lab'; do
   if ! grep -Fq "${marker}" "${UPDATER_JS}"; then
     echo "Packaged updater is missing readiness marker: ${marker}" >&2
     exit 1

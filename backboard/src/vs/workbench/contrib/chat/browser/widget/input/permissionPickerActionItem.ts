@@ -136,7 +136,7 @@ export class PermissionPickerActionItem extends ChatInputPickerActionViewItem {
 						...action,
 						id: 'chat.permissions.default',
 						label: localize('permissions.default', "Default Approvals"),
-						detail: localize('permissions.default.subtext', "Backboard uses your configured settings"),
+						detail: localize('permissions.default.subtext', "DQuant Lab uses your configured settings"),
 						icon: ThemeIcon.fromId(Codicon.shield.id),
 						checked: currentLevel === ChatPermissionLevel.Default,
 						tooltip: '',

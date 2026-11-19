@@ -198,7 +198,7 @@ export class AgentSessionsWelcomePage extends EditorPane {
 		this.createBackboardAuthGate();
 		this.updateBackboardAuthGate();
 		this.refreshBackboardAuthGateFromConfig().catch(error => {
-			this.logService.error(`[Backboard] Failed to refresh agents welcome auth gate: ${error instanceof Error ? error.message : String(error)}`);
+			this.logService.error(`[DQuant Lab] Failed to refresh agents welcome auth gate: ${error instanceof Error ? error.message : String(error)}`);
 		});
 	}
 
@@ -225,7 +225,7 @@ export class AgentSessionsWelcomePage extends EditorPane {
 		title.textContent = localize('backboard.auth.agentsWelcome.title', "Connect Your AI");
 
 		const description = append(card, $('p.backboard-auth-gate-description'));
-		description.textContent = localize('backboard.auth.agentsWelcome.description', "Use Backboard, an API key, or a subscription.");
+		description.textContent = localize('backboard.auth.agentsWelcome.description', "Use DQuant Lab, an API key, or a subscription.");
 
 		this._register(renderBackboardAuthSetup(card, this.commandService, () => this.refreshBackboardAuthGateFromConfig()));
 
@@ -301,7 +301,7 @@ export class AgentSessionsWelcomePage extends EditorPane {
 		const conversation = append(mainRegion, $('.agentSessionsWelcome-conversation'));
 		const header = append(conversation, $('.agentSessionsWelcome-header'));
 		append(header, $('h1.product-name', {}, localize('simpleModePromptTitle', "What do you want to build?")));
-		append(header, $('p.agentSessionsWelcome-subtitle', {}, localize('agentSessionsWelcome.subtitle', "Describe a page, feature, or change. Backboard will generate the output.")));
+		append(header, $('p.agentSessionsWelcome-subtitle', {}, localize('agentSessionsWelcome.subtitle', "Describe a page, feature, or change. DQuant Lab will generate the output.")));
 		const suggestions = append(header, $('.agentSessionsWelcome-suggestedPrompts'));
 		this.buildSuggestedPrompt(suggestions, localize('landingPagePrompt', "Make a landing page"));
 		this.buildSuggestedPrompt(suggestions, localize('pricingSectionPrompt', "Create a pricing section"));
@@ -395,7 +395,7 @@ export class AgentSessionsWelcomePage extends EditorPane {
 		append(sheet, $('.agentSessionsWelcome-artifactIllustrationLine.lineTwo'));
 		append(sheet, $('.agentSessionsWelcome-artifactIllustrationLine.lineThree'));
 		append(empty, $('h2', {}, localize('noArtifactYet', "No artifact yet")));
-		append(empty, $('p', {}, localize('noArtifactDescription', "Ask Backboard to build something and the output will appear here.")));
+		append(empty, $('p', {}, localize('noArtifactDescription', "Ask DQuant Lab to build something and the output will appear here.")));
 		const emptyActions = append(empty, $('.agentSessionsWelcome-artifactEmptyActions'));
 		const generateButton = append(emptyActions, $('button.agentSessionsWelcome-artifactPrimaryButton', {}, localize('generateArtifact', "Generate artifact"))) as HTMLButtonElement;
 		generateButton.type = 'button';
@@ -766,7 +766,7 @@ export class AgentSessionsWelcomePage extends EditorPane {
 		// Content
 		const content = append(tosCard, $('.agentSessionsWelcome-walkthroughCard-content'));
 		const title = append(content, $('.agentSessionsWelcome-walkthroughCard-title'));
-		title.textContent = localize('tosTitle', "Try Backboard for free, no sign-in required!");
+		title.textContent = localize('tosTitle', "Try DQuant Lab for free, no sign-in required!");
 
 		const desc = append(content, $('.agentSessionsWelcome-walkthroughCard-description'));
 		const descriptionMarkdown = new MarkdownString(

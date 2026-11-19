@@ -1,6 +1,6 @@
 # Grunt - The JavaScript Task Runner
 
-**Notice:** This extension is bundled with Backboard IDE. It can be disabled but not uninstalled.
+**Notice:** This extension is bundled with DQuant Lab. It can be disabled but not uninstalled.
 
 ## Features
 

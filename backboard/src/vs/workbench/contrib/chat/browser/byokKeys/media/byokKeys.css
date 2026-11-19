@@ -96,6 +96,11 @@
 	mask: url('../../widget/media/model-provider-icons/ai_x_ai.svg') center / contain no-repeat;
 }
 
+.backboard-api-keys-icon.provider-custom {
+	-webkit-mask: url('../../widget/media/model-provider-icons/ai_open_ai_compat.svg') center / contain no-repeat;
+	mask: url('../../widget/media/model-provider-icons/ai_open_ai_compat.svg') center / contain no-repeat;
+}
+
 .backboard-api-keys-main {
 	flex: 1 1 auto;
 	min-width: 0;

@@ -195,7 +195,7 @@ export class LanguageModelToolsService extends Disposable implements ILanguageMo
 			VSCodeToolReference.vscode,
 			{
 				icon: ThemeIcon.fromId(Codicon.tools.id),
-				description: localize('copilot.toolSet.vscode.description', 'Use Backboard IDE features'),
+				description: localize('copilot.toolSet.vscode.description', 'Use DQuant Lab features'),
 			}
 		));
 

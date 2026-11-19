@@ -815,9 +815,9 @@ function getMcpInstallabilityReason(installability: McpCatalogInstallability): s
 		case 'missing':
 			return localize('chat.skillsLibrary.mcpInstallabilityMissing', "the registry entry is not available.");
 		case 'unsupportedAuth':
-			return localize('chat.skillsLibrary.mcpInstallabilityUnsupportedAuth', "the server requires OAuth client registration that Backboard does not support yet.");
+			return localize('chat.skillsLibrary.mcpInstallabilityUnsupportedAuth', "the server requires OAuth client registration that DQuant Lab does not support yet.");
 		case 'brokenRuntime':
-			return localize('chat.skillsLibrary.mcpInstallabilityBrokenRuntime', "the server requires a runtime command that Backboard cannot start yet.");
+			return localize('chat.skillsLibrary.mcpInstallabilityBrokenRuntime', "the server requires a runtime command that DQuant Lab cannot start yet.");
 		case 'disabled':
 			return localize('chat.skillsLibrary.mcpInstallabilityDisabled', "the server is disabled in the catalog.");
 	}
@@ -1865,7 +1865,7 @@ export class SkillsLibraryController {
 		const renderHeading = (): void => {
 			if (activeMarketplacePage === 'mcp') {
 				title.textContent = simpleMode ? localize('simpleMcp.title', "Connectors") : localize('chat.skillsLibrary.mcpTitle', "Connectors");
-				subtitle.textContent = simpleMode ? localize('simpleMcp.subtitle', "Work with Backboard across your favorite tools") : localize('chat.skillsLibrary.mcpSubtitle', "Browse and install connectors.");
+				subtitle.textContent = simpleMode ? localize('simpleMcp.subtitle', "Work with DQuant Lab across your favorite tools") : localize('chat.skillsLibrary.mcpSubtitle', "Browse and install connectors.");
 				search.placeholder = embedded && !simpleMode
 					? localize('chat.skillsLibrary.searchMcpMarketplacePlaceholder', "Search connectors in Marketplace")
 					: localize('chat.skillsLibrary.searchMcpPlaceholder', "Search Connectors");
@@ -2785,7 +2785,7 @@ export class SkillsLibraryController {
 				try {
 					await this._mcpManagementService.install({ name, config });
 				} catch (err) {
-					this._logService.warn(`[SkillsLibrary] Failed to import Backboard CLI MCP server '${name}':`, err);
+					this._logService.warn(`[SkillsLibrary] Failed to import DQuant Lab CLI MCP server '${name}':`, err);
 				}
 			}
 		} catch {
@@ -2958,7 +2958,7 @@ export class SkillsLibraryController {
 			root.mcpServers = servers;
 			await this._fileService.writeFile(resource, VSBuffer.fromString(`${JSON.stringify(root, null, '\t')}\n`));
 		} catch (err) {
-			this._logService.warn('[SkillsLibrary] Failed to sync MCP server into the Backboard CLI config:', err);
+			this._logService.warn('[SkillsLibrary] Failed to sync MCP server into the DQuant Lab CLI config:', err);
 		}
 	}
 
@@ -2973,7 +2973,7 @@ export class SkillsLibraryController {
 				await this._fileService.writeFile(resource, VSBuffer.fromString(`${JSON.stringify(root, null, '\t')}\n`));
 			}
 		} catch (err) {
-			this._logService.warn('[SkillsLibrary] Failed to remove MCP server from the Backboard CLI config:', err);
+			this._logService.warn('[SkillsLibrary] Failed to remove MCP server from the DQuant Lab CLI config:', err);
 		}
 	}
 

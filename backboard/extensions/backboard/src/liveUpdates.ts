@@ -291,8 +291,8 @@ class LiveUpdates implements LiveUpdatesController {
 	private async offerRestart(state: LiveRestartState): Promise<void> {
 		const restart = 'Restart Now';
 		const message = state.notes
-			? `A Backboard Studio update is ready: ${state.notes}`
-			: 'A Backboard Studio update is ready. Restarting takes a few seconds.';
+			? `A DQuant Lab update is ready: ${state.notes}`
+			: 'A DQuant Lab update is ready. Restarting takes a few seconds.';
 		if (await vscode.window.showInformationMessage(message, restart, 'Later') === restart) {
 			await vscode.commands.executeCommand('backboard.relaunchApp');
 		}

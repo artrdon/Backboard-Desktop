@@ -68,7 +68,7 @@ export class BackboardAuthService extends Disposable implements IBackboardAuthSe
 				this.refreshInBackground();
 			}
 		}));
-		void this.watchCredentials().catch(error => this.logService.error('[Backboard] Credential watcher failed', error));
+		void this.watchCredentials().catch(error => this.logService.error('[DQuant Lab] Credential watcher failed', error));
 	}
 
 	private async watchCredentials(): Promise<void> {
@@ -97,7 +97,7 @@ export class BackboardAuthService extends Disposable implements IBackboardAuthSe
 					}
 				}));
 			} catch (error) {
-				this.logService.warn(`[Backboard] Credential watcher unavailable for ${directory.toString()}`, error);
+				this.logService.warn(`[DQuant Lab] Credential watcher unavailable for ${directory.toString()}`, error);
 			}
 		}
 	}
@@ -110,7 +110,7 @@ export class BackboardAuthService extends Disposable implements IBackboardAuthSe
 		}
 		this.fileRefreshRunning = true;
 		void this.refresh()
-			.catch(error => this.logService.error('[Backboard] Credential refresh failed', error))
+			.catch(error => this.logService.error('[DQuant Lab] Credential refresh failed', error))
 			.finally(() => {
 				this.fileRefreshRunning = false;
 				if (this.fileRefreshQueued && !this._store.isDisposed) {
@@ -121,7 +121,7 @@ export class BackboardAuthService extends Disposable implements IBackboardAuthSe
 	}
 
 	private refreshInBackground(): void {
-		void this.refresh().catch(error => this.logService.error('[Backboard] Credential refresh failed', error));
+		void this.refresh().catch(error => this.logService.error('[DQuant Lab] Credential refresh failed', error));
 	}
 
 	async refresh(): Promise<void> {

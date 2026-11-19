@@ -350,7 +350,7 @@ export async function ensureClaudeCodeReady(
 		installed = true;
 		executable = await ops.resolve();
 		if (!executable) {
-			throw new Error('Claude Code was installed but could not be found. Restart Backboard and choose Connect Claude again.');
+			throw new Error('Claude Code was installed but could not be found. Restart DQuant Lab and choose Connect Claude again.');
 		}
 	}
 	const capable = await ops.supportsAuth(executable);

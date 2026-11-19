@@ -24,6 +24,8 @@ export interface CliFlags {
 	/** `keys validate --provider <id>`: check a key read from stdin, print JSON. */
 	keysValidate: boolean;
 	provider?: string;
+	/** `keys validate --base-url <url>`: Custom API endpoint. */
+	baseUrl?: string;
 	help: boolean;
 	version: boolean;
 }
@@ -147,6 +149,10 @@ export function parseFlags(argv: string[]): CliFlags {
 				break;
 			case "provider":
 				flags.provider = readValue();
+				break;
+			case "base-url":
+			case "base_url":
+				flags.baseUrl = readValue();
 				break;
 			case "cwd":
 				flags.cwd = readValue();

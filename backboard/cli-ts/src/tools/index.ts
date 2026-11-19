@@ -57,7 +57,6 @@ import { ExecuteTool } from "./ExecuteTool.tsx";
 import { FetchUrlTool } from "./FetchUrlTool.tsx";
 import { FindMcpTool } from "./FindMcpTool.tsx";
 import { FindSkillTool } from "./FindSkillTool.tsx";
-import { GenerateVideoTool } from "./GenerateVideoTool.tsx";
 import { GlobTool } from "./GlobTool.tsx";
 import { GrepTool } from "./GrepTool.tsx";
 import { ReadTool } from "./ReadTool.tsx";
@@ -270,17 +269,6 @@ export function createDefaultTools(deps?: DefaultToolDeps): Tool[] {
 	const agent = buildAgentTool({ ...deps, agentTaskManager: agentTasks }, base);
 	const tools: Tool[] = [
 		...base,
-		new GenerateVideoTool({
-			getModel: () => deps.config.selectedVideoModel,
-			generate: (request, options) => {
-				if (!deps.client.generateVideo) {
-					throw new Error(
-						"Video generation requires a signed-in Backboard account.",
-					);
-				}
-				return deps.client.generateVideo(request, options);
-			},
-		}),
 		agent,
 		new AgentSpawnTool(agent, agentTasks),
 		new AgentSpawnBatchTool(agent, agentTasks),

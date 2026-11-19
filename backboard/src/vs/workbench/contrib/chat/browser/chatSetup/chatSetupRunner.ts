@@ -246,7 +246,7 @@ export class ChatSetup {
 		}
 
 		if (this.context.state.entitlement === ChatEntitlement.Unknown || options?.forceSignInDialog) {
-			return localize('signIn', "Sign in to use Backboard");
+			return localize('signIn', "Sign in to use DQuant Lab");
 		}
 
 		return localize('startUsing', "Start using AI Features");

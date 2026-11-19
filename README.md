@@ -1,76 +1,62 @@
-# Backboard Desktop: the open-source AI coding agent IDE
+# DQuant Lab: the AI IDE for MQL4 and MQL5
 
-**The open-source alternative to Codex, Devin, Claude Code, Higgsfield, and Manus, in one desktop app.**
+**AI IDE for MQL4 and MQL5.**
 
-Backboard Desktop is a free, MIT-licensed AI agent workspace for macOS, Windows, and Linux. Run autonomous coding agents, review their diffs, generate images and video, and let agents drive a browser or your computer, all from a single desktop IDE built on Code - OSS (the open-source core of VS Code). Bring your own Claude or ChatGPT subscription, use your own API keys for OpenAI, Anthropic, Google, xAI, and OpenRouter, or run hosted models through Backboard.
+DQuant Lab is an AI-powered development environment designed for MQL4 and MQL5 developers. Build, edit, debug, and develop algorithmic trading systems with AI assistance.
+
+DQuant Lab is a desktop IDE built on Code - OSS (the open-source core of VS Code). Every chat session is bound to one MetaTrader generation - MQL4 or MQL5 - so the agent, its instructions, and its documentation lookup never mix the two APIs. Sessions keep their own language, so you can work on an EA for MetaTrader 4 in one session and an indicator for MetaTrader 5 in the next.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platforms](https://img.shields.io/badge/platforms-macOS%20%7C%20Windows%20%7C%20Linux-informational)](#getting-started)
 [![Built on Code - OSS](https://img.shields.io/badge/built%20on-Code%20--%20OSS-007ACC)](https://github.com/microsoft/vscode)
-[![GitHub stars](https://img.shields.io/github/stars/Backboard-io/Backboard-Desktop?style=social)](https://github.com/Backboard-io/Backboard-Desktop/stargazers)
 
-[Why Backboard Desktop](#an-open-source-alternative-to-codex-devin-claude-code-higgsfield-and-manus) · [Getting started](#getting-started) · [Features](#features) · [FAQ](#faq) · [Contributing](#contributing) · [License](#license)
+[Getting started](#getting-started) - [Features](#features) - [Development](#development) - [License](#license)
 
-## An open-source alternative to Codex, Devin, Claude Code, Higgsfield, and Manus
+## What it does
 
-Most AI agent tools are closed, tied to one model vendor, and split across separate apps: one for coding, one for autonomous tasks, one for AI video. Backboard Desktop puts them in one open-source IDE you can read, fork, and run yourself.
+Use the welcome screen to pick a language and a project name. DQuant Lab creates a session whose agent profile, system instructions and reference lookups are pinned to that language:
 
-| If you use... | Backboard Desktop gives you |
-| --- | --- |
-| **OpenAI Codex** | An open-source coding agent that edits, runs, and tests code in your repository. Use your own **ChatGPT subscription** or an OpenAI API key. |
-| **Claude Code** | The same agentic coding loop in a full IDE, with a diff review panel. Use your own **Claude subscription** (Pro or Max) or an Anthropic API key. |
-| **Devin** | An autonomous AI software engineer workflow: many agent sessions in parallel, each on its own branch or git worktree, all in one sidebar. |
-| **Manus** | A general-purpose AI agent that can use a browser and your computer (computer use), search the web, and work through long multi-step tasks. |
-| **Higgsfield** | AI image and video generation in the same chat: create, edit, and iterate on images and video clips next to your code. |
+| Language | Target | What the agent works with |
+| --- | --- | --- |
+| **MQL4** | MetaTrader 4 | `.mq4` / `.mqh`, Expert Advisors, custom indicators, scripts. MQL4 order model and event handlers. |
+| **MQL5** | MetaTrader 5 | `.mq5` / `.mqh`, Expert Advisors, custom indicators, scripts, services. MQL5 trading API, `OnCalculate`, `CTrade`, events. |
 
-Backboard Desktop is an independent project. It is not affiliated with, endorsed by, or sponsored by OpenAI, Cognition, Anthropic, Higgsfield, or Manus; their names are used only to describe comparable features.
+A session created for MQL5 stays MQL5 when you switch back to it. Sessions created before the language picker existed keep working unchanged.
 
-## Work your way
+## Features
 
-Switch between two modes from the title bar:
-
-| Mode | Purpose |
-| --- | --- |
-| **Simple** | A focused chat workspace for coding agents, with session navigation, file changes, and review tools. |
-| **Editor** | The familiar Code - OSS editing experience, including files, terminals, debugging, and extensions. |
-
-### Features
-
-- **AI coding agents:** agents read, write, and run code in your project, with checkpoints you can rewind and a review panel for every change.
-- **Bring your own subscription (BYOS):** run agents on your Claude Pro/Max or ChatGPT Plus/Pro plan instead of paying twice.
-- **Bring your own key (BYOK):** OpenAI, Anthropic, Google Gemini, xAI Grok, and OpenRouter keys, stored in your OS keychain.
-- **Hosted models through Backboard:** Claude, GPT, Gemini, Kimi, DeepSeek, Qwen, GLM, and more from one model picker.
-- **Parallel agent sessions:** organize work by project, branch, and session; run agents side by side in isolated git worktrees.
-- **Computer use and browser use:** agents can operate a browser and desktop apps to finish tasks end to end.
-- **AI image and video generation:** generate and edit images and video from the chat.
-- **Skills, MCP, and memory:** extend agents with reusable skills and Model Context Protocol servers, and let them remember context across chats.
-- **A real editor:** the Code - OSS editing experience with files, terminals, debugging, and extensions, in the same window.
-- **Shared appearance:** use the same theme in Simple and Editor modes.
+- **Language-bound sessions:** MQL4 or MQL5 chosen once per session, restored with the session, and never shared with other sessions.
+- **Reference-first agent instructions:** the agent is told to check the official MQL4/MQL5 reference (docs.mql4.com, mql5.com/en/docs) before writing API calls, and not to invent functions, constants or signatures.
+- **AI coding agents:** agents read, write and run code in your project, with checkpoints you can rewind and a review panel for every change.
+- **Bring your own key (BYOK):** OpenAI, Anthropic, Google Gemini, xAI Grok, OpenRouter or any OpenAI-compatible endpoint, stored in your OS keychain.
+- **Bring your own subscription (BYOS):** run agents on your Claude Pro/Max or ChatGPT Plus/Pro plan.
+- **Hosted models:** Claude, GPT, Gemini, Kimi, DeepSeek, Qwen, GLM and more from one model picker.
+- **Parallel agent sessions:** organize work by project, branch and session; run agents side by side in isolated git worktrees.
+- **A real editor:** the Code - OSS editing experience with files, terminals, debugging and extensions, in the same window.
 
 Agent integrations require the credentials or accounts for the services you choose. Access to hosted services is separate from this repository's source-code license.
 
 ### Security and credentials
 
-- **Backboard API key:** stored in `~/.backboard_ide/config.json`. The agent never reads it
-  from disk — the host injects it as `BACKBOARD_API_KEY` / `BACKBOARD_API_URL` into the
+- **Hosted-model API key:** stored in `~/.backboard_ide/config.json`. The agent never reads it
+  from disk - the host injects it as `BACKBOARD_API_KEY` / `BACKBOARD_API_URL` into the
   spawned `cli-ts` environment, and `cli-ts` checks `process.env` before touching any file.
-- **BYOK (bring your own key) for OpenAI, Anthropic, Google, xAI, and OpenRouter:** keys are
-  added on the API Keys page (account menu, or "Backboard: API Keys" in the command
-  palette). The Electron main process is the single owner: it validates a key through the
-  runtime, then saves it as an encrypted `secret://` entry in application storage — the
-  same keychain-backed store `ISecretStorageService` uses — and activates it in the agent
-  host. The host hands the key set to each `cli-ts` serve process over stdin, never through
-  argv, the environment, or a file.
+- **BYOK for OpenAI, Anthropic, Google, xAI and OpenRouter:** keys are added on the API Keys
+  page (account menu, or "DQuant Lab: API Keys" in the command palette). The Electron main
+  process is the single owner: it validates a key through the runtime, then saves it as an
+  encrypted `secret://` entry in application storage - the same keychain-backed store
+  `ISecretStorageService` uses - and activates it in the agent host. The host hands the key
+  set to each `cli-ts` serve process over stdin, never through argv, the environment or a file.
 - **Key-billed models** appear in the model picker as their own sections next to the
-  Backboard-routed and subscription models. The selected model is the billing route:
-  adding or removing a key never silently changes what an existing session bills to.
-- Every Backboard credential can be overridden via environment variables for CI or local
-  development. Provider keys deliberately cannot.
+  hosted and subscription models. The selected model is the billing route: adding or removing
+  a key never silently changes what an existing session bills to.
+- Credentials can be overridden via environment variables for CI or local development.
+  Provider keys deliberately cannot.
 
 ### Telemetry
 
-- **No analytics keys ship in this repository.** Backboard product analytics (PostHog) and
-  ad-conversion reporting stay off unless a build supplies a key: official releases stamp
+- **No analytics keys ship in this repository.** Product analytics (PostHog) and
+  ad-conversion reporting stay off unless a build supplies a key: release builds stamp
   `backboardAnalytics.posthogKey` into `backboard/product.json` at build time, and builds
   from source send nothing. When enabled, analytics follow the `telemetry.telemetryLevel`
   setting.
@@ -83,136 +69,43 @@ Agent integrations require the credentials or accounts for the services you choo
 
 ### Run from source on macOS
 
-The development launcher below uses the macOS toolchain. Platform packaging instructions are linked under [Documentation](#documentation).
-
 Install these prerequisites:
 
 - **Git** to clone the repository.
 - **Node.js 24.15.0**, pinned in [`.nvmrc`](backboard/.nvmrc), with npm.
 - **Bun** to run the TypeScript agent runtime in a development checkout.
-- **Xcode Command Line Tools** for native dependencies. Install them with `xcode-select --install`.
+- **Xcode Command Line Tools** for native dependencies.
 
 ```bash
-git clone https://github.com/Backboard-io/Backboard-Desktop.git
-cd Backboard-Desktop/backboard
-
-# If you use nvm:
-nvm install
-nvm use
-
-# Install the agent runtime's separate dependencies.
-(cd cli-ts && bun install)
-
-# Check prerequisites, then build and launch the app.
-./scripts/dev.sh doctor
-./scripts/dev.sh
+npm run dev-setup   # from backboard/, once per checkout
+npm run dev         # build, launch and watch
+npm run dev-logs    # follow the output
 ```
 
-If you manage Node with another tool, select the version in `.nvmrc` before running the commands above and skip the two `nvm` commands.
-
-The launcher installs editor dependencies when needed, downloads Electron, starts the incremental build, and waits for it to finish before opening the app. The first build can take several minutes. Press **Ctrl+C** to stop the supervised app and watcher.
-
-### Run from source on Windows
-
-Use native Windows PowerShell. Install **Git**, **Node.js 24.15.0** with npm, **Bun**, and **Python 3** on your `PATH`. Install **Visual Studio 2022 Build Tools** with the **Desktop development with C++** workload, a Windows SDK, and the MSVC, ATL, and MFC Spectre-mitigated libraries for your architecture. Reopen PowerShell after installing the tools.
-
-This fork's install script detects Visual Studio 2022 or 2019; use 2022. The [upstream build prerequisites](https://github.com/microsoft/vscode/wiki/How-to-Contribute#prerequisites) describe the native dependencies, but may target a newer compiler than this checkout.
-
-```powershell
-git clone https://github.com/Backboard-io/Backboard-Desktop.git
-Set-Location Backboard-Desktop\backboard
-
-node --version  # should print v24.15.0
-python --version
-bun --version
-npm ci
-
-Push-Location cli-ts
-bun install
-Pop-Location
-
-# Keep this terminal open while developing.
-npm run watch
-```
-
-Wait for the initial client, extension, and Copilot builds to finish without errors. In a **second PowerShell terminal**, from the repository root:
-
-```powershell
-Set-Location backboard
-Remove-Item Env:ELECTRON_RUN_AS_NODE -ErrorAction SilentlyContinue
-.\scripts\code.bat
-```
-
-The launcher downloads Electron and prepares built-in extensions. For UI changes, wait for the watcher and run **Developer: Reload Window** in the app. Restart the app after main-process changes. Stop the watcher with **Ctrl+C** when finished.
+The launcher downloads Electron and prepares built-in extensions. For UI changes, wait for the watcher and run **Developer: Reload Window** in the app. Restart the app after main-process changes.
 
 ### Run from source on Linux
 
-The following native dependency command targets **Ubuntu 22.04 x86_64**, matching the repository's [Linux build image](scripts/linux-release/Dockerfile). Other distributions and Ubuntu versions may use different package names. Use a graphical desktop session to launch the app.
-
-```bash
-sudo apt-get update
-sudo apt-get install -y \
-  git build-essential pkg-config python3 python-is-python3 \
-  libx11-dev libx11-xcb-dev libxkbfile-dev libxkbcommon-dev \
-  libxkbcommon-x11-dev libsecret-1-dev libkrb5-dev \
-  libgtk-3-0 libnss3 libasound2 libatk-bridge2.0-0 libdrm2 \
-  libgbm1 libnotify4 libxdamage1 libxrandr2 libxss1 libu2f-udev \
-  dbus-x11 xdg-utils
-```
-
-Install **Node.js 24.15.0** with npm and **Bun**, then clone and build:
-
-```bash
-git clone https://github.com/Backboard-io/Backboard-Desktop.git
-cd Backboard-Desktop/backboard
-
-# If you use nvm; otherwise select the version in .nvmrc yourself.
-nvm install
-nvm use
-
-npm ci
-(cd cli-ts && bun install)
-
-# Keep this terminal open while developing.
-npm run watch
-```
-
-Wait for the initial client, extension, and Copilot builds to finish without errors. In a **second terminal**, from the repository root:
+Install Node.js 24.15.0, Bun, and the Electron build dependencies (`build-essential`, `pkg-config`, `python3`, `libx11-dev`, `libxkbfile-dev`, `libsecret-1-dev`, `libgtk-3-dev`, `libnss3`, `libasound2`):
 
 ```bash
 cd backboard
-env -u ELECTRON_RUN_AS_NODE ./scripts/code.sh
+npm ci
+npm run electron
+npm run watch
+./scripts/code.sh
 ```
 
-The launcher downloads Electron and prepares built-in extensions. For UI changes, wait for the watcher and run **Developer: Reload Window** in the app. Restart the app after main-process changes. Stop the watcher with **Ctrl+C** when finished.
+### Connect a model provider
 
-### Connect an agent
-
-Open the app and complete the sign-in or provider setup for your chosen integration. For local Backboard development, you can supply credentials through environment variables in the launch terminal:
-
-macOS:
+Open the app and complete the sign-in or provider setup for your chosen integration. For local development, you can supply the hosted-model key through environment variables in the launch terminal:
 
 ```bash
 export BACKBOARD_API_KEY="your-api-key"
-./scripts/dev.sh
+./scripts/code.sh
 ```
 
-Linux (with the watcher running):
-
-```bash
-export BACKBOARD_API_KEY="your-api-key"
-env -u ELECTRON_RUN_AS_NODE ./scripts/code.sh
-```
-
-Windows PowerShell (with the watcher running):
-
-```powershell
-$env:BACKBOARD_API_KEY = "your-api-key"
-Remove-Item Env:ELECTRON_RUN_AS_NODE -ErrorAction SilentlyContinue
-.\scripts\code.bat
-```
-
-The IDE passes resolved Backboard credentials to the agent process. The standalone CLI also supports environment variables; see the [CLI runtime guide](backboard/cli-ts/README.md) for its configuration and provider options.
+The IDE passes resolved credentials to the agent process. The standalone CLI also supports environment variables; see the [CLI runtime guide](backboard/cli-ts/README.md) for its configuration and provider options.
 
 ## Development
 
@@ -220,7 +113,7 @@ Run these commands from `backboard/`. The `dev.sh` supervisor is for macOS; Wind
 
 | Command | Purpose |
 | --- | --- |
-| `./scripts/dev.sh` | Set up, build, launch, and watch for changes. |
+| `./scripts/dev.sh` | Set up, build, launch and watch for changes. |
 | `./scripts/dev.sh doctor` | Check the local toolchain. |
 | `./scripts/dev.sh setup` | Install editor dependencies and download Electron. |
 | `./scripts/dev.sh logs` | Follow build output. |
@@ -229,29 +122,48 @@ Run these commands from `backboard/`. The `dev.sh` supervisor is for macOS; Wind
 | `npm run watch` | Watch client and extension builds on any platform. |
 | `npm run typecheck-client` | Type-check the main application sources. |
 
-After changing renderer code, wait for the watcher to finish and run **Developer: Reload Window** (**Cmd+R** on macOS). The macOS supervisor relaunches after main-process changes; restart manually on Windows and Linux. See the [development guide](backboard/DEV_ENVIRONMENT.md) for the full workflow and troubleshooting.
+After changing renderer code, wait for the watcher to finish and run **Developer: Reload Window**. See the [development guide](backboard/DEV_ENVIRONMENT.md) for the full workflow and troubleshooting.
 
 To work on the agent runtime separately:
 
 ```bash
-cd backboard/cli-ts  # from the repository root
+cd backboard/cli-ts
 bun install
 bun run dev
 bun run validate
 ```
 
+### DQuant Lab sources
+
+The MQL4/MQL5 integration lives in dedicated modules on top of the existing session and agent-host architecture:
+
+| Path | Contents |
+| --- | --- |
+| [`backboard/src/vs/sessions/contrib/dquant/`](backboard/src/vs/sessions/contrib/dquant/) | Welcome screen (language + project name) and its styling. |
+| [`backboard/src/vs/sessions/services/dquant/`](backboard/src/vs/sessions/services/dquant/) | Per-session language profile service. |
+| [`backboard/src/vs/workbench/contrib/dquant/prompts/`](backboard/src/vs/workbench/contrib/dquant/prompts/) | MQL4 and MQL5 agent instructions. |
+| [`backboard/src/vs/platform/agentHost/node/dquant/`](backboard/src/vs/platform/agentHost/node/dquant/) | Session context injected into the agent system prompt. |
+
 ### Repository layout
 
 | Path | Contents |
 | --- | --- |
-| [`backboard/`](backboard/) | The Code - OSS fork, application source, built-in extensions, and build tooling. |
-| [`backboard/src/vs/sessions/`](backboard/src/vs/sessions/) | Agent workspace UI, session navigation, and chat surfaces. |
+| [`backboard/`](backboard/) | The Code - OSS fork, application source, built-in extensions and build tooling. |
+| [`backboard/src/vs/sessions/`](backboard/src/vs/sessions/) | Agent workspace UI, session navigation and chat surfaces. |
 | [`backboard/src/vs/platform/agentHost/`](backboard/src/vs/platform/agentHost/) | Agent process management and provider integrations. |
-| [`backboard/cli-ts/`](backboard/cli-ts/) | The Bun/TypeScript agent runtime, tools, skills, and MCP support. |
+| [`backboard/cli-ts/`](backboard/cli-ts/) | The Bun/TypeScript agent runtime, tools, skills and MCP support. |
 | [`scripts/`](scripts/) | Release and packaging scripts. |
-| [`docs/`](docs/) | Project documentation, assets, and technical references. |
+| [`docs/`](docs/) | Project documentation and technical references. |
 
-The desktop app runs `cli-ts` as a child process and exchanges messages over standard input and output. The runtime manages the agent loop and tool execution, while the IDE presents conversations, files, and reviews.
+## Building a release
+
+| Target | Command |
+| --- | --- |
+| Linux x64 `.deb` | `cd backboard && npm run electron && npm run gulp -- vscode-linux-x64 vscode-linux-x64-prepare-deb vscode-linux-x64-build-deb` |
+| Linux release (container) | `scripts/linux-release/build-in-container.sh` |
+| Windows / macOS | See [Windows packaging](scripts/windows-release/README.md) and [macOS installer assets](scripts/dmg-assets/README.md). |
+
+The Linux package is `dquant-lab` and installs `/usr/share/dquant-lab/dquant-lab`, `dquant-lab.desktop` and the `dquant-lab` icon name. See [Linux packaging](scripts/linux-release/README.md).
 
 ## Documentation
 
@@ -260,54 +172,24 @@ The desktop app runs `cli-ts` as a child process and exchanges messages over sta
 - [CLI runtime and configuration](backboard/cli-ts/README.md)
 - [Sessions architecture and layering](backboard/src/vs/sessions/LAYERS.md)
 - [Session layout](backboard/src/vs/sessions/LAYOUT.md)
-- [Windows packaging](scripts/windows-release/README.md)
 - [Linux packaging](scripts/linux-release/README.md)
-- [macOS installer assets](scripts/dmg-assets/README.md)
 
 ## Contributing
 
-Bug reports, documentation improvements, and code contributions are welcome.
+Bug reports, documentation improvements and code contributions are welcome.
 
-1. Search this repository's [issues](https://github.com/Backboard-io/Backboard-Desktop/issues) for an existing report. Include your operating system, app version or commit, reproduction steps, and expected behavior when filing a bug.
+1. Search existing issues before filing a new one. Include your operating system, app version or commit, reproduction steps and expected behavior.
 2. For substantial changes, open an issue first to discuss the approach.
-3. Fork the repository, create a branch, and keep each pull request focused on one change.
-4. Follow the surrounding code style and [layering rules](backboard/src/vs/sessions/LAYERS.md). Run the relevant checks and describe what you tested in your pull request.
-5. Submit your pull request to [Backboard Desktop](https://github.com/Backboard-io/Backboard-Desktop/pulls).
+3. Keep each pull request focused on one change and describe what you tested.
+4. Follow the surrounding code style and [layering rules](backboard/src/vs/sessions/LAYERS.md).
 
-Report Backboard-specific issues here. The inherited [VS Code contribution guide](backboard/CONTRIBUTING.md) documents upstream practices and links to Microsoft's project; use those channels for issues or contributions that belong upstream.
+The inherited [VS Code contribution guide](backboard/CONTRIBUTING.md) documents upstream practices and links to Microsoft's project; use those channels for issues or contributions that belong upstream.
 
-## Contributors
+## Credits and lineage
 
-Backboard Desktop is built by the goats:
+**Thank you to Microsoft and the Visual Studio Code community.** DQuant Lab builds on Code - OSS, the MIT-licensed open-source core of Visual Studio Code. The upstream [Code - OSS repository](https://github.com/microsoft/vscode) is the foundation of this project, and the editor, workbench, terminal, debugger and extension infrastructure come from that work.
 
-- **Erin Tomorri** ([@ErinTomorri](https://github.com/ErinTomorri)) 
-- **Nihal Kodukula** ([@nkodukula-backboard](https://github.com/nkodukula-backboard))
-
-Contributions are welcome; see [Contributing](#contributing).
-
-## FAQ
-
-**Is Backboard Desktop free and open source?**
-Yes. The app is released under the MIT License, and you can build it from source on macOS, Windows, and Linux. Hosted models and subscriptions you connect are billed by their providers.
-
-**Is it an open-source alternative to Claude Code and OpenAI Codex?**
-Yes. It runs the same kind of agentic coding loop (read, edit, run, test) in a desktop IDE, and it can use your existing Claude or ChatGPT subscription.
-
-**Can it work like Devin or Manus as an autonomous agent?**
-Agents can run many sessions in parallel, each in its own git worktree, and can use a browser and your computer to complete multi-step tasks. You review and approve their changes.
-
-**Does it generate images and video like Higgsfield?**
-Yes. Image and video generation runs from the same chat that drives your coding agents.
-
-**Which models does it support?**
-Claude (Fable, Opus, Sonnet, Haiku), GPT, Gemini, Grok, Kimi, DeepSeek, Qwen, GLM, and any OpenRouter model, through your subscription, your API keys, or Backboard.
-
-**Is it a fork of VS Code?**
-It is built on Code - OSS, the MIT-licensed open-source core of Visual Studio Code, and keeps its editor, terminal, debugger, and extension support.
-
-## Credits
-
-**Thank you to Microsoft and the Visual Studio Code community.** Backboard Desktop builds on their work on the editor, workbench, terminal, debugger, extension infrastructure, and developer tooling. The upstream [Code - OSS repository](https://github.com/microsoft/vscode) is the foundation of this project.
+DQuant Lab started from the MIT-licensed **Backboard Desktop** project by Espri.ai and the Backboard Desktop contributors. The agent runtime, session architecture and update infrastructure in this repository originate there; they keep their original copyright and license notices.
 
 We also thank the maintainers and contributors of the open-source dependencies used throughout the app. See [Third-party notices](backboard/ThirdPartyNotices.txt) and individual source files for acknowledgments and license information.
 
@@ -315,4 +197,4 @@ We also thank the maintainers and contributors of the open-source dependencies u
 
 Released under the [MIT License](LICENSE).
 
-The repository retains Microsoft's upstream copyright and license notice in [backboard/LICENSE.txt](backboard/LICENSE.txt). Third-party components retain their respective licenses and notices; see [ThirdPartyNotices.txt](backboard/ThirdPartyNotices.txt).
+The repository retains Microsoft's upstream copyright and license notice in [backboard/LICENSE.txt](backboard/LICENSE.txt), and the original Backboard Desktop notices in the files that came from that project. Third-party components retain their respective licenses and notices; see [ThirdPartyNotices.txt](backboard/ThirdPartyNotices.txt).

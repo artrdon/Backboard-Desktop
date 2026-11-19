@@ -7,6 +7,10 @@ export type ProviderCredential =
 	| {
 			readonly key: string;
 			readonly generation: number;
+			/** Custom API base URL, carried with the key for stateless adapters. */
+			readonly baseUrl?: string;
+			/** Custom API model id. */
+			readonly model?: string;
 			assertCurrent(): void;
 	  };
 

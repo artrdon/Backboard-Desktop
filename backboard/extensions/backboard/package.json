@@ -1,7 +1,7 @@
 {
   "name": "backboard",
-  "displayName": "Backboard",
-  "description": "Backboard agent bridge for Backboard Studio",
+  "displayName": "DQuant Lab",
+  "description": "DQuant Lab agent bridge",
   "version": "0.1.0",
   "publisher": "backboard",
   "license": "MIT",
@@ -47,40 +47,40 @@
     "commands": [
       {
         "command": "backboard.cancelUpdate",
-        "title": "Backboard: Stop Update"
+        "title": "DQuant Lab: Stop Update"
       },
       {
         "command": "backboard.setApiKey",
-        "title": "Backboard: Set API Key"
+        "title": "DQuant Lab: Set API Key"
       },
       {
         "command": "backboard.extension.signIn",
-        "title": "Backboard: Sign In"
+        "title": "DQuant Lab: Sign In"
       },
       {
         "command": "backboard.extension.signOut",
-        "title": "Backboard: Sign Out"
+        "title": "DQuant Lab: Sign Out"
       },
       {
         "command": "backboard.refreshModels",
-        "title": "Backboard: Refresh Models"
+        "title": "DQuant Lab: Refresh Models"
       },
       {
         "command": "backboard.generateCommitMessage",
-        "title": "Backboard: Generate Commit Message",
+        "title": "DQuant Lab: Generate Commit Message",
         "icon": "$(sparkle)"
       },
       {
         "command": "backboard.openUsage",
-        "title": "Backboard: Open Usage"
+        "title": "DQuant Lab: Open Usage"
       },
       {
         "command": "backboard.checkForUpdates",
-        "title": "Backboard: Check for Updates"
+        "title": "DQuant Lab: Check for Updates"
       },
       {
         "command": "backboard.installAvailableUpdate",
-        "title": "Backboard: Install Update",
+        "title": "DQuant Lab: Install Update",
         "icon": "$(cloud-download)"
       }
     ],
@@ -108,13 +108,13 @@
     },
     "configuration": [
       {
-        "title": "Backboard",
+        "title": "DQuant Lab",
         "properties": {
           "backboard.apiKey": {
             "type": "string",
             "default": "",
             "editPresentation": "secretText",
-            "markdownDescription": "Legacy Backboard API key fallback. Prefer **Backboard: Sign in with SSO**.",
+            "markdownDescription": "Legacy API key fallback. Prefer **DQuant Lab: Sign In**.",
             "scope": "machine-overridable"
           },
           "backboard.env": {
@@ -163,15 +163,6 @@
             "default": "fast",
             "description": "Reasoning intensity sent to Backboard."
           },
-          "backboard.imageGeneration": {
-            "type": "string",
-            "enum": [
-              "off",
-              "auto"
-            ],
-            "default": "off",
-            "description": "Image generation setting for Backboard turns."
-          },
           "backboard.mcpFigma": {
             "type": "boolean",
             "default": true,
@@ -211,12 +202,12 @@
           "backboard.updates.enabled": {
             "type": "boolean",
             "default": true,
-            "description": "Check the Backboard Studio S3 manifest for IDE updates after Backboard activates."
+            "description": "Check the DQuant Lab S3 manifest for IDE updates after DQuant Lab activates."
           },
           "backboard.updates.manifestBaseUrl": {
             "type": "string",
             "default": "https://backboard-studio-releases.s3.ca-central-1.amazonaws.com/ide-releases",
-            "description": "Base URL for Backboard Studio update manifests."
+            "description": "Base URL for DQuant Lab update manifests."
           },
           "backboard.updates.channel": {
             "type": "string",
@@ -226,18 +217,18 @@
               "sandbox"
             ],
             "default": "",
-            "description": "Backboard Studio update channel. Leave empty to use sandbox for development builds and stable for packaged production builds."
+            "description": "DQuant Lab update channel. Leave empty to use sandbox for development builds and stable for packaged production builds."
           },
           "backboard.updates.manifestUrl": {
             "type": "string",
             "default": "",
-            "description": "Full Backboard Studio update manifest URL override. Leave empty to derive the URL from the base URL, channel, platform, and architecture."
+            "description": "Full DQuant Lab update manifest URL override. Leave empty to derive the URL from the base URL, channel, platform, and architecture."
           },
           "backboard.updates.checkIntervalMinutes": {
             "type": "number",
             "default": 360,
             "minimum": 15,
-            "description": "How often Backboard Studio checks the S3 update manifest while the IDE is open."
+            "description": "How often DQuant Lab checks the S3 update manifest while the IDE is open."
           }
         }
       }

@@ -94,13 +94,13 @@ async function provision(logService: ILogService): Promise<void> {
 			signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
 		});
 		if (!response.ok) {
-			logService.info(`[Backboard] Guest access unavailable (HTTP ${response.status}).`);
+			logService.info(`[DQuant Lab] Guest access unavailable (HTTP ${response.status}).`);
 			return;
 		}
 		const body = await response.json() as { api_key?: unknown };
 		apiKey = typeof body.api_key === 'string' && body.api_key.trim() ? body.api_key.trim() : undefined;
 	} catch (error) {
-		logService.info(`[Backboard] Guest access request failed: ${error instanceof Error ? error.message : String(error)}`);
+		logService.info(`[DQuant Lab] Guest access request failed: ${error instanceof Error ? error.message : String(error)}`);
 		return;
 	}
 	if (!apiKey) {
@@ -118,5 +118,5 @@ async function provision(logService: ILogService): Promise<void> {
 	fs.mkdirSync(dirname(file), { recursive: true });
 	fs.writeFileSync(temp, `${JSON.stringify(next, undefined, '\t')}\n`, { mode: 0o600 });
 	fs.renameSync(temp, file);
-	logService.info('[Backboard] Guest access ready: free models work without signing in.');
+	logService.info('[DQuant Lab] Guest access ready: free models work without signing in.');
 }

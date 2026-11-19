@@ -1142,7 +1142,7 @@ export function registerChatActions() {
 		constructor() {
 			super({
 				id: 'workbench.action.chat.manageSettings',
-				title: localize2('manageChat', "Manage Backboard Settings"),
+				title: localize2('manageChat', "Manage DQuant Lab Settings"),
 				category: CHAT_CATEGORY,
 				f1: true,
 				precondition: ContextKeyExpr.and(
@@ -1176,7 +1176,7 @@ export function registerChatActions() {
 		constructor() {
 			super({
 				id: 'workbench.action.chat.showExtensionsUsingCopilot',
-				title: localize2('showCopilotUsageExtensions', "Show Extensions using Backboard"),
+				title: localize2('showCopilotUsageExtensions', "Show Extensions using DQuant Lab"),
 				f1: true,
 				category: EXTENSIONS_CATEGORY,
 				precondition: ChatContextKeys.enabled
@@ -1219,7 +1219,7 @@ export function registerChatActions() {
 		constructor() {
 			super({
 				id: OPEN_CHAT_QUOTA_EXCEEDED_DIALOG,
-				title: localize('upgradeChat', "Upgrade Backboard Plan")
+				title: localize('upgradeChat', "Upgrade DQuant Lab Plan")
 			});
 		}
 
@@ -1247,18 +1247,18 @@ export function registerChatActions() {
 			}
 
 			const free = chatEntitlementService.entitlement === ChatEntitlement.Free;
-			const upgradeToPro = free ? localize('upgradeToPro', "Upgrade Backboard for:\n- Unlimited inline suggestions\n- Unlimited chat messages\n- Access to premium models") : undefined;
+			const upgradeToPro = free ? localize('upgradeToPro', "Upgrade DQuant Lab for:\n- Unlimited inline suggestions\n- Unlimited chat messages\n- Access to premium models") : undefined;
 
 			await dialogService.prompt({
 				type: 'none',
-				message: localize('copilotQuotaReached', "Backboard Quota Reached"),
+				message: localize('copilotQuotaReached', "DQuant Lab Quota Reached"),
 				cancelButton: {
 					label: localize('dismiss', "Dismiss"),
 					run: () => { /* noop */ }
 				},
 				buttons: [
 					{
-						label: free ? localize('upgradePro', "Upgrade Backboard") : localize('upgradePlan', "Upgrade Backboard Plan"),
+						label: free ? localize('upgradePro', "Upgrade DQuant Lab") : localize('upgradePlan', "Upgrade DQuant Lab Plan"),
 						run: () => {
 							const commandId = 'workbench.action.chat.upgradePlan';
 							telemetryService.publicLog2<WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification>('workbenchActionExecuted', { id: commandId, from: 'chat-dialog' });

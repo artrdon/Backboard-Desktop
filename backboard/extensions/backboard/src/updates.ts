@@ -186,7 +186,7 @@ async function checkBackboardUpdates(manual: boolean): Promise<void> {
 	}
 	if (backboardUpdateCheckInProgress) {
 		if (manual) {
-			await vscode.window.showInformationMessage('Backboard Studio update check is already running.');
+			await vscode.window.showInformationMessage('DQuant Lab update check is already running.');
 		}
 		return;
 	}
@@ -199,7 +199,7 @@ async function checkBackboardUpdates(manual: boolean): Promise<void> {
 		checkLock = await acquireBackboardUpdateCheckLock();
 		if (!checkLock) {
 			if (manual) {
-				await vscode.window.showInformationMessage('Another Backboard Studio window is already checking for updates.');
+				await vscode.window.showInformationMessage('Another DQuant Lab window is already checking for updates.');
 			} else {
 				// Each window tracks the button on its own; try again once the other window is done.
 				setTimeout(() => void checkBackboardUpdates(false), 5_000);
@@ -210,7 +210,7 @@ async function checkBackboardUpdates(manual: boolean): Promise<void> {
 		const manifestUrl = getBackboardUpdateManifestUrl();
 		if (!manifestUrl) {
 			if (manual) {
-				await vscode.window.showWarningMessage('Backboard Studio updates are not supported on this platform.');
+				await vscode.window.showWarningMessage('DQuant Lab updates are not supported on this platform.');
 			}
 			return;
 		}
@@ -233,7 +233,7 @@ async function checkBackboardUpdates(manual: boolean): Promise<void> {
 			} else if (manual && pendingLiveRestart) {
 				await backboardLiveUpdates?.promptRestart();
 			} else if (manual) {
-				vscode.window.setStatusBarMessage(`Backboard Studio is up to date (${currentVersion}).`, 4000);
+				vscode.window.setStatusBarMessage(`DQuant Lab is up to date (${currentVersion}).`, 4000);
 			}
 			return;
 		}
@@ -248,7 +248,7 @@ async function checkBackboardUpdates(manual: boolean): Promise<void> {
 		const message = error instanceof Error ? error.message : String(error);
 		backboardUpdateOutput?.appendLine(`[updates] ${message}`);
 		if (manual) {
-			void vscode.window.showWarningMessage(`Could not check for Backboard Studio updates: ${message}`);
+			void vscode.window.showWarningMessage(`Could not check for DQuant Lab updates: ${message}`);
 		}
 	} finally {
 		if (checkLock) {
@@ -264,7 +264,7 @@ async function checkBackboardUpdates(manual: boolean): Promise<void> {
 async function promptBackboardUpdate(manifest: UpdateManifest, currentVersion: string): Promise<void> {
 	const simulated = isSimulatedBackboardUpdate(manifest);
 	const canInstall = simulated || canInstallBackboardUpdate();
-	const message = `Backboard Studio ${manifest.version} is available. Current version: ${currentVersion}.`;
+	const message = `DQuant Lab ${manifest.version} is available. Current version: ${currentVersion}.`;
 	const downloadAction = process.platform === 'win32' ? 'Download Installer' : 'Download DMG';
 	const actions = canInstall ? ['Install and Restart', downloadAction, 'Copy Link', 'Later'] : [downloadAction, 'Copy Link', 'Later'];
 	const choice = await vscode.window.showInformationMessage(message, ...actions);
@@ -276,7 +276,7 @@ async function promptBackboardUpdate(manifest: UpdateManifest, currentVersion: s
 		await vscode.env.openExternal(vscode.Uri.parse(manifest.url));
 	} else if (choice === 'Copy Link') {
 		await vscode.env.clipboard.writeText(manifest.url);
-		await vscode.window.showInformationMessage('Backboard Studio update link copied.');
+		await vscode.window.showInformationMessage('DQuant Lab update link copied.');
 	}
 }
 
@@ -348,7 +348,7 @@ function inPlaceInstallUnavailableReason(): string | undefined {
 		case 'win32':
 			return 'This install can only download the installer. In-place updates need an install made with Backboard-Studio-User-Setup-x64.exe; system-wide installs and the portable ZIP are not updated in place.';
 		case 'darwin':
-			return 'This build can only download the DMG. In-place updates need the packaged Backboard Studio.app, not a development build.';
+			return 'This build can only download the DMG. In-place updates need the packaged DQuant Lab.app, not a development build.';
 		default:
 			return 'In-place updates are only available on macOS and Windows.';
 	}
@@ -374,10 +374,10 @@ function updateBackboardUpdateCheckStatusItem(checking: boolean): void {
 	}
 	if (checking) {
 		backboardUpdateCheckStatusItem.text = '$(sync~spin) Checking Updates';
-		backboardUpdateCheckStatusItem.tooltip = 'Checking the Backboard Studio S3 update manifest';
+		backboardUpdateCheckStatusItem.tooltip = 'Checking the DQuant Lab S3 update manifest';
 	} else {
 		backboardUpdateCheckStatusItem.text = '$(sync) Check Updates';
-		backboardUpdateCheckStatusItem.tooltip = 'Check S3 for a Backboard Studio update';
+		backboardUpdateCheckStatusItem.tooltip = 'Check S3 for a DQuant Lab update';
 	}
 	backboardUpdateCheckStatusItem.hide();
 }
@@ -411,10 +411,10 @@ async function refreshBackboardUpdateButton(): Promise<void> {
 	}
 	if (manifest) {
 		backboardUpdateStatusItem.text = `$(cloud-download) Update ${manifest.version}`;
-		backboardUpdateStatusItem.tooltip = `Install Backboard Studio ${manifest.version}`;
+		backboardUpdateStatusItem.tooltip = `Install DQuant Lab ${manifest.version}`;
 	} else if (pendingLiveRestart) {
 		backboardUpdateStatusItem.text = '$(debug-restart) Restart to Update';
-		backboardUpdateStatusItem.tooltip = pendingLiveRestart.notes ?? 'Restart Backboard Studio to apply the latest update';
+		backboardUpdateStatusItem.tooltip = pendingLiveRestart.notes ?? 'Restart DQuant Lab to apply the latest update';
 	}
 	backboardUpdateStatusItem.hide();
 }
@@ -457,13 +457,13 @@ function currentInstalledAppPath(): string | undefined {
 
 async function installBackboardUpdate(manifest: UpdateManifest): Promise<void> {
 	if (backboardUpdateInstallInProgress) {
-		await vscode.window.showInformationMessage('Backboard Studio update installation is already running.');
+		await vscode.window.showInformationMessage('DQuant Lab update installation is already running.');
 		return;
 	}
 	const simulated = isSimulatedBackboardUpdate(manifest);
-	const appPath = simulated ? path.join(os.tmpdir(), 'Backboard Studio Update Test') : currentInstalledAppPath();
+	const appPath = simulated ? path.join(os.tmpdir(), 'DQuant Lab Update Test') : currentInstalledAppPath();
 	if (!appPath) {
-		await vscode.window.showWarningMessage('Automatic update install is only available from the packaged Backboard Studio app.');
+		await vscode.window.showWarningMessage('Automatic update install is only available from the packaged DQuant Lab app.');
 		return;
 	}
 
@@ -487,7 +487,7 @@ async function installBackboardUpdate(manifest: UpdateManifest): Promise<void> {
 		const packagePath = path.join(updateDirectory, process.platform === 'win32' ? `Backboard-Studio-${manifest.version}-Setup.exe` : `Backboard-Studio-${manifest.version}.dmg`);
 		await vscode.window.withProgress({
 			location: vscode.ProgressLocation.Notification,
-			title: vscode.l10n.t('Preparing Backboard Studio {0}', manifest.version),
+			title: vscode.l10n.t('Preparing DQuant Lab {0}', manifest.version),
 			cancellable: true
 		}, async (progress, token) => {
 			const subscription = token.onCancellationRequested(() => cancellation.abort());
@@ -529,8 +529,8 @@ async function installBackboardUpdate(manifest: UpdateManifest): Promise<void> {
 		signal.throwIfAborted();
 		const installAction = vscode.l10n.t('Install and Restart');
 		const choice = await vscode.window.showInformationMessage(
-			vscode.l10n.t('Backboard Studio {0} is ready to install.', manifest.version),
-			{ modal: true, detail: vscode.l10n.t('Installing will close Backboard Studio and restart it. You can cancel now and keep working. Once installation begins, it cannot be stopped.') },
+			vscode.l10n.t('DQuant Lab {0} is ready to install.', manifest.version),
+			{ modal: true, detail: vscode.l10n.t('Installing will close DQuant Lab and restart it. You can cancel now and keep working. Once installation begins, it cannot be stopped.') },
 			installAction
 		);
 		if (choice !== installAction) {
@@ -542,7 +542,7 @@ async function installBackboardUpdate(manifest: UpdateManifest): Promise<void> {
 		await vscode.commands.executeCommand('setContext', 'backboard.updateCancellable', false);
 		await vscode.window.withProgress({
 			location: vscode.ProgressLocation.Notification,
-			title: vscode.l10n.t('Installing Backboard Studio {0}', manifest.version),
+			title: vscode.l10n.t('Installing DQuant Lab {0}', manifest.version),
 			cancellable: false
 		}, async progress => simulated
 			? simulateBackboardUpdateInstall(progress)
@@ -552,7 +552,7 @@ async function installBackboardUpdate(manifest: UpdateManifest): Promise<void> {
 		if (simulated) {
 			availableBackboardUpdate = undefined;
 			backboardUpdateOutput?.appendLine(`[updates] update test finished; a packaged build would now quit and install ${manifest.version}`);
-			void vscode.window.showInformationMessage(`Update test complete. A packaged build would now close, install Backboard Studio ${manifest.version} and reopen.`);
+			void vscode.window.showInformationMessage(`Update test complete. A packaged build would now close, install DQuant Lab ${manifest.version} and reopen.`);
 			return;
 		}
 		installerOwnsLock = true;
@@ -563,7 +563,7 @@ async function installBackboardUpdate(manifest: UpdateManifest): Promise<void> {
 		} else {
 			const message = error instanceof Error ? error.message : String(error);
 			backboardUpdateOutput?.appendLine(`[updates] install failed: ${message}`);
-			await vscode.window.showWarningMessage(`Could not install Backboard Studio update: ${message}`);
+			await vscode.window.showWarningMessage(`Could not install DQuant Lab update: ${message}`);
 		}
 	} finally {
 		backboardUpdateCancellation = undefined;
@@ -683,12 +683,12 @@ async function acquireBackboardUpdateInstallLock(appPath: string, version: strin
 				throw error;
 			}
 			if (!(await backboardUpdateInstallLockIsStale(lock))) {
-				throw new Error('A Backboard Studio update is already downloading or waiting to install. Quit the app once and let that installer finish.');
+				throw new Error('A DQuant Lab update is already downloading or waiting to install. Quit the app once and let that installer finish.');
 			}
 			await fs.promises.rm(directory, { recursive: true, force: true });
 		}
 	}
-	throw new Error('Could not acquire the Backboard Studio update installation lock.');
+	throw new Error('Could not acquire the DQuant Lab update installation lock.');
 }
 
 async function writeBackboardUpdateLockOwner(lock: UpdateInstallLock, owner: UpdateLockOwner): Promise<void> {
@@ -729,7 +729,7 @@ function currentMacAppPath(): string | undefined {
 }
 
 function isSupportedMacBackboardAppName(appName: string): boolean {
-	return appName === 'Backboard Studio.app' || appName === 'Backboard Studio Sandbox.app';
+	return appName === 'DQuant Lab.app' || appName === 'DQuant Lab Sandbox.app';
 }
 
 /**
@@ -742,7 +742,7 @@ function currentWindowsUserInstallDirectory(): string | undefined {
 		return undefined;
 	}
 	const executableName = path.basename(process.execPath);
-	if (executableName !== 'Backboard Studio.exe' && executableName !== 'Backboard Studio Sandbox.exe') {
+	if (executableName !== 'DQuant Lab.exe' && executableName !== 'DQuant Lab Sandbox.exe') {
 		return undefined;
 	}
 	if (readBackboardProductMetadataString('target') !== 'user') {
@@ -828,7 +828,7 @@ async function stageMacBackboardInstaller(dmgPath: string, appPath: string, vers
 	const statusPath = path.join(path.dirname(dmgPath), 'install-backboard-update.status');
 	const logPath = backboardUpdateLogPath();
 	const appName = path.basename(appPath);
-	const bundleIdentifier = appName === 'Backboard Studio Sandbox.app' ? 'io.backboard.studio.sandbox' : 'io.backboard.studio';
+	const bundleIdentifier = appName === 'DQuant Lab Sandbox.app' ? 'io.dquant.lab.sandbox' : 'io.dquant.lab';
 	await fs.promises.writeFile(installerPath, macUpdateInstallerScript(), { mode: 0o700 });
 	await fs.promises.rm(statusPath, { force: true });
 	const child = cp.spawn('/bin/zsh', [installerPath, dmgPath, appPath, String(process.pid), version, logPath, appName, bundleIdentifier, statusPath, '', installLock.directory], {
@@ -836,7 +836,7 @@ async function stageMacBackboardInstaller(dmgPath: string, appPath: string, vers
 		stdio: 'ignore'
 	});
 	if (!child.pid) {
-		throw new Error('Could not start the detached Backboard Studio update installer.');
+		throw new Error('Could not start the detached DQuant Lab update installer.');
 	}
 	await writeBackboardUpdateLockOwner(installLock, {
 		pid: child.pid,
@@ -885,7 +885,7 @@ async function stageWindowsBackboardInstaller(setupPath: string, installDirector
 	});
 	if (!child.pid) {
 		child.once('error', () => { /* reported by the throw below */ });
-		throw new Error('Could not start the Backboard Studio update installer.');
+		throw new Error('Could not start the DQuant Lab update installer.');
 	}
 	await writeBackboardUpdateLockOwner(installLock, {
 		pid: child.pid,

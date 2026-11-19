@@ -118,7 +118,7 @@ export class SetupAgent extends Disposable implements IChatAgentImplementation {
 			const disposables = new DisposableStore();
 
 			// Register Backboard agent
-			const { disposable: vscodeDisposable } = SetupAgent.doRegisterAgent(instantiationService, chatAgentService, 'setup.backboard', 'backboard', false, localize2('vscodeAgentDescription', "Ask questions about Backboard IDE").value, ChatAgentLocation.Chat, ChatModeKind.Agent, context, controller);
+			const { disposable: vscodeDisposable } = SetupAgent.doRegisterAgent(instantiationService, chatAgentService, 'setup.backboard', 'backboard', false, localize2('vscodeAgentDescription', "Ask questions about DQuant Lab").value, ChatAgentLocation.Chat, ChatModeKind.Agent, context, controller);
 			disposables.add(vscodeDisposable);
 
 			// Register workspace agent
@@ -135,8 +135,8 @@ export class SetupAgent extends Disposable implements IChatAgentImplementation {
 				source: ToolDataSource.Internal,
 				icon: Codicon.newFolder,
 				displayName: localize('setupToolDisplayName', "New Workspace"),
-				modelDescription: 'Scaffold a new workspace in Backboard IDE',
-				userDescription: localize('setupToolsDescription', "Scaffold a new workspace in Backboard IDE"),
+				modelDescription: 'Scaffold a new workspace in DQuant Lab',
+				userDescription: localize('setupToolsDescription', "Scaffold a new workspace in DQuant Lab"),
 				canBeReferencedInPrompt: true,
 				toolReferenceName: 'new',
 				when: ContextKeyExpr.true(),
@@ -175,7 +175,7 @@ export class SetupAgent extends Disposable implements IChatAgentImplementation {
 		return { agent, disposable: disposables };
 	}
 
-	private static readonly SETUP_NEEDED_MESSAGE = new MarkdownString(localize('settingUpCopilotNeeded', "You need to set up Backboard and be signed in to use Chat."));
+	private static readonly SETUP_NEEDED_MESSAGE = new MarkdownString(localize('settingUpCopilotNeeded', "You need to set up DQuant Lab and be signed in to use Chat."));
 	private static readonly TRUST_NEEDED_MESSAGE = new MarkdownString(localize('trustNeeded', "You need to trust this workspace to use Chat."));
 
 	private static readonly CHAT_RETRY_COMMAND_ID = 'workbench.action.chat.retrySetup';
@@ -399,9 +399,9 @@ export class SetupAgent extends Disposable implements IChatAgentImplementation {
 					if (ready === 'timedout') {
 						let warningMessage: string;
 						if (this.chatEntitlementService.anonymous) {
-							warningMessage = localize('chatTookLongWarningAnonymous', "Backboard took too long to get ready. Click restart to try again if this issue persists.");
+							warningMessage = localize('chatTookLongWarningAnonymous', "DQuant Lab took too long to get ready. Click restart to try again if this issue persists.");
 						} else {
-							warningMessage = localize('chatTookLongWarning', "Backboard took too long to get ready. Please ensure you are signed in to {0}, then click restart to try again if this issue persists.", defaultChat.provider.default.name);
+							warningMessage = localize('chatTookLongWarning', "DQuant Lab took too long to get ready. Please ensure you are signed in to {0}, then click restart to try again if this issue persists.", defaultChat.provider.default.name);
 						}
 
 					const diagnosticInfo = this.computeDiagnosticInfo(agentActivated, agentReady, languageModelReady, toolsModelReady, requestModel, languageModelsService, chatAgentService, modeInfo);
@@ -466,7 +466,7 @@ export class SetupAgent extends Disposable implements IChatAgentImplementation {
 						});
 					} else {
 							this.logService.warn(defaultChat.outputChannelId
-								? `[chat setup] No output channel found for id '${defaultChat.outputChannelId}' to show details about chat setup timeout. Backboard is integrated into the workbench.`
+								? `[chat setup] No output channel found for id '${defaultChat.outputChannelId}' to show details about chat setup timeout. DQuant Lab is integrated into the workbench.`
 								: '[chat setup] No output channel provided via product.json to show details about chat setup timeout.');
 						progress({
 							kind: 'command',

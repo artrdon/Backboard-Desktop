@@ -18,11 +18,11 @@ import { IAgentHostFileSystemService, SYNCED_CUSTOMIZATION_SCHEME } from '../../
 // Re-export so existing consumers don't need to change their import source.
 export { SYNCED_CUSTOMIZATION_SCHEME };
 
-const DISPLAY_NAME = 'Backboard Synced Data';
+const DISPLAY_NAME = 'DQuant Lab Synced Data';
 
 const MANIFEST_CONTENT = JSON.stringify({
 	name: DISPLAY_NAME,
-	description: 'Customization data synced from Backboard IDE',
+	description: 'Customization data synced from DQuant Lab',
 }, null, '\t');
 
 /**

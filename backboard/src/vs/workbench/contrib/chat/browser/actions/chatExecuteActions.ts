@@ -515,7 +515,7 @@ export class ToggleBackboardComposerMicrophoneAction extends Action2 {
 	constructor() {
 		super({
 			id: ToggleBackboardComposerMicrophoneAction.ID,
-			title: localize2('interactive.backboardMicrophone.label', "Backboard Microphone"),
+			title: localize2('interactive.backboardMicrophone.label', "DQuant Lab Microphone"),
 			tooltip: localize('interactive.backboardMicrophone.tooltip', "Listen and insert transcript"),
 			category: CHAT_CATEGORY,
 			icon: Codicon.mic,
@@ -548,7 +548,7 @@ export class ToggleBackboardComposerMicrophoneAction extends Action2 {
 			try {
 				await stopBackboardRealtimeTranscription(backboardComposerMicState);
 			} catch (error) {
-				notificationService.error(localize('interactive.backboardMicrophone.failed', "Backboard transcription failed: {0}", getErrorMessage(error)));
+				notificationService.error(localize('interactive.backboardMicrophone.failed', "DQuant Lab transcription failed: {0}", getErrorMessage(error)));
 			}
 			return;
 		}
@@ -607,7 +607,7 @@ export class OpenBackboardComposerOptionsAction extends Action2 {
 	constructor() {
 		super({
 			id: OpenBackboardComposerOptionsAction.ID,
-			title: localize2('interactive.backboardComposerOptions.label', "Backboard Options"),
+			title: localize2('interactive.backboardComposerOptions.label', "DQuant Lab Options"),
 			tooltip: localize('interactive.backboardComposerOptions.tooltip', "Open composer options"),
 			category: CHAT_CATEGORY,
 			icon: Codicon.settingsGear,
@@ -627,7 +627,7 @@ export class BackboardUsageMetricsAction extends Action2 {
 	constructor() {
 		super({
 			id: BackboardUsageMetricsAction.ID,
-			title: localize2('interactive.backboardUsageMetrics.label', "Backboard Usage"),
+			title: localize2('interactive.backboardUsageMetrics.label', "DQuant Lab Usage"),
 			tooltip: localize('interactive.backboardUsageMetrics.tooltip', "Show model, token, and speed metrics"),
 			category: CHAT_CATEGORY,
 			icon: Codicon.dashboard,
@@ -652,7 +652,7 @@ async function startBackboardRealtimeTranscription(
 	const authHeaders = backboardComposerAuthHeaders(config);
 	const apiKey = backboardComposerApiKey(config);
 	if (!authHeaders || !apiKey) {
-		throw new Error(localize('interactive.backboardMicrophone.noCredentials', "Realtime voice requires a Backboard API key in ~/.backboard_ide/config.json."));
+		throw new Error(localize('interactive.backboardMicrophone.noCredentials', "Realtime voice requires an API key in ~/.backboard_ide/config.json."));
 	}
 	const apiUrl = backboardComposerApiUrl(config, configurationService);
 	const assistantId = await resolveBackboardComposerAssistantId(config, apiUrl, authHeaders);
@@ -669,7 +669,7 @@ async function startBackboardRealtimeTranscription(
 		resolveSession = resolve;
 		rejectSession = reject;
 	});
-	const sessionTimeout = win.setTimeout(() => rejectSession(new Error('Backboard realtime voice session timed out.')), 15_000);
+	const sessionTimeout = win.setTimeout(() => rejectSession(new Error('DQuant Lab realtime voice session timed out.')), 15_000);
 	let stream: MediaStream | undefined;
 	let audioContext: AudioContext | undefined;
 	let source: MediaStreamAudioSourceNode | undefined;
@@ -712,7 +712,7 @@ async function startBackboardRealtimeTranscription(
 			return;
 		}
 		if (type === 'error') {
-			const error = new Error(stringFromBackboardRecord(payload.message) ?? stringFromBackboardRecord(payload.code) ?? 'Backboard realtime voice failed.');
+			const error = new Error(stringFromBackboardRecord(payload.message) ?? stringFromBackboardRecord(payload.code) ?? 'DQuant Lab realtime voice failed.');
 			if (!sessionReady) {
 				rejectSession(error);
 			} else {
@@ -734,7 +734,7 @@ async function startBackboardRealtimeTranscription(
 		}
 	});
 	socket.addEventListener('error', () => {
-		const error = new Error('Backboard realtime voice connection failed.');
+		const error = new Error('DQuant Lab realtime voice connection failed.');
 		if (!sessionReady) {
 			rejectSession(error);
 		} else {
@@ -743,9 +743,9 @@ async function startBackboardRealtimeTranscription(
 	});
 	socket.addEventListener('close', () => {
 		if (!sessionReady) {
-			rejectSession(new Error('Backboard closed the realtime voice session before it started.'));
+			rejectSession(new Error('DQuant Lab closed the realtime voice session before it started.'));
 		} else if (state && !state.stopping) {
-			state.rejectFinal(new Error('Backboard closed the realtime voice session.'));
+			state.rejectFinal(new Error('DQuant Lab closed the realtime voice session.'));
 		}
 	});
 
@@ -836,12 +836,12 @@ async function stopBackboardRealtimeTranscription(state: IBackboardComposerMicSt
 	await state.audioContext.close();
 	try {
 		if (state.socket.readyState !== WebSocket.OPEN) {
-			throw new Error('Backboard realtime voice connection is not open.');
+			throw new Error('DQuant Lab realtime voice connection is not open.');
 		}
 		state.socket.send(JSON.stringify({ type: 'commit' }));
 		const transcript = await Promise.race([
 			state.finalTranscript,
-			new Promise<string>((_resolve, reject) => setTimeout(() => reject(new Error('Backboard did not finalize the transcript.')), 10_000)),
+			new Promise<string>((_resolve, reject) => setTimeout(() => reject(new Error('DQuant Lab did not finalize the transcript.')), 10_000)),
 		]);
 		setBackboardComposerTranscript(state, transcript);
 		state.widget.inputEditor.focus();
@@ -909,7 +909,7 @@ async function resolveBackboardComposerAssistantId(
 	}
 	const response = await fetch(`${apiUrl}/assistants?limit=1`, { headers: authHeaders });
 	if (!response.ok) {
-		throw new Error(`Could not find a Backboard assistant: ${response.status} ${response.statusText}`);
+		throw new Error(`Could not find a DQuant Lab assistant: ${response.status} ${response.statusText}`);
 	}
 	const payload: unknown = await response.json();
 	const assistants = Array.isArray(payload)
@@ -923,7 +923,7 @@ async function resolveBackboardComposerAssistantId(
 			}
 		}
 	}
-	throw new Error('No Backboard assistant is available for realtime voice.');
+	throw new Error('No DQuant Lab assistant is available for realtime voice.');
 }
 
 async function createBackboardComposerVoiceThread(
@@ -937,14 +937,14 @@ async function createBackboardComposerVoiceThread(
 		body: '{}',
 	});
 	if (!response.ok) {
-		throw new Error(`Could not start a Backboard voice thread: ${response.status} ${response.statusText}`);
+		throw new Error(`Could not start a DQuant Lab voice thread: ${response.status} ${response.statusText}`);
 	}
 	const payload: unknown = await response.json();
 	const threadId = isBackboardRecord(payload)
 		? stringFromBackboardRecord(payload.thread_id) ?? stringFromBackboardRecord(payload.threadId)
 		: undefined;
 	if (!threadId) {
-		throw new Error('Backboard did not return a voice thread ID.');
+		throw new Error('DQuant Lab did not return a voice thread ID.');
 	}
 	return threadId;
 }

@@ -1160,7 +1160,7 @@ export abstract class Layout extends Disposable implements IWorkbenchLayoutServi
 			mark('code/didRestoreAuxiliaryBar');
 		})());
 
-		// Leave Zen Mode. Backboard Studio does not offer Zen Mode, so there is no
+		// Leave Zen Mode. DQuant Lab does not offer Zen Mode, so there is no
 		// command left to exit it: a window whose persisted state still says Zen
 		// Mode was active (set before the feature was removed) must be taken out of
 		// it on restore, or it would be stuck there forever.

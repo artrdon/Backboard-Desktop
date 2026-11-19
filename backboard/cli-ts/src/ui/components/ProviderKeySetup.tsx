@@ -7,7 +7,9 @@ import {
 	BYOK_PROVIDER_IDS,
 	type ByokProviderId,
 	maskProviderKey,
+	type ProviderKeyConfig,
 } from "../../core/keys/ProviderKeyTypes.ts";
+import { normalizeCustomBaseUrl } from "../../providers/byok/adapters/CustomAdapter.ts";
 import {
 	BYOK_ADAPTER_LIST,
 	BYOK_ADAPTERS,
@@ -48,6 +50,8 @@ export function ProviderKeySetup({
 	const selected: ByokProviderId =
 		provider ?? BYOK_PROVIDER_IDS[selection.index] ?? BYOK_PROVIDER_IDS[0];
 	const [value, setValue] = useState("");
+	const [baseUrl, setBaseUrl] = useState("");
+	const [model, setModel] = useState("");
 	const [error, setError] = useState<string | null>(null);
 	const [saving, setSaving] = useState(false);
 
@@ -62,9 +66,22 @@ export function ProviderKeySetup({
 		if (saving) return;
 		const trimmed = value.trim();
 		setError(null);
+		let config: ProviderKeyConfig | undefined;
+		if (selected === "custom") {
+			const normalized = normalizeCustomBaseUrl(baseUrl);
+			if (!normalized) {
+				setError("Enter a valid API base URL, including http:// or https://.");
+				return;
+			}
+			if (!model.trim()) {
+				setError("Enter the model ID for this endpoint.");
+				return;
+			}
+			config = { baseUrl: normalized, model: model.trim() };
+		}
 		setSaving(true);
 		controller
-			.add(selected, trimmed)
+			.add(selected, trimmed, undefined, config)
 			.then(() => {
 				setValue("");
 				onDone(selected);
@@ -132,9 +149,38 @@ export function ProviderKeySetup({
 				Paste your {adapter.label} API key
 			</Text>
 			<Text color={theme.subtle}>
-				Get one at {adapter.consoleUrl} · stored encrypted in
-				~/.backboard/keys.json
+				{adapter.consoleUrl
+					? `Get one at ${adapter.consoleUrl} · stored encrypted in ~/.backboard/keys.json`
+					: "Stored encrypted in ~/.backboard/keys.json"}
 			</Text>
+			{selected === "custom" ? (
+				<>
+					<Box marginTop={1}>
+						<Text color={theme.subtle}>Base URL: </Text>
+						<TextInput
+							value={baseUrl}
+							onChange={(next) => {
+								setBaseUrl(next);
+								setError(null);
+							}}
+							placeholder="https://api.deepseek.com/v1"
+							focus={!saving}
+						/>
+					</Box>
+					<Box>
+						<Text color={theme.subtle}>Model: </Text>
+						<TextInput
+							value={model}
+							onChange={(next) => {
+								setModel(next);
+								setError(null);
+							}}
+							placeholder="deepseek-chat"
+							focus={!saving}
+						/>
+					</Box>
+				</>
+			) : null}
 			<Box marginTop={1}>
 				<Text color={theme.subtle}>Key: </Text>
 				{/*

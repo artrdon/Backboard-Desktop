@@ -15,7 +15,7 @@ const sourceApp = process.env.BACKBOARD_UPDATER_E2E_SOURCE_APP;
 const updateDmg = process.env.BACKBOARD_UPDATER_E2E_DMG;
 const expectedVersion = process.env.BACKBOARD_UPDATER_E2E_VERSION;
 const installerModulePath = process.env.BACKBOARD_UPDATER_E2E_INSTALLER_MODULE;
-const appBundleName = process.env.BACKBOARD_UPDATER_E2E_APP_NAME || 'Backboard Studio.app';
+const appBundleName = process.env.BACKBOARD_UPDATER_E2E_APP_NAME || 'DQuant Lab.app';
 const bundleIdentifier = process.env.BACKBOARD_UPDATER_E2E_BUNDLE_ID || 'io.backboard.studio';
 const testRootParent = process.env.BACKBOARD_UPDATER_E2E_ROOT || os.tmpdir();
 const enabled = process.platform === 'darwin' && Boolean(sourceApp && updateDmg && expectedVersion);
@@ -250,7 +250,7 @@ test('gracefully quits, updates, and relaunches a disposable installed-app clone
 		fs.mkdirSync(extensionsPath, { recursive: true });
 		fs.mkdirSync(testHomePath, { recursive: true });
 
-		const rawExecutablePath = path.join(appPath, 'Contents', 'MacOS', 'Backboard Studio');
+		const rawExecutablePath = path.join(appPath, 'Contents', 'MacOS', 'DQuant Lab');
 		const executablePaths = [rawExecutablePath, fs.realpathSync(rawExecutablePath)];
 		execFileSync('/usr/bin/open', [
 			'-n',
@@ -298,8 +298,8 @@ test('gracefully quits, updates, and relaunches a disposable installed-app clone
 		assert.equal(result.signal, null, `${result.signal ?? ''}\n${log}`);
 		assert.equal(result.code, 0, log);
 		assert.equal(fs.readFileSync(statusPath, 'utf8').trim(), 'installed', log);
-		assert.match(log, /Prepared and verified Backboard Studio/);
-		assert.match(log, /Confirmed current Backboard Studio processes exited cleanly/);
+		assert.match(log, /Prepared and verified DQuant Lab/);
+		assert.match(log, /Confirmed current DQuant Lab processes exited cleanly/);
 		assert.doesNotMatch(log, /did not quit cleanly/);
 		if (!installerModulePath) {
 			assert.match(log, /Confirmed Electron runtime ready/);
@@ -308,7 +308,7 @@ test('gracefully quits, updates, and relaunches a disposable installed-app clone
 		if (!installerModulePath) {
 			assert.match(log, /Confirmed active after verified launch/);
 		}
-		assert.match(log, /Installed and launched Backboard Studio/);
+		assert.match(log, /Installed and launched DQuant Lab/);
 		const relaunchedAppPid = await waitForAppPid(executablePaths, 30_000);
 		assert.notEqual(relaunchedAppPid, initialAppPid, 'Updater did not replace the original app process.');
 		// The updater verifies activation synchronously. The terminal running this

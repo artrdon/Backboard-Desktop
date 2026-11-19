@@ -13,7 +13,6 @@ import {
 } from "../../../tools/agentSpawn.tsx";
 import { agentWait } from "../../../tools/agentWait.tsx";
 import { computer } from "../../../tools/computer.tsx";
-import { generateVideo } from "../../../tools/generateVideo.tsx";
 import { glob } from "../../../tools/glob.tsx";
 import { grep } from "../../../tools/grep.tsx";
 import { todoWrite } from "../../../tools/todoWrite.tsx";
@@ -47,7 +46,6 @@ export const toolPrompts: Record<string, PromptModule> = {
 	agent_spawn_batch: agentSpawnBatch,
 	agent_cancel: agentCancel,
 	agent_wait: agentWait,
-	generate_video: generateVideo,
 };
 
 function buildReadPrompt(context: PromptContext = {}): string {

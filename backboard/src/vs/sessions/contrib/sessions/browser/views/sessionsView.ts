@@ -53,9 +53,7 @@ import { IProductService } from '../../../../../platform/product/common/productS
 import { isRecentFolder, IWorkspacesService } from '../../../../../platform/workspaces/common/workspaces.js';
 import { BackboardUsageView } from '../backboardUsage.js';
 import { SimpleModeBackgroundPicker } from '../../../chat/browser/simpleModeBackgroundPicker.js';
-import { RightWorkbenchCommandId } from '../../../rightWorkbench/browser/rightWorkbench.js';
 import { IEditorGroupsService } from '../../../../../workbench/services/editor/common/editorGroupsService.js';
-import { CLOSE_CANVAS_COMMAND_ID, IS_CANVAS_OPEN_COMMAND_ID } from '../../../rightWorkbench/browser/canvasOverlay.js';
 
 const $ = DOM.$;
 export const SessionsViewId = 'sessions.workbench.view.sessionsView';
@@ -314,15 +312,6 @@ export class SessionsView extends ViewPane {
 					mcpButton?.removeAttribute('aria-current');
 				}
 			}));
-			// Canvas: every image and video from the chat, full-window (the Codex-style playground).
-			this.createSidebarAction(railTop, Codicon.fileMedia, localize('canvas', "Canvas"), async () => {
-				// Toggles Canvas when it is what shows; brings it up when another page covers it.
-				const covered = await this.closeFullWindowPages('canvas');
-				if (covered && await this.commandService.executeCommand<boolean>(IS_CANVAS_OPEN_COMMAND_ID)) {
-					return;
-				}
-				await this.commandService.executeCommand(RightWorkbenchCommandId.OpenCanvas);
-			});
 			this.createSidebarAction(railTop, Codicon.graphLine, localize('usage', "Usage"), () => {
 				// Simple mode can run without an extension host, so open the built-in
 				// usage view instead of dispatching the extension-owned command.
@@ -590,7 +579,7 @@ export class SessionsView extends ViewPane {
 		}));
 
 		// Windows has no application menu — macOS hosts About, Settings and
-		// Themes under the "Backboard Studio" app menu — so surface those
+		// Themes under the "DQuant Lab" app menu — so surface those
 		// entries behind a cog button beside the identity card.
 		if (isWindows) {
 			// Keep the app menu beside the account identity.
@@ -646,18 +635,14 @@ export class SessionsView extends ViewPane {
 	}
 
 	/**
-	 * Connectors, Canvas, Usage and Settings are full-window pages in
-	 * different layers; the one picked in the sidebar always shows, so the
-	 * others close first. Resolves whether anything besides `keep` was open.
+	 * Connectors, Usage and Settings are full-window pages in different
+	 * layers; the one picked in the sidebar always shows, so the others close
+	 * first. Resolves whether anything besides `keep` was open.
 	 */
-	private async closeFullWindowPages(keep: 'connectors' | 'canvas' | 'usage' | 'settings'): Promise<boolean> {
+	private async closeFullWindowPages(keep: 'connectors' | 'usage' | 'settings'): Promise<boolean> {
 		let closed = false;
 		if (keep !== 'connectors' && this.mcpPage?.isVisible) {
 			this.mcpPage.hide();
-			closed = true;
-		}
-		if (keep !== 'canvas' && await this.commandService.executeCommand<boolean>(IS_CANVAS_OPEN_COMMAND_ID)) {
-			await this.commandService.executeCommand(CLOSE_CANVAS_COMMAND_ID);
 			closed = true;
 		}
 		// Usage and Settings open as modal editors.

@@ -70,7 +70,7 @@ configurationRegistry.registerConfiguration({
 				localization: {
 					description: {
 						key: 'chat.agentHost.codexAgent.enabled.policy',
-						value: nls.localize('chat.agentHost.codexAgent.enabled.policy', "Enable Codex Agent sessions in Backboard IDE. Start and resume agentic coding sessions powered by the OpenAI Codex CLI. Uses your own ChatGPT subscription."),
+						value: nls.localize('chat.agentHost.codexAgent.enabled.policy', "Enable Codex Agent sessions in DQuant Lab. Start and resume agentic coding sessions powered by the OpenAI Codex CLI. Uses your own ChatGPT subscription."),
 					}
 				}
 			},

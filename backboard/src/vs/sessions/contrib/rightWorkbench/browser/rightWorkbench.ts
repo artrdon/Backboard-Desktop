@@ -13,15 +13,12 @@ export const SESSIONS_RIGHT_WORKBENCH_CONTAINER_ID = 'workbench.sessions.auxilia
 export const SESSIONS_RIGHT_WORKBENCH_LAUNCHER_VIEW_ID = 'sessions.rightWorkbench.launcherView';
 export const OPTIMUS_RIGHT_WORKBENCH_CONTAINER_ID = 'workbench.optimus.auxiliaryBar.rightWorkbenchContainer';
 export const OPTIMUS_RIGHT_WORKBENCH_LAUNCHER_VIEW_ID = 'optimus.rightWorkbench.launcherView';
-/** Resolves when a hosted media URL was uploaded (desktop only: it needs a request without CORS). */
-export const CANVAS_HOSTED_MEDIA_TIME_COMMAND_ID = '_sessions.canvas.hostedMediaTime';
 
 export const enum RightWorkbenchCommandId {
 	OpenLauncher = 'workbench.action.sessions.rightWorkbench.openLauncher',
 	OpenLauncherMode = 'workbench.action.sessions.rightWorkbench.openLauncherMode',
 	OpenEditor = 'workbench.action.sessions.rightWorkbench.openEditor',
 	OpenReview = 'workbench.action.sessions.rightWorkbench.openReview',
-	OpenCanvas = 'workbench.action.sessions.rightWorkbench.openCanvas',
 	OpenFiles = 'workbench.action.sessions.rightWorkbench.openFiles',
 	OpenBrowser = 'workbench.action.sessions.rightWorkbench.openBrowser',
 	OpenTerminal = 'workbench.action.sessions.rightWorkbench.openTerminal',

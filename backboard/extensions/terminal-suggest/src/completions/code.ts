@@ -983,7 +983,7 @@ export const codeTunnelSubcommands: Fig.Subcommand[] = [
 	},
 	{
 		name: 'serve-web',
-		description: 'Runs a local web version of Backboard IDE',
+		description: 'Runs a local web version of DQuant Lab',
 		options: [
 			{
 				name: '--host',
@@ -1152,7 +1152,7 @@ export const codeTunnelSubcommands: Fig.Subcommand[] = [
 			},
 			{
 				name: 'serve-web',
-				description: 'Runs a local web version of Backboard IDE',
+				description: 'Runs a local web version of DQuant Lab',
 			},
 			{
 				name: 'agent',
@@ -1184,7 +1184,7 @@ export const codeTunnelSubcommands: Fig.Subcommand[] = [
 
 const codeCompletionSpec: Fig.Spec = {
 	name: 'code',
-	description: 'Backboard IDE',
+	description: 'DQuant Lab',
 	args: {
 		template: ['filepaths', 'folders'],
 		isVariadic: true,

@@ -40,8 +40,8 @@ import { IBackboardBillingService } from '../../backboardBilling/common/backboar
 import { BillingPlansView } from '../../backboardBilling/browser/billingPlansView.js';
 import { OPEN_AGENTS_WINDOW_COMMAND_ID } from '../../chat/common/constants.js';
 import { SessionType } from '../../chat/common/chatSessionsService.js';
-import { ADD_PROVIDER_KEY_COMMAND_ID } from '../../chat/browser/byokKeys/byokKeys.js';
-import { BYOK_PROVIDERS } from '../../../../platform/agentHost/common/byokProviders.js';
+import { ADD_PROVIDER_KEY_COMMAND_ID, TEST_PROVIDER_KEY_COMMAND_ID } from '../../chat/browser/byokKeys/byokKeys.js';
+import { BYOK_PROVIDERS, CUSTOM_PROVIDER_ID, ICustomProviderConfig, validateProviderConfig } from '../../../../platform/agentHost/common/byokProviders.js';
 import { IOnboardingService } from '../common/onboardingService.js';
 import {
 	getOnboardingStepSubtitle,
@@ -269,7 +269,7 @@ export class OnboardingVariationA extends Disposable implements IOnboardingServi
 		this.overlay = append(container, $('.onboarding-a-overlay'));
 		this.overlay.setAttribute('role', 'dialog');
 		this.overlay.setAttribute('aria-modal', 'true');
-		this.overlay.setAttribute('aria-label', localize('onboarding.backboard.aria', "Welcome to Backboard Studio"));
+		this.overlay.setAttribute('aria-label', localize('onboarding.backboard.aria', "Welcome to DQuant Lab"));
 
 		this.card = append(this.overlay, $('.onboarding-a-card'));
 
@@ -434,7 +434,7 @@ export class OnboardingVariationA extends Disposable implements IOnboardingServi
 				.catch(error => {
 					this.notificationService.notify({
 						severity: Severity.Error,
-						message: localize('onboarding.backboard.postDismissFailed', "Could not finish Backboard onboarding setup."),
+						message: localize('onboarding.backboard.postDismissFailed', "Could not finish DQuant Lab onboarding setup."),
 						source: error instanceof Error ? error.message : undefined,
 					});
 				})
@@ -504,15 +504,15 @@ export class OnboardingVariationA extends Disposable implements IOnboardingServi
 		const dialog = append(overlay, $('.onboarding-backboard-sso-dialog'));
 		dialog.setAttribute('role', 'dialog');
 		dialog.setAttribute('aria-modal', 'true');
-		dialog.setAttribute('aria-label', localize('onboarding.backboard.ssoPrompt.aria', "Sign in to Backboard"));
+		dialog.setAttribute('aria-label', localize('onboarding.backboard.ssoPrompt.aria', "Sign in to DQuant Lab"));
 
 		this._createBackboardMark(dialog, 'onboarding-backboard-sso-logo');
 
 		const title = append(dialog, $('h3.onboarding-backboard-sso-title'));
-		title.textContent = localize('onboarding.backboard.ssoPrompt.title', "Sign in to Backboard");
+		title.textContent = localize('onboarding.backboard.ssoPrompt.title', "Sign in to DQuant Lab");
 
 		const description = append(dialog, $('p.onboarding-backboard-sso-description'));
-		description.textContent = localize('onboarding.backboard.ssoPrompt.description', "Use single sign-on to enable Backboard Chat and Agents.");
+		description.textContent = localize('onboarding.backboard.ssoPrompt.description', "Use single sign-on to enable DQuant Chat and Agents.");
 
 		const actions = append(dialog, $('.onboarding-backboard-sso-actions'));
 		const signInButton = append(actions, $<HTMLButtonElement>('button.onboarding-backboard-sso-primary'));
@@ -827,7 +827,7 @@ export class OnboardingVariationA extends Disposable implements IOnboardingServi
 			const label = sourceButton.querySelector('.onboarding-signin-btn-label');
 			const idleLabel = label?.textContent;
 			if (label) {
-				label.textContent = localize('onboarding.backboard.signInConnecting', "Connecting to Backboard…");
+				label.textContent = localize('onboarding.backboard.signInConnecting', "Connecting to DQuant Lab…");
 			}
 			try {
 				// Resolves true once the tokens are saved; false when the sign-in
@@ -894,6 +894,25 @@ export class OnboardingVariationA extends Disposable implements IOnboardingServi
 			option.value = definition.id;
 			option.textContent = definition.label;
 		}
+		const customFields = append(form, $('div.onboarding-provider-custom'));
+		customFields.hidden = true;
+		const baseUrlLabel = append(customFields, $('label'));
+		baseUrlLabel.textContent = localize('onboarding.byok.baseUrl', "API Base URL");
+		const baseUrl = this._registerStepFocusable(append(baseUrlLabel, $<HTMLInputElement>('input')));
+		baseUrl.type = 'url';
+		baseUrl.autocomplete = 'off';
+		baseUrl.spellcheck = false;
+		baseUrl.placeholder = localize('onboarding.byok.baseUrlPlaceholder', "https://api.deepseek.com/v1");
+		const modelLabel = append(customFields, $('label'));
+		modelLabel.textContent = localize('onboarding.byok.model', "Model ID");
+		const model = this._registerStepFocusable(append(modelLabel, $<HTMLInputElement>('input')));
+		model.type = 'text';
+		model.autocomplete = 'off';
+		model.spellcheck = false;
+		model.placeholder = localize('onboarding.byok.modelPlaceholder', "deepseek-chat");
+		const readEndpoint = (): { readonly config?: ICustomProviderConfig; readonly error?: string } => provider.value === CUSTOM_PROVIDER_ID
+			? validateProviderConfig(CUSTOM_PROVIDER_ID, { baseUrl: baseUrl.value, model: model.value })
+			: {};
 		const keyLabel = append(form, $('label'));
 		keyLabel.textContent = localize('onboarding.byok.key', "API Key");
 		const key = this._registerStepFocusable(append(keyLabel, $<HTMLInputElement>('input')));
@@ -909,21 +928,47 @@ export class OnboardingVariationA extends Disposable implements IOnboardingServi
 		save.type = 'button';
 		save.textContent = localize('onboarding.byok.connect', "Connect Provider");
 		save.disabled = true;
+		const test = this._registerStepFocusable(append(form, $<HTMLButtonElement>('button.onboarding-backboard-account-link.onboarding-provider-test')));
+		test.type = 'button';
+		test.textContent = localize('onboarding.byok.test', "Test Connection");
+		test.hidden = true;
+		const syncCustomFields = (): void => {
+			const custom = provider.value === CUSTOM_PROVIDER_ID;
+			customFields.hidden = !custom;
+			test.hidden = !custom;
+			save.textContent = custom
+				? localize('onboarding.byok.save', "Save")
+				: localize('onboarding.byok.connect', "Connect Provider");
+			if (!custom) {
+				status.textContent = '';
+			}
+		};
 		const back = this._registerStepFocusable(append(form, $<HTMLButtonElement>('button.onboarding-backboard-account-link')));
 		back.type = 'button';
 		back.textContent = localize('onboarding.byok.back', "Back");
 		let saving = false;
+		const commandArgs = (): unknown[] => {
+			const endpoint = readEndpoint();
+			return endpoint.config
+				? [provider.value, key.value.trim(), endpoint.config]
+				: [provider.value, key.value.trim()];
+		};
 		const submit = async (): Promise<void> => {
 			if (saving || !key.value.trim()) {
 				return;
 			}
+			const endpoint = readEndpoint();
+			if (endpoint.error || (provider.value === CUSTOM_PROVIDER_ID && !endpoint.config)) {
+				status.textContent = endpoint.error ?? localize('onboarding.byok.endpointRequired', "Enter the API base URL and model ID.");
+				return;
+			}
 			saving = true;
-			save.disabled = back.disabled = provider.disabled = key.disabled = true;
+			save.disabled = test.disabled = back.disabled = provider.disabled = key.disabled = baseUrl.disabled = model.disabled = true;
 			status.textContent = localize('onboarding.byok.verifying', "Verifying your key…");
 			try {
 				// The same key store as the API Keys page: validated, kept in the OS
 				// keychain, and handed to the agent host. Rejects when the key is refused.
-				await this.commandService.executeCommand(ADD_PROVIDER_KEY_COMMAND_ID, provider.value, key.value.trim());
+				await this.commandService.executeCommand(ADD_PROVIDER_KEY_COMMAND_ID, ...commandArgs());
 				key.value = '';
 				if (!form.isConnected) {
 					return;
@@ -935,11 +980,46 @@ export class OnboardingVariationA extends Disposable implements IOnboardingServi
 			} catch (error) {
 				status.textContent = error instanceof Error ? error.message : localize('onboarding.byok.failed', "Could not connect. Check your key and try again.");
 				saving = false;
-				save.disabled = back.disabled = provider.disabled = key.disabled = false;
+				save.disabled = test.disabled = back.disabled = provider.disabled = key.disabled = baseUrl.disabled = model.disabled = false;
+				test.hidden = provider.value !== CUSTOM_PROVIDER_ID;
 				key.focus();
 			}
 		};
-		this.stepDisposables.add(addDisposableListener(key, EventType.INPUT, () => { save.disabled = !key.value.trim(); }));
+		const testConnection = async (): Promise<void> => {
+			if (saving || !key.value.trim()) {
+				return;
+			}
+			const endpoint = readEndpoint();
+			if (endpoint.error || !endpoint.config) {
+				status.textContent = endpoint.error ?? localize('onboarding.byok.endpointRequired', "Enter the API base URL and model ID.");
+				return;
+			}
+			saving = true;
+			save.disabled = test.disabled = back.disabled = provider.disabled = key.disabled = baseUrl.disabled = model.disabled = true;
+			status.textContent = localize('onboarding.byok.testing', "Testing connection…");
+			try {
+				await this.commandService.executeCommand(TEST_PROVIDER_KEY_COMMAND_ID, ...commandArgs());
+				if (form.isConnected) {
+					status.textContent = localize('onboarding.byok.testPassed', "Connection verified.");
+				}
+			} catch (error) {
+				status.textContent = error instanceof Error ? error.message : localize('onboarding.byok.testFailed', "Could not reach this endpoint. Check the URL, key, and model ID.");
+			} finally {
+				saving = false;
+				if (form.isConnected) {
+					save.disabled = test.disabled = back.disabled = provider.disabled = key.disabled = baseUrl.disabled = model.disabled = false;
+					test.hidden = provider.value !== CUSTOM_PROVIDER_ID;
+				}
+			}
+		};
+		this.stepDisposables.add(addDisposableListener(provider, EventType.CHANGE, syncCustomFields));
+		this.stepDisposables.add(addDisposableListener(baseUrl, EventType.INPUT, () => { status.textContent = ''; }));
+		this.stepDisposables.add(addDisposableListener(model, EventType.INPUT, () => { status.textContent = ''; }));
+		this.stepDisposables.add(addDisposableListener(key, EventType.INPUT, () => {
+			save.disabled = !key.value.trim();
+			test.disabled = !key.value.trim();
+			status.textContent = '';
+		}));
 		this.stepDisposables.add(addDisposableListener(key, EventType.KEY_DOWN, (event: KeyboardEvent) => {
 			if (event.key === 'Enter') {
 				event.preventDefault();
@@ -947,6 +1027,7 @@ export class OnboardingVariationA extends Disposable implements IOnboardingServi
 			}
 		}));
 		this.stepDisposables.add(addDisposableListener(save, EventType.CLICK, () => { void submit(); }));
+		this.stepDisposables.add(addDisposableListener(test, EventType.CLICK, () => { void testConnection(); }));
 		this.stepDisposables.add(addDisposableListener(back, EventType.CLICK, () => this._renderStepFrame()));
 		provider.focus();
 	}
@@ -1733,11 +1814,11 @@ export class OnboardingVariationA extends Disposable implements IOnboardingServi
 
 		const copy = append(panel, $('.onboarding-backboard-connect-copy'));
 		const description = append(copy, $('p.onboarding-backboard-connect-description'));
-		description.textContent = localize('onboarding.backboard.signIn.description', "To finish setup, set up a Backboard.io account.");
+		description.textContent = localize('onboarding.backboard.signIn.description', "To finish setup, set up a DQuant Lab account.");
 
 		const accountLink = this._registerStepFocusable(append(copy, $<HTMLAnchorElement>('a.onboarding-backboard-connect-account-link')));
 		accountLink.href = BACKBOARD_SIGN_IN_URL;
-		accountLink.textContent = localize('onboarding.backboard.signIn.link', "Set up Backboard.io account");
+		accountLink.textContent = localize('onboarding.backboard.signIn.link', "Set up DQuant Lab account");
 
 		this.stepDisposables.add(addDisposableListener(accountLink, EventType.CLICK, (event: MouseEvent) => {
 			event.preventDefault();
@@ -1758,7 +1839,7 @@ export class OnboardingVariationA extends Disposable implements IOnboardingServi
 
 		const copy = append(panel, $('.onboarding-backboard-connect-copy'));
 		const description = append(copy, $('p.onboarding-backboard-connect-description'));
-		description.textContent = localize('onboarding.backboard.apiKey.description', "To finish setup, create a Backboard API key.");
+		description.textContent = localize('onboarding.backboard.apiKey.description', "To finish setup, create an API key.");
 
 		const dashboardLink = this._registerStepFocusable(append(copy, $<HTMLAnchorElement>('a.onboarding-backboard-connect-account-link')));
 		dashboardLink.href = BACKBOARD_API_KEYS_URL;
@@ -1783,20 +1864,20 @@ export class OnboardingVariationA extends Disposable implements IOnboardingServi
 		const dialog = append(overlay, $('.onboarding-backboard-api-import-dialog'));
 		dialog.setAttribute('role', 'dialog');
 		dialog.setAttribute('aria-modal', 'true');
-		dialog.setAttribute('aria-label', localize('onboarding.backboard.apiKey.import.aria', "Import Backboard API key"));
+		dialog.setAttribute('aria-label', localize('onboarding.backboard.apiKey.import.aria', "Import API key"));
 
 		const title = append(dialog, $('h3.onboarding-backboard-api-import-title'));
 		title.textContent = localize('onboarding.backboard.apiKey.importTitle', "Import API Key");
 
 		const description = append(dialog, $('p.onboarding-backboard-api-import-description'));
-		description.textContent = localize('onboarding.backboard.apiKey.importDescription', "Paste the key you created in Backboard.");
+		description.textContent = localize('onboarding.backboard.apiKey.importDescription', "Paste the key you created for DQuant Lab.");
 
 		const input = append(dialog, $<HTMLInputElement>('input.onboarding-backboard-api-import-input'));
 		input.type = 'password';
 		input.autocomplete = 'off';
 		input.spellcheck = false;
 		input.placeholder = localize('onboarding.backboard.apiKey.inputPlaceholder', "espr_...");
-		input.setAttribute('aria-label', localize('onboarding.backboard.apiKey.inputAria', "Backboard API key"));
+		input.setAttribute('aria-label', localize('onboarding.backboard.apiKey.inputAria', "API key"));
 
 		const errorText = append(dialog, $('p.onboarding-backboard-api-import-error'));
 		errorText.setAttribute('role', 'alert');
@@ -1818,7 +1899,7 @@ export class OnboardingVariationA extends Disposable implements IOnboardingServi
 		const importApiKey = async () => {
 			const apiKey = input.value.trim();
 			if (!apiKey) {
-				errorText.textContent = localize('onboarding.backboard.apiKey.empty', "Paste your Backboard API key to continue.");
+				errorText.textContent = localize('onboarding.backboard.apiKey.empty', "Paste your API key to continue.");
 				input.focus();
 				return;
 			}
@@ -1838,7 +1919,7 @@ export class OnboardingVariationA extends Disposable implements IOnboardingServi
 				await this._saveBackboardApiKey(apiKey);
 				this.hasImportedApiKey = true;
 				this._logAction('importBackboardApiKey');
-				this.accessibilityService.alert(localize('onboarding.backboard.apiKey.imported.alert', "Backboard API key imported"));
+				this.accessibilityService.alert(localize('onboarding.backboard.apiKey.imported.alert', "API key imported"));
 				this._updateButtonStates();
 				closeDialog();
 				this._dismiss('complete');
@@ -1847,7 +1928,7 @@ export class OnboardingVariationA extends Disposable implements IOnboardingServi
 				cancelButton.disabled = false;
 				this.notificationService.notify({
 					severity: Severity.Error,
-					message: localize('onboarding.backboard.apiKey.importFailed', "Could not save the Backboard API key."),
+					message: localize('onboarding.backboard.apiKey.importFailed', "Could not save the API key."),
 					source: err instanceof Error ? err.message : undefined,
 				});
 			}

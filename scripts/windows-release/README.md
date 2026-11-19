@@ -1,4 +1,4 @@
-# Backboard Studio Windows signing
+# DQuant Lab Windows signing
 
 Windows releases are built and signed by `.github/workflows/release-windows.yml`.
 The workflow uses Azure Artifact Signing (formerly Trusted Signing) with GitHub

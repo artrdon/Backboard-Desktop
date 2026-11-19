@@ -261,7 +261,7 @@ export class ChatSetupController extends Disposable {
 
 	private async doInstall(): Promise<void> {
 		if (!defaultChat.chatExtensionId) {
-			this.logService.info('[chat setup] Backboard is integrated into the workbench.');
+			this.logService.info('[chat setup] DQuant Lab is integrated into the workbench.');
 			return;
 		}
 		await this.extensionsWorkbenchService.install(defaultChat.chatExtensionId, {

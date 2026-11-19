@@ -1,6 +1,6 @@
 {
 	"$schema": "vscode://schemas/color-theme",
-	"name": "Backboard Bloom",
+	"name": "DQuant Bloom",
 	"include": "./backboard-porcelain.json",
 	"type": "light",
 	"colors": {

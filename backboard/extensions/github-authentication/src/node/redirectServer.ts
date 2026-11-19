@@ -84,12 +84,12 @@ function sendLaunchPage(res: http.ServerResponse, target: URL): void {
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>Return to Backboard Studio</title>
+	<title>Return to DQuant Lab</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-	<p>Returning to Backboard Studio...</p>
-	<p><a href="${targetHtml}">Open Backboard Studio</a></p>
+	<p>Returning to DQuant Lab...</p>
+	<p><a href="${targetHtml}">Open DQuant Lab</a></p>
 	<script>window.location.replace(${targetJson});</script>
 </body>
 </html>`);

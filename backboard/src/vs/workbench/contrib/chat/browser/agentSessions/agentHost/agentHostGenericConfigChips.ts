@@ -85,13 +85,6 @@ const composerCapabilityProperties = new Set([
 	'browser',
 	'notifications',
 	'notify',
-	'imageGeneration',
-	'images',
-	// Image and video generation are exposed in the composer as model pickers.
-	'imageModel',
-	'videoModel',
-	// A one-click On/Off row beside the media pickers in the + menu.
-	'askBeforeGenerating',
 ]);
 
 function getComposerActivationValue(property: string, schema: SessionConfigPropertySchema): string | undefined {
