@@ -69,7 +69,7 @@ suite('Agent CLI setup', () => {
 		assert.deepStrictEqual({ commands, notifications }, { commands: ['claudeSubscription.check', 'claudeSubscription.enable'], notifications: ['connected'] });
 	});
 
-	test('runs Claude OAuth in a hidden terminal, pastes the code, then enables Backboard', async () => {
+	test('runs Claude OAuth in a hidden terminal, pastes the code, then enables DQuant Lab', async () => {
 		const commands: { provider: string; command: string }[] = [];
 		const sent: string[] = [];
 		const opened: string[] = [];

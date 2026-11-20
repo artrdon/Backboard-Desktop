@@ -151,8 +151,8 @@ function userOriginMessage(text: string, attachments: readonly MessageAttachment
 }
 
 /**
- * A short label naming who bills a turn: Backboard credits, the user's Claude
- * or ChatGPT subscription, or their own API key. Subscription and Backboard
+ * A short label naming who bills a turn: DQuant Lab credits, the user's Claude
+ * or ChatGPT subscription, or their own API key. Subscription and DQuant Lab
  * models share display names ("Claude Opus 5.5"), so without it the response
  * footer cannot tell them apart. Ids without a `provider/model` route (other
  * agent types) get no label.
@@ -226,7 +226,7 @@ function shouldAutoApproveClientToolCall(toolCall: ToolCallState): boolean {
 
 /**
  * The approval a client tool call gets when the agent host stamped it
- * `autoApproveBySetting` (Backboard Full Access). It covers the result review
+ * `autoApproveBySetting` (DQuant Lab Full Access). It covers the result review
  * too: MCP tools with `openWorldHint` otherwise park in `WaitingForPostApproval`
  * behind an "Approve Tool Result" card after they already ran.
  */
@@ -3223,7 +3223,7 @@ export class AgentHostSessionHandler extends Disposable implements IChatSessionC
 						: localize('agentHost.responseDetails.credits', "{0} credits", formatted);
 					return [name, creditDetails].join(' • ');
 				}
-				// Credits already mark a Backboard-billed turn; otherwise name the
+				// Credits already mark a DQuant Lab-billed turn; otherwise name the
 				// user's own route. The turn's id decides when it names a route (a
 				// key or subscription prefix, or a registered model id); a bare id
 				// such as `opus` leaves the route to the session's model.

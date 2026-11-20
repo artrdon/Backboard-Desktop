@@ -773,7 +773,7 @@
 	color: inherit !important;
 }
 
-/* Backboard settings treatment, adapted from the Zed settings layout. */
+/* DQuant Lab settings treatment, adapted from the Zed settings layout. */
 .settings-editor {
 	--bb-settings-panel-background: var(--vscode-editor-background);
 	--bb-settings-sidebar-background: var(--vscode-sideBar-background, var(--vscode-editor-background));
@@ -1326,7 +1326,7 @@
 	color: var(--vscode-foreground);
 }
 
-/* Backboard settings correction: the Settings editor already lives in a framed
+/* DQuant Lab settings correction: the Settings editor already lives in a framed
  * workbench surface, so avoid rendering a second window inside it. */
 .settings-editor {
 	--backboard-settings-background: var(--vscode-editor-background);
@@ -1708,7 +1708,7 @@
 	background: transparent;
 }
 
-/* Neutralize the default blue focus treatment inside Backboard Settings. */
+/* Neutralize the default blue focus treatment inside DQuant Lab Settings. */
 .settings-editor > .settings-body .settings-tree-container .monaco-list-row.focused .settings-row-inner-container {
 	background-color: transparent !important;
 }
@@ -1823,7 +1823,7 @@
 	background-color: transparent !important;
 }
 
-/* Backboard Settings keeps the product layout while inheriting the active theme. */
+/* DQuant Lab Settings keeps the product layout while inheriting the active theme. */
 .monaco-workbench.vs-dark .settings-editor,
 .monaco-workbench.hc-black .settings-editor,
 .monaco-workbench.vs-dark .settings-editor > .settings-body,
@@ -1924,7 +1924,7 @@
 	border-color: var(--backboard-settings-input-border);
 }
 
-/* Backboard settings controls: keep compact controls readable and intentional. */
+/* DQuant Lab settings controls: keep compact controls readable and intentional. */
 .settings-editor > .settings-body .settings-tree-container .setting-item-contents {
 	grid-template-columns: minmax(0, 1fr) minmax(128px, max-content);
 	column-gap: 32px;

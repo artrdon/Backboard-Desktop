@@ -1,7 +1,7 @@
 import type { ToolExecutionMetadata } from "./ToolFailure.ts";
 import type { ToolResultDetailLine } from "./ToolResultDetail.ts";
 
-/** Before/after text retained so Backboard Studio can render inline diffs. */
+/** Before/after text retained so DQuant Lab Studio can render inline diffs. */
 export interface FileEditPreview {
 	path: string;
 	before: string;
@@ -19,7 +19,7 @@ export interface TerminalToolResult {
 /**
  * The outcome of a tool execution.
  * - `data` is the structured result used for UI rendering.
- * - `forLLM` is the string submitted back to Backboard as the tool output.
+ * - `forLLM` is the string submitted back to DQuant Lab as the tool output.
  * - `title` is a short one-line summary for the transcript.
  */
 export interface ToolResult<O = unknown> {

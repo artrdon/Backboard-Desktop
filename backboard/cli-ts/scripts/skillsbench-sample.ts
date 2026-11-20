@@ -535,13 +535,13 @@ async function writeJson(filePath: string, value: object): Promise<void> {
 }
 
 function usage(): string {
-	return `Backboard SkillsBench sample runner
+	return `DQuant Lab SkillsBench sample runner
 
 Usage:
   bun run test:skillsbench:sample -- [options]
 
 Options:
-  --model <provider/model>   Backboard model (default: sample manifest value)
+  --model <provider/model>   DQuant Lab model (default: sample manifest value)
   --sample <path>            Sample manifest JSON
   --jobs-dir <path>          Stable artifact directory for resumable runs
   --concurrency <n>          Tasks to evaluate in parallel (default: 1)

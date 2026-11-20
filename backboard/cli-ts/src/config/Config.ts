@@ -68,7 +68,7 @@ function anonymousEnv(): BackboardEnv {
  */
 export class Config {
 	readonly env: BackboardEnv;
-	/** Credentials this run may use: a Backboard sign-in, provider keys, or both. */
+	/** Credentials this run may use: a DQuant Lab sign-in, provider keys, or both. */
 	auth: AuthState;
 	readonly flags: CliFlags;
 	readonly cwd: string;
@@ -108,7 +108,7 @@ export class Config {
 			options.homeDir === undefined ? {} : { homeDir: options.homeDir },
 		);
 		if (options.env) {
-			// An injected env is an explicit Backboard credential (tests, evals).
+			// An injected env is an explicit DQuant Lab credential (tests, evals).
 			this.auth = { ...this.auth, backboard: options.env };
 		} else if (!hasAnyCredentials(this.auth) && !hostManagedProviderKeys()) {
 			// A host-managed runtime receives its provider keys after startup
@@ -337,7 +337,7 @@ export class Config {
 		return [...this.excludedToolNames];
 	}
 
-	/** Replace the per-turn exclusions supplied by Backboard Studio. */
+	/** Replace the per-turn exclusions supplied by DQuant Lab Studio. */
 	setExcludedTools(names: string[]): void {
 		this.excludedToolNames = parseExcludedTools(names).map(canonicalToolName);
 	}

@@ -8,7 +8,7 @@ From the repository root:
 VERSION=<version> CHANNEL=stable scripts/build_vscode_release_linux.sh
 ```
 
-The build installs lockfile-pinned dependencies, type-checks the client and Backboard extension, runs the updater tests, verifies every relevant packaged native binary, smoke-launches the app with Xvfb, and produces:
+The build installs lockfile-pinned dependencies, type-checks the client and DQuant Lab extension, runs the updater tests, verifies every relevant packaged native binary, smoke-launches the app with Xvfb, and produces:
 
 - `linux-release/<version>/x86_64/Backboard-Studio-linux-x86_64.tar.gz`
 - `linux-release/<version>/x86_64/Backboard-Studio-linux-x86_64.deb`

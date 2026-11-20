@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
 <!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. -->
-<!-- Original pool illustration for Backboard Studio. Animated refraction and caustic light. -->
+<!-- Original pool illustration for DQuant Lab. Animated refraction and caustic light. -->
 <defs>
  <linearGradient id="depth" x2="0.8" y2="1"><stop stop-color="#a0f5e5"/><stop offset=".45" stop-color="#138fac"/><stop offset="1" stop-color="#032c65"/></linearGradient>
  <radialGradient id="sun" cx=".17" cy=".12" r=".95"><stop stop-color="#e0ffff" stop-opacity=".44"/><stop offset="1" stop-color="#083d69" stop-opacity=".3"/></radialGradient>

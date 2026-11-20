@@ -1016,7 +1016,7 @@ export class AgentService extends Disposable implements IAgentService {
 	 * are disposed. Window reloads and renderer crashes can close the
 	 * MessagePort before those calls arrive, however, leaving provisional chat
 	 * sessions permanently subscribed. Besides retaining protocol state, a
-	 * prewarmed Backboard session owns a cli-ts serve process. Routing cleanup
+	 * prewarmed DQuant Lab session owns a cli-ts serve process. Routing cleanup
 	 * through {@link unsubscribe} preserves the normal grace period and session
 	 * GC behavior instead of tearing down sessions that are reconnecting.
 	 */

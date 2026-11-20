@@ -406,7 +406,7 @@ suite('ChatModelSelectionLogic', () => {
 
 		test('never carries a selection across billing routes', () => {
 			// A vanished key-billed row must not become the same model on
-			// Backboard billing, nor a Backboard row one billed to the user's key;
+			// DQuant Lab billing, nor a DQuant Lab row one billed to the user's key;
 			// within its own route the usual id/family/name matching applies.
 			const keyBilled = createModel('openai-key/gpt-5.5', 'GPT-5.5', { vendor: 'agent-host-backboard', family: 'openai-key/gpt-5.5' });
 			const backboard = createModel('openai/gpt-5.5', 'GPT-5.5', { vendor: 'agent-host-backboard', family: 'openai/gpt-5.5' });
@@ -425,7 +425,7 @@ suite('ChatModelSelectionLogic', () => {
 		test('never carries a subscription selection to another route', () => {
 			// Subscription rows vanish or swap ids (bundled vs live ids) while the
 			// plan's model list refreshes. Within the same subscription the usual
-			// matching applies; a Backboard or key row with the same display name,
+			// matching applies; a DQuant Lab or key row with the same display name,
 			// or the other plan's row, is never a match in either direction.
 			const vendor = 'agent-host-backboard';
 			const claudeSub = createModel('anthropic-subscription/opus', 'Claude Opus 5.5', { vendor, family: 'anthropic-subscription/opus' });

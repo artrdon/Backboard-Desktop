@@ -74,7 +74,7 @@ export function buildClaudeSubscriptionEnv(
 	for (const key of STRIPPED_CLAUDE_ENV) delete sanitized[key];
 	sanitized.CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
 	sanitized.CLAUDE_AGENT_SDK_CLIENT_APP = "backboard-r-cli/3.0.2";
-	// Backboard compresses between turns at 85%; this is the net for one long
+	// DQuant Lab compresses between turns at 85%; this is the net for one long
 	// tool loop that grows past it mid-turn, which only Claude Code can catch
 	// because it owns the live session. 80% leaves room for the tool result
 	// that crosses the line.
@@ -256,7 +256,7 @@ async function rememberClaudeSubscriptionLogin(
 }
 
 /**
- * Delegate OAuth entirely to the official Claude Code executable. Backboard
+ * Delegate OAuth entirely to the official Claude Code executable. DQuant Lab
  * stores only an enable bit; Claude owns token persistence and refresh.
  */
 export async function loginWithClaudeSubscription(
@@ -311,14 +311,14 @@ export async function loginWithClaudeSubscription(
 		executable,
 	});
 	// Claude Code owns this OAuth flow and its final browser page; finish on
-	// Backboard's completion page like the other sign-ins. Best effort only.
+	// DQuant Lab's completion page like the other sign-ins. Best effort only.
 	await (options.openBrowser ?? openDefaultBrowser)(
 		backboardOAuthCompleteUrl(options.homeDir),
 	).catch(() => undefined);
 	return message;
 }
 
-/** Persist the Backboard enable bit after a non-interactive status check. */
+/** Persist the DQuant Lab enable bit after a non-interactive status check. */
 export async function enableClaudeSubscription(
 	options: ClaudeSubscriptionAuthOptions = {},
 ): Promise<string> {
@@ -331,7 +331,7 @@ export async function enableClaudeSubscription(
 	return `Claude subscription connected through ${status.executable}.`;
 }
 
-/** Disconnect Backboard without signing the user out of Claude Code itself. */
+/** Disconnect DQuant Lab without signing the user out of Claude Code itself. */
 export async function disconnectClaudeSubscription(
 	options: Pick<ClaudeSubscriptionAuthOptions, "homeDir"> = {},
 ): Promise<string> {
@@ -339,7 +339,7 @@ export async function disconnectClaudeSubscription(
 	const { claudeSubscriptionEnabled: _removed, ...remaining } = config;
 	await saveBackboardConfig(remaining, options.homeDir);
 	await forgetClaudeSubscriptionLogin(options);
-	return "Claude subscription disconnected from Backboard. Claude Code remains signed in.";
+	return "Claude subscription disconnected from DQuant Lab. Claude Code remains signed in.";
 }
 
 export function claudeSubscriptionErrorMessage(error: unknown): string {

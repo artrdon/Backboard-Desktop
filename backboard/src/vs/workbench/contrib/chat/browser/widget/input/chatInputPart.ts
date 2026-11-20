@@ -227,7 +227,7 @@ export interface IChatInputPartOptions {
 
 /**
  * Resolves where the context usage control belongs for the current chat host.
- * Backboard composer hosts opt into the overlaid input placement explicitly;
+ * DQuant Lab composer hosts opt into the overlaid input placement explicitly;
  * other Sessions-window and compact inputs retain the toolbar placement.
  */
 export function getChatContextUsageWidgetPlacement(container: HTMLElement, renderStyle: IChatInputPartOptions['renderStyle'], isSessionsWindow: boolean): 'input' | 'toolbar' | 'secondary' {
@@ -1354,7 +1354,7 @@ export class ChatInputPart extends Disposable implements IHistoryNavigationWidge
 		return this.getBackboardGenericConfigOptions().find(option => isBackboardReasoningOption(option));
 	}
 
-	/** Whether the Backboard session-config schema has finished resolving. */
+	/** Whether the DQuant Lab session-config schema has finished resolving. */
 	public hasBackboardConfigResolved(): boolean {
 		return this.agentHostGenericConfigChips?.hasResolvedSchema() ?? false;
 	}
@@ -1400,7 +1400,7 @@ export class ChatInputPart extends Disposable implements IHistoryNavigationWidge
 			}
 		}
 		dom.clearNode(this.capabilityChips);
-		// Image and video generation are always available on Backboard models
+		// Image and video generation are always available on DQuant Lab models
 		// (their models are picked in the + menu), so they are not chips.
 		// Capabilities belong to the session, so editing a sent message shows none.
 		const selected = this.inline ? [] : this.getBackboardGenericConfigOptions().filter(option => option.composerSelected && !isBackboardUnchippedOption(option.id));
@@ -2790,8 +2790,8 @@ export class ChatInputPart extends Disposable implements IHistoryNavigationWidge
 
 	/**
 	 * Updates the `chatSessionIsExternalAgent` context key from the active
-	 * session's agent family. Backboard-specific composer controls (the
-	 * Backboard Options gear, usage metrics) key off this to hide on
+	 * session's agent family. DQuant Lab-specific composer controls (the
+	 * DQuant Lab Options gear, usage metrics) key off this to hide on
 	 * third-party (Claude / Codex) agent sessions.
 	 */
 	private _updateAgentProviderStyling(sessionResource: URI | undefined): void {
@@ -3398,7 +3398,7 @@ export class ChatInputPart extends Disposable implements IHistoryNavigationWidge
 		this.contextUsageWidgetContainer = elements.contextUsageWidgetContainer;
 		this.statusToolbarContainer = elements.statusToolbarContainer;
 
-		// Only explicit Backboard composer hosts place context usage in the shell's
+		// Only explicit DQuant Lab composer hosts place context usage in the shell's
 		// upper-right corner. Other Sessions-window and compact widgets keep the
 		// standard toolbar placement, even when they share input configuration.
 		const contextUsagePlacement = getChatContextUsageWidgetPlacement(
@@ -3843,7 +3843,7 @@ export class ChatInputPart extends Disposable implements IHistoryNavigationWidge
 		this.renderBackboardActiveOptions();
 
 		// Secondary toolbar (permissions) — below the input box.
-		// Most Backboard agent-host config pickers now render in the primary
+		// Most DQuant Lab agent-host config pickers now render in the primary
 		// composer toolbar; keep these min widths for any session-provider
 		// actions that still land in the secondary toolbar.
 		const agentHostShortPickerMinWidths = new Map<string, number>([
@@ -4368,7 +4368,7 @@ export class ChatInputPart extends Disposable implements IHistoryNavigationWidge
 			this._questionCarouselSessionResources.set(carouselKey, context.element.sessionResource);
 		}
 
-		// Backboard already routes composer submissions to the pending question.
+		// DQuant Lab already routes composer submissions to the pending question.
 		// Use that editor instead of presenting a second free-form textarea.
 		const useComposerInput = (!!this.chatQuestionCarouselContainer.closest('.part.auxiliarybar') || !!this.chatQuestionCarouselContainer.ownerDocument.querySelector('.agent-sessions-workbench'))
 			&& isResponseVM(context.element)

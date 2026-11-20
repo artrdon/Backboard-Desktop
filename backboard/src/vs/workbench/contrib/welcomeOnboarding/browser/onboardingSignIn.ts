@@ -36,7 +36,7 @@ function createLink(parent: HTMLElement, label: string): HTMLButtonElement {
 	return link;
 }
 
-/** The "made by Backboard" line pinned to the bottom of every launch screen. */
+/** The "made by DQuant Lab" line pinned to the bottom of every launch screen. */
 export function createMadeByFooter(parent: HTMLElement): HTMLElement {
 	const footer = append(parent, $('.onboarding-made-by'));
 	footer.setAttribute('aria-hidden', 'true');

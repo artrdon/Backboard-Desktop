@@ -35,7 +35,7 @@ function manifestWith(components: ILiveUpdateManifest['components']): ILiveUpdat
 	return { schema: 1, channel: 'stable', platform: process.platform, arch: process.arch, sequence: 1, createdAt: '', components };
 }
 
-suite('Backboard live updates', () => {
+suite('DQuant Lab live updates', () => {
 
 	ensureNoDisposablesAreLeakedInTestSuite();
 

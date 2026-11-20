@@ -11,7 +11,7 @@ export interface OpenAITool {
 }
 
 /**
- * Converts a Zod object schema into the OpenAI function-calling shape Backboard
+ * Converts a Zod object schema into the OpenAI function-calling shape DQuant Lab
  * expects. The Responses API validates function parameters as JSON Schema,
  * not OpenAPI: in particular, exclusive numeric bounds must contain the bound
  * itself (`exclusiveMinimum: 0`) instead of OpenAPI 3's boolean modifier

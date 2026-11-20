@@ -452,7 +452,7 @@ describe("mapStreamPayloadToEvents", () => {
 		expect(events).toEqual([
 			{
 				kind: "failed",
-				error: "Backboard requested tool outputs without tool calls",
+				error: "DQuant Lab requested tool outputs without tool calls",
 			},
 		]);
 	});

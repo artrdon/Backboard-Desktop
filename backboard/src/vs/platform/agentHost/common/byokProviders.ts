@@ -8,7 +8,7 @@
  * workbench.
  *
  * A model selection in the IDE carries its billing route in the provider
- * prefix of its id: `openai/gpt-5.5` bills to Backboard, `openai-key/gpt-5.5`
+ * prefix of its id: `openai/gpt-5.5` bills to DQuant Lab, `openai-key/gpt-5.5`
  * bills to the user's own OpenAI key, and `openai-subscription/…` to a ChatGPT
  * plan. The `-key` suffix exists only on the IDE side; the runtime is always
  * handed the bare vendor id plus an explicit `source`.
@@ -185,8 +185,8 @@ export function validateProviderConfig(provider: ByokProviderId, config: IByokPr
 
 /**
  * Whether a session setting applies to a model selection, given as a model id
- * or a `vendor:provider/model` language-model identifier. Backboard's memory
- * service only runs on Backboard-billed requests; subscriptions keep their own
+ * or a `vendor:provider/model` language-model identifier. DQuant Lab's memory
+ * service only runs on DQuant Lab-billed requests; subscriptions keep their own
  * local memory, so only key-billed selections lose it.
  */
 export function isConfigPropertyAvailableForModel(property: string, modelId: string | undefined): boolean {
@@ -260,7 +260,7 @@ export type SubscriptionPlan = 'claude' | 'chatgpt';
 
 /**
  * Which subscription a model id, or a `vendor:provider/model` language-model
- * identifier, bills to; undefined for Backboard- and key-billed models.
+ * identifier, bills to; undefined for DQuant Lab- and key-billed models.
  */
 export function subscriptionPlanOfModelId(modelId: string | undefined): SubscriptionPlan | undefined {
 	const route = parseBillingRoute(modelId?.replace(/^[^/]*:/, ''));

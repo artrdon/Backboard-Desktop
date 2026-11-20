@@ -1661,7 +1661,7 @@ suite('LocalAgentHostSessionsProvider', () => {
 
 	test('session adapter supports multiple chat tabs for existing sessions', async () => {
 		agentHost.addSession(createSession('backboard-session', {
-			summary: 'Backboard',
+			summary: 'DQuant Lab',
 			project: { uri: URI.parse('file:///home/user/project'), displayName: 'project' },
 			workingDirectory: URI.parse('file:///home/user/project'),
 		}));
@@ -1669,7 +1669,7 @@ suite('LocalAgentHostSessionsProvider', () => {
 		provider.getSessions();
 		await timeout(0);
 
-		const session = provider.getSessions().find(session => session.title.get() === 'Backboard');
+		const session = provider.getSessions().find(session => session.title.get() === 'DQuant Lab');
 		assert.ok(session);
 		assert.strictEqual(session.capabilities.supportsMultipleChats, true);
 

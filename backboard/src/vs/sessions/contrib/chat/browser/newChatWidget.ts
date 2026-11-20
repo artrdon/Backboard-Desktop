@@ -57,8 +57,8 @@ import { DQUANT_LANGUAGE_PRESENTATION } from '../../../common/dquant/dquantPrese
 // #region --- New Chat Widget ---
 
 /**
- * Simple mode is Backboard-managed: its composer only offers models routed
- * through Backboard. Subscription-backed agent hosts such as Claude Code and
+ * Simple mode is DQuant Lab-managed: its composer only offers models routed
+ * through DQuant Lab. Subscription-backed agent hosts such as Claude Code and
  * Codex remain available in Advanced mode, but must not surface in this picker.
  */
 const NEW_CHAT_ALLOWED_SESSION_TYPES = [
@@ -270,7 +270,7 @@ const OCTOPUS_SLEEP_Z3 = [
 
 /**
  * The most recently constructed composer, used only by the test-only
- * "Backboard: Reset Composer Workspace (Test)" command to reach the live
+ * "DQuant Lab: Reset Composer Workspace (Test)" command to reach the live
  * instance (the composer is a widget, not a service). Cleared on dispose.
  */
 let activeComposerForTest: NewChatWidget | undefined;
@@ -291,12 +291,12 @@ export class NewChatWidget extends Disposable {
 	/** Set once the composer has seeded (or confirmed) a default workspace so it never re-seeds after an explicit clear. See {@link _ensureComposerHasWorkspace}. */
 	private _defaultWorkspaceHandled = false;
 	/**
-	 * The `~/Backboard` projects folder (see {@link _getProjectsFolder}),
+	 * The `~/DQuant Lab` projects folder (see {@link _getProjectsFolder}),
 	 * resolved only after the workspace picker's recents have loaded so it can
 	 * never win a race against a real recent workspace. Last-resort seed for
 	 * {@link _ensureComposerHasWorkspace} so the composer always lands on a
 	 * real folder — never the bare "workspace" placeholder — and the model and
-	 * Backboard-options pickers render even on a fresh profile with no history.
+	 * DQuant Lab-options pickers render even on a fresh profile with no history.
 	 */
 	private readonly _defaultFolderFallback = observableValue<URI | undefined>(this, undefined);
 	private _middleTitle: HTMLElement | undefined;
@@ -385,7 +385,7 @@ export class NewChatWidget extends Disposable {
 		// DQuant: a language profile lives on the session, so the welcome flow and
 		// the composer badge follow the profile service instead of keeping a copy.
 		this._dquantProfileSignal = observableSignalFromEvent(this, this.dquantSessionLanguageService.onDidChange);
-		// Remote hosts expose the same Backboard agent under a host-specific
+		// Remote hosts expose the same DQuant Lab agent under a host-specific
 		// chat session type. Match its stable provider id as well as the local id.
 		this._sessionTypePicker.setAllowedSessionTypeIds([...NEW_CHAT_ALLOWED_SESSION_TYPES, 'backboard']);
 
@@ -620,7 +620,7 @@ export class NewChatWidget extends Disposable {
 	}
 
 	/**
-	 * The composer's model and Backboard-options controls bind to the active
+	 * The composer's model and DQuant Lab-options controls bind to the active
 	 * session, and a session requires a workspace. When the composer opens with
 	 * no workspace restored or selected, those controls would otherwise render
 	 * hidden or stuck "loading". Seed the most recent available workspace so the
@@ -675,9 +675,9 @@ export class NewChatWidget extends Disposable {
 
 	/**
 	 * Seeds the composer's workspace from the best available default when none
-	 * is selected yet, so the model and Backboard-options pickers render. Order
+	 * is selected yet, so the model and DQuant Lab-options pickers render. Order
 	 * of preference: the most recent servable session's folder, then the
-	 * workspace picker's recents, then the `~/Backboard` projects folder. No-op once a
+	 * workspace picker's recents, then the `~/DQuant Lab` projects folder. No-op once a
 	 * session/selection exists (marks {@link _defaultWorkspaceHandled} so it is
 	 * never re-seeded from under an explicit user clear). Reads current values
 	 * synchronously; the caller (the seeding autorun) owns the reactive reads.
@@ -702,7 +702,7 @@ export class NewChatWidget extends Disposable {
 
 		// Fresh profile with no recent sessions or folders anywhere: seed the
 		// projects folder so the composer always lands on a real folder (never
-		// the bare "workspace" placeholder) and its model and Backboard-options
+		// the bare "workspace" placeholder) and its model and DQuant Lab-options
 		// controls still render. The draft is created without the upfront trust
 		// prompt (nothing was user-initiated yet); {@link _sendFromSharedComposer}
 		// requests folder trust before the first send instead.
@@ -722,7 +722,7 @@ export class NewChatWidget extends Disposable {
 	}
 
 	/**
-	 * Test affordance (Command Palette: "Backboard: Reset Composer Workspace
+	 * Test affordance (Command Palette: "DQuant Lab: Reset Composer Workspace
 	 * (Test)"): drop the current workspace selection and draft, then re-run the
 	 * default-workspace seeding so the no-workspace → seeded transition (and the
 	 * model/options pickers appearing) can be exercised without relaunching
@@ -988,7 +988,7 @@ export class NewChatWidget extends Disposable {
 			? userPick
 			: this._sessionTypePicker.getPreferredSessionType(folderUri);
 		if (!effectivePick) {
-			this.logService.info(`[Sessions] Backboard session type is not available yet for ${folderUri.toString()}; waiting for provider registration.`);
+			this.logService.info(`[Sessions] DQuant Lab session type is not available yet for ${folderUri.toString()}; waiting for provider registration.`);
 			return undefined;
 		}
 		try {
@@ -1097,7 +1097,7 @@ export class NewChatWidget extends Disposable {
 
 		const created = this._createSessionNow(folderUri, this._sessionTypePicker.getUserPickedSessionType());
 		if (!created) {
-			// The Backboard agent host can still be connecting after startup.
+			// The DQuant Lab agent host can still be connecting after startup.
 			this._dquantWelcome?.setStatus(localize('dquant.welcome.waitingForAgent', "Подключаем агента… Попробуйте создать сессию ещё раз через несколько секунд."), 'info');
 			return false;
 		}
@@ -1128,7 +1128,7 @@ export class NewChatWidget extends Disposable {
 	/**
 	 * Folder the new MQL session should work in: the explicit picker selection,
 	 * then the most recent servable session, then the picker default, then the
-	 * `~/Backboard` projects folder (created on demand).
+	 * `~/DQuant Lab` projects folder (created on demand).
 	 */
 	private async _resolveDquantWorkspaceFolder(): Promise<URI | undefined> {
 		const selected = this._workspacePicker.selectedFolderUri;
@@ -1442,9 +1442,9 @@ export class NewChatWidget extends Disposable {
 	}
 
 	/**
-	 * `~/Backboard`, created on demand: the default home for new projects.
+	 * `~/DQuant Lab`, created on demand: the default home for new projects.
 	 * Deliberately not `~/Desktop` or `~/Documents`: macOS guards those behind
-	 * a privacy prompt, and a folder Backboard picks for the user must never
+	 * a privacy prompt, and a folder DQuant Lab picks for the user must never
 	 * raise one.
 	 */
 	private async _getProjectsFolder(): Promise<URI> {
@@ -1737,7 +1737,7 @@ export class NewChatWidget extends Disposable {
 /**
  * Test-only command: clears the composer's workspace + draft and re-runs the
  * default-workspace seeding, so the no-workspace → seeded transition (and the
- * model/Backboard-options pickers appearing) can be exercised in a running
+ * model/DQuant Lab-options pickers appearing) can be exercised in a running
  * instance without relaunching against an empty profile.
  */
 registerAction2(class ResetComposerWorkspaceForTestAction extends Action2 {

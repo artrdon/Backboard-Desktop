@@ -32,7 +32,7 @@ else
 		&& env LIMA_HOME="${LIMA_HOME_PATH}" limactl shell colima -- sudo docker info >/dev/null 2>&1; then
 		DOCKER=(env LIMA_HOME="${LIMA_HOME_PATH}" limactl shell colima -- sudo docker)
 	else
-		echo "No usable Docker daemon was found. Start Docker Desktop or the Backboard Colima VM." >&2
+		echo "No usable Docker daemon was found. Start Docker Desktop or the DQuant Lab Colima VM." >&2
 		exit 1
 	fi
 fi

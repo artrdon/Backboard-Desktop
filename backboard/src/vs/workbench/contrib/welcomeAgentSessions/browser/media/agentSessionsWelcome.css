@@ -619,7 +619,7 @@
 	}
 }
 
-/* Backboard simple-mode shell */
+/* DQuant Lab simple-mode shell */
 .agentSessionsWelcome {
 	background:
 		linear-gradient(142deg, color-mix(in srgb, var(--vscode-focusBorder) 10%, transparent), transparent 58%),

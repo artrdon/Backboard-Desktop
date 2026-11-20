@@ -50,7 +50,7 @@ interface IRecommendedModelRule {
 	readonly newestGenerationOnly?: boolean;
 }
 
-/** Ordered by who pays: connected subscriptions first, then Backboard-billed frontier models, then fast open models. */
+/** Ordered by who pays: connected subscriptions first, then DQuant Lab-billed frontier models, then fast open models. */
 const RECOMMENDED_MODEL_RULES: readonly IRecommendedModelRule[] = [
 	{ provider: 'openai-subscription', pattern: /^gpt-(?<version>\d+(?:\.\d+)*)-(?<family>sol|astra|terra|luna)$/, newestGenerationOnly: true },
 	{ provider: 'anthropic-subscription' },
@@ -77,11 +77,11 @@ function compareModelVersions(a: readonly number[], b: readonly number[]): numbe
 
 export const COMBINED_MODEL_SECTION_RECOMMENDED = 'recommended';
 export const COMBINED_MODEL_SECTION_ALL = 'all';
-/** Backboard models that run with no credit or plan. */
+/** DQuant Lab models that run with no credit or plan. */
 export const COMBINED_MODEL_SECTION_FREE = 'free';
 export const COMBINED_MODEL_SECTION_CHATGPT = 'provider:openai-subscription';
 export const COMBINED_MODEL_SECTION_CLAUDE = 'provider:anthropic-subscription';
-/** Section id prefix for a provider's key-billed (BYOK) models; `provider:` covers its Backboard-billed ones. */
+/** Section id prefix for a provider's key-billed (BYOK) models; `provider:` covers its DQuant Lab-billed ones. */
 const BYOK_SECTION_PREFIX = 'byok:';
 
 export function providerIconKeyForCombinedModelSection(sectionId: string): string | undefined {
@@ -112,9 +112,9 @@ export function providerIconKeyForCombinedModelSection(sectionId: string): strin
 }
 
 /**
- * Left-rail headings, ordered by who bills the request: Backboard's own
+ * Left-rail headings, ordered by who bills the request: DQuant Lab's own
  * catalog, then connected subscriptions, then bring-your-own-key providers.
- * `models` is the neutral heading used for non-Backboard session types.
+ * `models` is the neutral heading used for non-DQuant Lab session types.
  */
 export type CombinedModelSectionGroup = 'backboard' | 'subscriptions' | 'byok' | 'models';
 
@@ -430,11 +430,11 @@ function providerSectionLabel(providerId: string, detail: string | undefined): s
 	return label || formatModelLabel(vendorOfProvider(providerId));
 }
 
-/** Builds the stable left-rail sections grouped by Backboard, subscriptions, then BYOK. */
+/** Builds the stable left-rail sections grouped by DQuant Lab, subscriptions, then BYOK. */
 export function buildCombinedModelSections(models: readonly ILanguageModelChatMetadataAndIdentifier[]): ICombinedModelSection[] {
 	const recommendedCount = recommendedModels(models).length;
 	const freeCount = models.filter(isFreeModel).length;
-	// A provider is tallied separately for its Backboard-billed and key-billed
+	// A provider is tallied separately for its DQuant Lab-billed and key-billed
 	// rows, so a vendor the user holds a key for can appear in both groups.
 	const providers = new Map<string, { label: string; count: number; keyBilled: boolean }>();
 	for (const model of models) {
@@ -512,7 +512,7 @@ export function buildCombinedModelSections(models: readonly ILanguageModelChatMe
 }
 
 /**
- * A Backboard-billed model that runs with no credit or plan; the agent host
+ * A DQuant Lab-billed model that runs with no credit or plan; the agent host
  * marks it with `priceCategory: 'free'` from the catalog's exact-$0 prices.
  */
 export function isFreeModel(model: ILanguageModelChatMetadataAndIdentifier): boolean {
@@ -784,7 +784,7 @@ export class CombinedModelProviderPickerActionItem extends BaseActionViewItem {
 			};
 		}
 		// Claude Code publishes effort controls per model. Models such as Haiku
-		// intentionally omit them and must not inherit Backboard's generic slider.
+		// intentionally omit them and must not inherit DQuant Lab's generic slider.
 		if (model && upstreamProviderId(model) === 'anthropic-subscription') {
 			return undefined;
 		}
@@ -820,7 +820,7 @@ export class CombinedModelProviderPickerActionItem extends BaseActionViewItem {
 			return;
 		}
 
-		// Keep the session provider scoped to the current chat. Backboard's own
+		// Keep the session provider scoped to the current chat. DQuant Lab's own
 		// upstream model providers are exposed as sections inside the picker.
 		const allowedProviders = this._selectableProviders();
 		const activeProvider = this._activeProvider();
@@ -908,7 +908,7 @@ export class CombinedModelProviderPickerActionItem extends BaseActionViewItem {
 					// The refresh after a connection is a courtesy: the connection
 					// itself already succeeded and published its own models (a key's
 					// catalog comes from its validation). A user with only a key has
-					// no Backboard catalog to refresh, which must not read as a failure.
+					// no DQuant Lab catalog to refresh, which must not read as a failure.
 					this._logService.warn(`[DQuant Lab] model refresh after connecting failed: ${message}`);
 					return;
 				}
@@ -1303,8 +1303,8 @@ export class CombinedModelProviderPickerActionItem extends BaseActionViewItem {
 				const label = formatModelLabel(model.metadata.name);
 				labelCounts.set(label, (labelCounts.get(label) ?? 0) + 1);
 			}
-			// Signed out, only Backboard's free models run (on the device's guest
-			// key); every other Backboard model stays listed after them, locked.
+			// Signed out, only DQuant Lab's free models run (on the device's guest
+			// key); every other DQuant Lab model stays listed after them, locked.
 			const needsSignIn = (model: ILanguageModelChatMetadataAndIdentifier) => !connectState.signedIn && !isSubscriptionModel(model) && !isKeyBilledModel(model) && !isFreeModel(model);
 			const ordered = connectState.signedIn ? filtered : [...filtered.filter(model => !needsSignIn(model)), ...filtered.filter(needsSignIn)];
 			if (showingBackboard && ordered.some(needsSignIn)) {

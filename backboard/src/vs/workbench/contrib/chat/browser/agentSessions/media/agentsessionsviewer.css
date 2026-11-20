@@ -745,7 +745,7 @@
 }
 
 /* Cursor's editor drawer uses the full two-row session card. The earlier
- * Backboard compact override collapsed the row to a one-line history entry,
+ * DQuant Lab compact override collapsed the row to a one-line history entry,
  * hiding the status icon, diff summary and file count. */
 .backboard-side-chat-sessions .agent-sessions-viewer {
 	.monaco-list-row {

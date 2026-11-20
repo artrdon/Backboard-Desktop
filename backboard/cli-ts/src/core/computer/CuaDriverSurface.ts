@@ -258,7 +258,7 @@ export class CuaDriverSurface implements JevSurface {
 			);
 			if (accessibility === false) {
 				throw new Error(
-					"Backboard Studio needs Accessibility access to operate apps. Enable it in System Settings > Privacy & Security > Accessibility, then relaunch.",
+					"DQuant Lab needs Accessibility access to operate apps. Enable it in System Settings > Privacy & Security > Accessibility, then relaunch.",
 				);
 			}
 		}

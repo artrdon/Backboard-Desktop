@@ -85,7 +85,7 @@ describe("model profiles", () => {
 
 		expect(openaiPrompt).toBe(defaultPrompt);
 		expect(antPrompt).toBe(defaultPrompt);
-		expect(openaiPrompt).toContain("You are Backboard");
+		expect(openaiPrompt).toContain("You are DQuant Lab");
 	});
 
 	it("instructs every prompt profile to parallelize independent tool work", () => {
@@ -105,11 +105,11 @@ describe("model profiles", () => {
 		}
 	});
 
-	it("teaches every prompt profile how to integrate with Backboard", () => {
+	it("teaches every prompt profile how to integrate with DQuant Lab", () => {
 		for (const profile of ["default", "openai", "anthropic", "glm"] as const) {
 			const prompt = getSystemPrompt({ profile });
 			expect(prompt).toContain(
-				"Backboard is the default AI platform for this IDE",
+				"DQuant Lab is the default AI platform for this IDE",
 			);
 			expect(prompt).toContain("POST /threads/messages");
 			expect(prompt).toContain("POST /threads/tool-outputs");
@@ -119,7 +119,7 @@ describe("model profiles", () => {
 		}
 	});
 
-	it("prefers Backboard MCP docs and falls back to official web docs", () => {
+	it("prefers DQuant Lab MCP docs and falls back to official web docs", () => {
 		const withMcp = getSystemPrompt({
 			enabledTools: ["mcp__backboard__search_docs", "FetchUrl"],
 		});

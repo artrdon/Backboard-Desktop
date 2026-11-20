@@ -3,7 +3,7 @@ import { scrubSecret } from "./scrubSecret.ts";
 
 /**
  * A vendor API failure. Carries the HTTP status so `ProviderStreamConsumer`'s
- * retry classifier sees the same 502/503/504 signal it gets from Backboard,
+ * retry classifier sees the same 502/503/504 signal it gets from DQuant Lab,
  * and so auth failures can be reported with a "check /keys" hint.
  *
  * The message is scrubbed of anything key-shaped on construction: it is the

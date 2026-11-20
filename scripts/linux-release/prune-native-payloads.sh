@@ -7,7 +7,7 @@ if [[ "${APP_RESOURCES}" != */resources/app || ! -f "${APP_RESOURCES}/product.js
 	exit 1
 fi
 
-# Backboard uses its own chat stack and compiled agent CLI, as in the macOS
+# DQuant Lab uses its own chat stack and compiled agent CLI, as in the macOS
 # release. The legacy Copilot extension and its SDK are not runtime inputs.
 rm -rf "${APP_RESOURCES}/extensions/copilot" \
 	"${APP_RESOURCES}/node_modules/@github/copilot" \

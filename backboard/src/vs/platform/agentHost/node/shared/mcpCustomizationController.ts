@@ -65,7 +65,7 @@ export interface IMcpCustomizationControllerOptions {
 	readonly capabilities?: AhpMcpUiHostCapabilities;
 	/**
 	 * Per-server enablement override. Providers whose servers can be turned
-	 * off for a session (e.g. the Backboard runtime, where the composer can
+	 * off for a session (e.g. the DQuant Lab runtime, where the composer can
 	 * connect/disconnect a server) return `false` here so re-published
 	 * customizations keep the user's choice instead of resetting to enabled.
 	 * Defaults to enabled for every server.

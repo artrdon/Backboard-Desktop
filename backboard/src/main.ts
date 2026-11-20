@@ -327,7 +327,7 @@ function configureCommandlineSwitchesSync(cliArgs: NativeParsedArgs) {
 		}
 	});
 
-	// Avoid the macOS "Backboard Studio Safe Storage" Keychain consent prompt:
+	// Avoid the macOS "DQuant Lab Studio Safe Storage" Keychain consent prompt:
 	// the mock keychain makes OSCrypt derive its encryption key from a constant
 	// instead of a Keychain item, so the app never touches the user's Keychain.
 	// Secrets stored via safeStorage are then only obfuscated on disk, not

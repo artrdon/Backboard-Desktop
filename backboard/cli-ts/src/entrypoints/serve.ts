@@ -67,9 +67,9 @@ import {
 } from "./serveMcp.ts";
 
 /**
- * Persistent IDE host for the public Backboard R-CLI runtime.
+ * Persistent IDE host for the public DQuant Lab R-CLI runtime.
  *
- * Backboard Studio owns only this NDJSON transport. R-CLI still owns provider
+ * DQuant Lab Studio owns only this NDJSON transport. R-CLI still owns provider
  * routing, the agent loop, permissions, tools, checkpoints, MCP, skills, and
  * local session state. stdout is machine-readable; diagnostics go to stderr.
  */
@@ -778,7 +778,7 @@ export async function runServe(argv: string[]): Promise<void> {
 		sessionId,
 		cwd: config.cwd,
 		model: config.modelString,
-		upstream: "Backboard-io/Backboard-R-CLI",
+		upstream: "DQuant Lab",
 		capabilities: [...SERVE_CAPABILITIES],
 		runtime,
 	});

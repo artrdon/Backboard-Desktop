@@ -13,7 +13,7 @@
  * — keep the two sides in sync.
  */
 
-/** Permission modes exposed by the public Backboard R-CLI. */
+/** Permission modes exposed by the public DQuant Lab R-CLI. */
 export type CliTsPermissionMode = 'manual' | 'acceptEdits' | 'auto' | 'bypass';
 
 /** Explicit billing route attached to a model selection (mirrors cli-ts `ModelSource`). */

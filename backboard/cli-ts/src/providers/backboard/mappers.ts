@@ -96,7 +96,7 @@ export class BackboardStreamEventMapper {
 	}
 
 	/**
-	 * Backboard normally emits `tool_call_start`, but some OpenRouter models do
+	 * DQuant Lab normally emits `tool_call_start`, but some OpenRouter models do
 	 * not expose a real call id until their (potentially very large) arguments
 	 * are complete. The transport still forwards their raw OpenAI-compatible
 	 * `choices[].delta.tool_calls` chunks. Recognize the tool name there and
@@ -222,7 +222,7 @@ function mapStreamPayload(
 ): StreamMappingResult {
 	if (!isBackboardStreamPayload(payload)) {
 		return {
-			events: [failedEvent("Backboard stream sent a non-object event")],
+			events: [failedEvent("DQuant Lab stream sent a non-object event")],
 			accumulatedContent: previousAccumulatedContent,
 			accumulatedReasoning: previousAccumulatedReasoning,
 		};
@@ -337,7 +337,7 @@ function mapStreamPayload(
 				});
 			} else if (calls.length === 0) {
 				events.push(
-					failedEvent("Backboard requested tool outputs without tool calls"),
+					failedEvent("DQuant Lab requested tool outputs without tool calls"),
 				);
 			} else {
 				// Tool-call legs carry provider usage too (each leg is a billed
@@ -359,7 +359,7 @@ function mapStreamPayload(
 					failedEvent(
 						stringField(payload, "error") ??
 							stringField(payload, "message") ??
-							"Backboard run did not complete",
+							"DQuant Lab run did not complete",
 					),
 				);
 				return { events, accumulatedContent, accumulatedReasoning };
@@ -385,19 +385,19 @@ function mapStreamPayload(
 				failedEvent(
 					stringField(payload, "error") ??
 						stringField(payload, "message") ??
-						"Backboard run failed",
+						"DQuant Lab run failed",
 				),
 			);
 			return { events, accumulatedContent, accumulatedReasoning };
 		case BACKBOARD_STREAM_EVENTS.runCancelled:
-			events.push({ kind: "failed", error: "Backboard run was cancelled" });
+			events.push({ kind: "failed", error: "DQuant Lab run was cancelled" });
 			return { events, accumulatedContent, accumulatedReasoning };
 		case BACKBOARD_STREAM_EVENTS.error:
 			events.push(
 				failedEvent(
 					stringField(payload, "error") ??
 						stringField(payload, "message") ??
-						"Backboard stream failed",
+						"DQuant Lab stream failed",
 				),
 			);
 			return { events, accumulatedContent, accumulatedReasoning };

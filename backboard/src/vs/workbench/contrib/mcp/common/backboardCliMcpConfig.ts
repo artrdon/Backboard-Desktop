@@ -6,7 +6,7 @@
 import { IMcpServerConfiguration, McpServerType } from '../../../../platform/mcp/common/mcpPlatformTypes.js';
 
 /**
- * One entry of a `.backboard/mcp.json` file, as read by the Backboard CLI
+ * One entry of a `.backboard/mcp.json` file, as read by the DQuant Lab CLI
  * (`cli-ts/src/core/mcp/config.ts`) and written by the IDE when a server is
  * installed from the MCP marketplace.
  */
@@ -42,7 +42,7 @@ export function parseBackboardCliMcpConfig(value: unknown): Record<string, IBack
 
 /**
  * Maps a `.backboard/mcp.json` server onto the workbench configuration shape
- * so the Backboard CLI's servers show up (and install) like any other server
+ * so the DQuant Lab CLI's servers show up (and install) like any other server
  * in the IDE's MCP surfaces. Returns `undefined` for entries the workbench
  * cannot represent (neither a command nor a URL).
  */

@@ -1,12 +1,12 @@
 Name:     @@NAME@@
 Version:  @@VERSION@@
 Release:  @@RELEASE@@.el8
-Summary:  Backboard IDE.
+Summary:  DQuant Lab.
 Group:    Development/Tools
-Vendor:   Backboard
-Packager: Backboard
+Vendor:   DQuant Lab
+Packager: DQuant Lab
 License:  @@LICENSE@@
-URL:      https://docs.backboard.io/
+URL:      https://github.com/artrdon/Backboard-Desktop
 Icon:     @@NAME@@.xpm
 Requires: @@DEPENDENCIES@@
 Recommends: @@RECOMMENDS@@
@@ -18,7 +18,7 @@ AutoReq:  0
 %global __brp_strip_comment_note %{nil}
 
 %description
-Backboard IDE combines the simplicity of a code editor with Backboard-powered development workflows.
+DQuant Lab combines the simplicity of a code editor with DQuant Lab-powered development workflows.
 
 # Don't generate build_id links to prevent conflicts when installing multiple
 # versions of the editor alongside each other

@@ -2,7 +2,7 @@
 
 **File:** `src/vs/sessions/contrib/copilotChatSessions/browser/copilotChatSessionsProvider.ts`
 
-The default sessions provider, registered with ID `'default-copilot'`. Wraps the existing agent session infrastructure into the extensible provider model. Supports three session types: **DQuant Agent CLI** (local), **Backboard Cloud** (remote), and **Claude** (local, gated by `sessions.chat.claudeAgent.enabled`).
+The default sessions provider, registered with ID `'default-copilot'`. Wraps the existing agent session infrastructure into the extensible provider model. Supports three session types: **DQuant Agent CLI** (local), **DQuant Lab Cloud** (remote), and **Claude** (local, gated by `sessions.chat.claudeAgent.enabled`).
 
 ## Registration
 

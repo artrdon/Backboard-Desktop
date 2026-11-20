@@ -21,7 +21,7 @@ import { IPathService } from '../../../../services/path/common/pathService.js';
 import { BackboardAuthService } from '../../browser/backboardAuthService.js';
 import { BackboardAuthContextKeys } from '../../common/backboardAuth.js';
 
-suite('Backboard auth state', () => {
+suite('DQuant Lab auth state', () => {
 	const disposables = ensureNoDisposablesAreLeakedInTestSuite();
 
 	async function setup(initialConfig = '{}', alternative = false, options: { check?: () => Promise<boolean>; watcherFailure?: boolean; waitForInitial?: boolean } = {}) {

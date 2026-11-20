@@ -74,7 +74,7 @@ const TARGETS: Target[] = [
 // so that would always fail without a separate obfuscation pass — the real
 // danger is a leaked API key, which these patterns catch.
 const SECRET_PATTERNS = [
-	// Backboard API key shape (e.g. the espr_… keys in dev .env files). Guards
+	// DQuant Lab API key shape (e.g. the espr_… keys in dev .env files). Guards
 	// against a build accidentally baking a real key into the shipped binary.
 	"espr_[a-zA-Z0-9]{20,}",
 	"sk-[a-zA-Z0-9]{32,}",
@@ -172,7 +172,7 @@ async function buildTarget(target: Target): Promise<string> {
 }
 
 async function main(): Promise<void> {
-	console.log(`Backboard CLI release build v${APP_VERSION}`);
+	console.log(`DQuant Lab CLI release build v${APP_VERSION}`);
 	console.log(`  output: ${outDir}`);
 
 	await mkdir(outDir, { recursive: true });

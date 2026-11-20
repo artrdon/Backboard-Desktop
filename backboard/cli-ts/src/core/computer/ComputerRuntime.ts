@@ -238,7 +238,7 @@ export class ComputerRuntime {
 				verification: "failed",
 				summary: "Computer-use tasks are unavailable.",
 				error:
-					"No computer-use model is configured. Sign in to Backboard, or use direct actions instead.",
+					"No computer-use model is configured. Sign in to DQuant Lab, or use direct actions instead.",
 			};
 		}
 		const driver = this.resolveCuaDriver();

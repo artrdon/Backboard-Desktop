@@ -10,7 +10,7 @@ import type { ModelSource } from "../providers/backboard/types.ts";
 /**
  * Advertised in the `serve:ready` payload. A host that manages provider keys
  * must see this before it sends credentials or key-billed turns, so an older
- * packaged runtime fails closed instead of silently routing to Backboard.
+ * packaged runtime fails closed instead of silently routing to DQuant Lab.
  */
 export const HOST_MANAGED_BYOK_CAPABILITY = "host-managed-byok-v2";
 
@@ -44,10 +44,10 @@ export interface ServeFileAttachment {
 }
 
 /**
- * One control operation sent by Backboard Studio as one NDJSON line.
+ * One control operation sent by DQuant Lab Studio as one NDJSON line.
  *
  * This transport is the only IDE-specific surface layered on top of the
- * public Backboard R-CLI. The agent loop, tools, permissions, providers,
+ * public DQuant Lab R-CLI. The agent loop, tools, permissions, providers,
  * checkpoints, MCP, skills, and session state all remain owned by R-CLI.
  */
 export type ServeControl =

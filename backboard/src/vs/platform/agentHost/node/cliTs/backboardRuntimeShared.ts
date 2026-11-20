@@ -17,7 +17,7 @@ import type { ResolveSessionConfigResult } from '../../common/state/protocol/com
 import type { ModelSelection } from '../../common/state/protocol/state.js';
 
 /**
- * Backboard runtime configuration, model-catalog, and session-config helpers
+ * DQuant Lab runtime configuration, model-catalog, and session-config helpers
  * shared by the cli-ts agent. Extracted verbatim from the retired Rust-bridge
  * agent (`backboardAgent.ts`) so the cli-ts runtime keeps identical model
  * mapping, session-config schema, and credential resolution
@@ -156,7 +156,7 @@ export interface BridgeOpenRouterProvider {
 	readonly uptime_30m?: number | null;
 }
 
-/** Local ChatGPT subscription routes are not part of Backboard's API catalog. */
+/** Local ChatGPT subscription routes are not part of DQuant Lab's API catalog. */
 export const BUNDLED_CHATGPT_SUBSCRIPTION_MODELS: readonly BridgeModel[] = [
 	{ provider: 'openai-subscription', name: 'gpt-5.6-sol', displayName: 'GPT-5.6 Sol', modelType: 'llm', supportsVision: true },
 	{ provider: 'openai-subscription', name: 'gpt-5.6-terra', displayName: 'GPT-5.6 Terra', modelType: 'llm', supportsVision: true },
@@ -166,7 +166,7 @@ export const BUNDLED_CHATGPT_SUBSCRIPTION_MODELS: readonly BridgeModel[] = [
 	{ provider: 'openai-subscription', name: 'gpt-5.4-mini', displayName: 'GPT-5.4 Mini', modelType: 'llm', supportsVision: true },
 ];
 
-/** Local Claude Code subscription routes are not part of Backboard's API catalog. */
+/** Local Claude Code subscription routes are not part of DQuant Lab's API catalog. */
 export const BUNDLED_CLAUDE_SUBSCRIPTION_MODELS: readonly BridgeModel[] = [
 	{ provider: 'anthropic-subscription', name: 'claude-fable-5-1', displayName: 'Claude Fable 5.1', resolved_model: 'claude-fable-5-1', modelType: 'llm', contextLimit: 200_000, supportsVision: true, supported_effort_levels: ['low', 'medium', 'high', 'xhigh', 'max'] },
 	{ provider: 'anthropic-subscription', name: 'claude-opus-5-5', displayName: 'Claude Opus 5.5', resolved_model: 'claude-opus-5-5', modelType: 'llm', contextLimit: 200_000, supportsVision: true, supported_effort_levels: ['low', 'medium', 'high', 'xhigh', 'max'] },
@@ -297,8 +297,12 @@ function providerLabel(provider: string | undefined): string {
 			return 'Custom API';
 		case 'xai':
 			return 'xAI';
+		case 'backboard':
+		case 'dquant':
+		case 'dquant-lab':
+			return 'DQuant Lab';
 		default:
-			return provider?.trim() || 'Backboard';
+			return provider?.trim() || 'DQuant Lab';
 	}
 }
 
@@ -342,7 +346,7 @@ const REPORTED_COST_PROVIDERS = new Set(['openrouter', 'cerebras']);
 const ROUTER_MODEL_NAMES = new Set(['openrouter/auto', 'openrouter/auto-beta', 'openrouter/free']);
 
 /**
- * True when Backboard runs this model with no credit or plan. Same rule as the
+ * True when DQuant Lab runs this model with no credit or plan. Same rule as the
  * server's `is_free_llm_model` and cli-ts `isFreeCatalogModel`: an
  * OpenRouter-family row, not a router alias, whose every price is exactly 0.
  */
@@ -823,7 +827,7 @@ function normalizeBackboardConfig(rawConfig: Record<string, unknown> | undefined
 
 /**
  * DQuant stores its per-session language profile (and project name) in the
- * session's config bag. The Backboard runtime only knows its own keys, so carry
+ * session's config bag. The DQuant Lab runtime only knows its own keys, so carry
  * every `dquant.*` value through the resolved config unchanged. This keeps the
  * profile with the session across create/restore without exposing it as a
  * picker in the composer.
@@ -963,7 +967,7 @@ export function bridgeConfig(): Record<string, unknown> {
 	const accessToken = process.env.BACKBOARD_ACCESS_TOKEN
 		|| process.env.VSCODE_BACKBOARD_ACCESS_TOKEN
 		|| backboardConfigAccessToken(persisted);
-	// Signed out: the device's guest key runs Backboard's free models only.
+	// Signed out: the device's guest key runs DQuant Lab's free models only.
 	const guestKey = !apiKey && !accessToken ? guestApiKey(persisted) : undefined;
 	return {
 		env,

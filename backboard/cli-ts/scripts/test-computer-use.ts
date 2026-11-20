@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-/** Live, opt-in test of the production Computer tool. Uses Backboard credentials
+/** Live, opt-in test of the production Computer tool. Uses DQuant Lab credentials
  * and the configured writer model. Leaves decision logs and a final screenshot;
  * a DONE decision alone is never treated as independent proof of the picture. */
 import { mkdir, mkdtemp } from "node:fs/promises";

@@ -15,7 +15,7 @@ import type {
 	BackboardThreadMessage,
 } from "../src/providers/backboard/types.ts";
 
-describe("Backboard thread helpers", () => {
+describe("DQuant Lab thread helpers", () => {
 	it("uses the latest message timestamp as the thread updated time", () => {
 		const thread = testThread("older", "2026-06-30T10:00:00", [
 			"2026-06-30T10:01:00",

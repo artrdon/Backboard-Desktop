@@ -1,9 +1,9 @@
 name: @@NAME@@
 version: '@@VERSION@@'
-summary: Backboard IDE.
+summary: DQuant Lab.
 description: |
-  Backboard IDE combines the simplicity of a code editor with
-  Backboard-powered development workflows.
+  DQuant Lab combines the simplicity of a code editor with
+  DQuant Lab-powered development workflows.
 
 architectures:
   - build-on: amd64

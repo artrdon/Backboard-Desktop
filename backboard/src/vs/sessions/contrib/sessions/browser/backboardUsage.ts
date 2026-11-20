@@ -145,7 +145,7 @@ export class BackboardUsageView extends Disposable {
 			}
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);
-			this.logService.warn(`[Backboard] Could not load usage: ${message}`);
+			this.logService.warn(`[DQuant Lab] Could not load usage: ${message}`);
 			if (this.input === input && generation === this.loadGeneration) {
 				void input.webview.postMessage({ type: 'error', message });
 			}
@@ -196,7 +196,7 @@ async function capture(request: () => Promise<unknown>): Promise<UsageRequestRes
 
 function logRequestError(label: string, result: UsageRequestResult | undefined, logService: ILogService): void {
 	if (result && !result.ok) {
-		logService.warn(`[Backboard] Usage ${label} request failed: ${result.error instanceof Error ? result.error.message : String(result.error)}`);
+		logService.warn(`[DQuant Lab] Usage ${label} request failed: ${result.error instanceof Error ? result.error.message : String(result.error)}`);
 	}
 }
 
@@ -210,12 +210,12 @@ async function requestUsageJson(api: IUsageApiConfig, path: string, requestServi
 	const status = context.res.statusCode;
 	const body = (await streamToBuffer(context.stream)).toString();
 	if (!status || status < 200 || status >= 300) {
-		throw new Error(`Backboard usage request failed with status ${status ?? 'unknown'}.`);
+		throw new Error(`DQuant Lab usage request failed with status ${status ?? 'unknown'}.`);
 	}
 	try {
 		return JSON.parse(body);
 	} catch {
-		throw new Error('Backboard usage returned an invalid response.');
+		throw new Error('DQuant Lab usage returned an invalid response.');
 	}
 }
 
@@ -242,14 +242,14 @@ async function requestRecentUsage(api: IUsageApiConfig, start: string, requestSe
 	const totalPages = usageTotalPages(firstPayload);
 	if (totalPages !== undefined) {
 		if (totalPages > maxPages) {
-			throw new Error(`Backboard usage exceeded ${maxPages * pageSize} events.`);
+			throw new Error(`DQuant Lab usage exceeded ${maxPages * pageSize} events.`);
 		}
 		const limiter = new Limiter<readonly unknown[]>(12);
 		try {
 			const pages = await Promise.all(Array.from({ length: totalPages - 1 }, (_, index) => limiter.queue(async () => {
 				const pageEvents = usageEvents(await requestUsageJson(api, pagePath(index + 2), requestService));
 				if (!pageEvents) {
-					throw new Error('Backboard usage returned an invalid page.');
+					throw new Error('DQuant Lab usage returned an invalid page.');
 				}
 				return pageEvents;
 			})));
@@ -269,7 +269,7 @@ async function requestRecentUsage(api: IUsageApiConfig, start: string, requestSe
 		}
 		const signature = pageSignature(pageEvents);
 		if (signatures.has(signature)) {
-			throw new Error('Backboard usage pagination repeated a page.');
+			throw new Error('DQuant Lab usage pagination repeated a page.');
 		}
 		signatures.add(signature);
 		events.push(...pageEvents);
@@ -277,7 +277,7 @@ async function requestRecentUsage(api: IUsageApiConfig, start: string, requestSe
 			return { data: events };
 		}
 	}
-	throw new Error(`Backboard usage exceeded ${maxPages * pageSize} events.`);
+	throw new Error(`DQuant Lab usage exceeded ${maxPages * pageSize} events.`);
 }
 
 function usageEvents(value: unknown): readonly unknown[] | undefined {
@@ -327,7 +327,7 @@ async function readLocalUsageSnapshot(fileService: IFileService, pathService: IP
 				}
 			}
 		} catch (error) {
-			logService.debug(`[Backboard] Could not read local usage log ${resource.toString()}: ${error instanceof Error ? error.message : String(error)}`);
+			logService.debug(`[DQuant Lab] Could not read local usage log ${resource.toString()}: ${error instanceof Error ? error.message : String(error)}`);
 		}
 	}
 	const events: ILocalUsageEvent[] = [...records.values()].map(({ key: _key, ...event }) => event);
@@ -477,7 +477,7 @@ function usageHtml(): string {
 	<div class="shell">
 		<header><h1>Usage</h1><span class="period" id="period"></span><div class="segmented"><button data-range="7">7 days</button><button data-range="30" aria-pressed="true">30 days</button><button data-range="90">90 days</button></div><button class="refresh" id="refresh" title="Refresh usage">↻</button></header>
 		<div class="status" id="status"></div>
-		<section class="overview"><div><div class="eyebrow">Period spend</div><div class="cost" id="cost">—</div><div class="muted" id="updated">Backboard billing usage</div><div class="providers" id="providers"></div></div><div><div class="chart-head"><h2 id="chart-title">Daily cost</h2><div class="segmented"><button data-mode="cost" aria-pressed="true">COST</button><button data-mode="tokens">TOKENS</button></div></div><div class="chart"><svg id="chart" viewBox="0 0 680 228" preserveAspectRatio="none"></svg><div class="empty" id="chart-empty">No dated usage in this period.</div></div></div></section>
+		<section class="overview"><div><div class="eyebrow">Period spend</div><div class="cost" id="cost">—</div><div class="muted" id="updated">DQuant Lab billing usage</div><div class="providers" id="providers"></div></div><div><div class="chart-head"><h2 id="chart-title">Daily cost</h2><div class="segmented"><button data-mode="cost" aria-pressed="true">COST</button><button data-mode="tokens">TOKENS</button></div></div><div class="chart"><svg id="chart" viewBox="0 0 680 228" preserveAspectRatio="none"></svg><div class="empty" id="chart-empty">No dated usage in this period.</div></div></div></section>
 		<section class="metrics" id="metrics"></section>
 		<section class="breakdown"><div class="breakdown-head"><h2>Breakdown</h2><div class="segmented"><button data-breakdown="model" aria-pressed="true">MODEL</button><button data-breakdown="day">DAY</button></div></div><table id="table"><thead><tr><th id="first-column">Model</th><th>Cost</th><th>Share</th><th>Tokens</th></tr></thead><tbody id="rows"></tbody></table><div class="empty" id="table-empty">No itemized usage in this period.</div></section>
 	</div>
@@ -496,12 +496,12 @@ function usageHtml(): string {
 		const dayKey = date => [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'), String(date.getDate()).padStart(2, '0')].join('-');
 		const covers = range => (number(record(state.snapshot).rangeDays) || 0) >= range;
 		function recent(value) { const source = unwrap(value); for (const key of ['data', 'usage', 'results', 'items', 'events']) if (Array.isArray(source[key])) return source[key]; return []; }
-		function eventFrom(raw) { const item = record(raw), source = { ...record(item.usage), ...item }; const rawDate = firstString(source, ['created_at', 'createdAt', 'timestamp', 'date']); const date = rawDate ? new Date(rawDate) : undefined; const input = firstNumber(source, ['input_tokens', 'inputTokens', 'prompt_tokens', 'token_input_tokens']) || 0; const output = firstNumber(source, ['output_tokens', 'outputTokens', 'completion_tokens', 'token_output_tokens']) || 0; const cachedRead = firstNumber(source, ['cached_input_tokens', 'cachedInputTokens', 'cache_read_input_tokens']) || 0; const cachedWrite = firstNumber(source, ['cache_write_input_tokens', 'cacheWriteInputTokens', 'cache_creation_input_tokens']) || 0; return { date: date && !Number.isNaN(date.getTime()) ? date : undefined, provider: firstString(source, ['provider', 'provider_name']) || 'Backboard', model: firstString(source, ['model', 'model_name']) || 'Unknown model', cost: firstNumber(source, ['cost_usd', 'costUsd', 'total_cost', 'cost', 'amount_usd', 'amount_deducted_usd', 'token_usage_usd']) || 0, input, output, cached: firstNumber(source, ['cached_tokens', 'cachedTokens']) || cachedRead + cachedWrite, tokens: firstNumber(source, ['total_tokens', 'totalTokens']) || input + output }; }
+		function eventFrom(raw) { const item = record(raw), source = { ...record(item.usage), ...item }; const rawDate = firstString(source, ['created_at', 'createdAt', 'timestamp', 'date']); const date = rawDate ? new Date(rawDate) : undefined; const input = firstNumber(source, ['input_tokens', 'inputTokens', 'prompt_tokens', 'token_input_tokens']) || 0; const output = firstNumber(source, ['output_tokens', 'outputTokens', 'completion_tokens', 'token_output_tokens']) || 0; const cachedRead = firstNumber(source, ['cached_input_tokens', 'cachedInputTokens', 'cache_read_input_tokens']) || 0; const cachedWrite = firstNumber(source, ['cache_write_input_tokens', 'cacheWriteInputTokens', 'cache_creation_input_tokens']) || 0; return { date: date && !Number.isNaN(date.getTime()) ? date : undefined, provider: firstString(source, ['provider', 'provider_name']) || 'DQuant Lab', model: firstString(source, ['model', 'model_name']) || 'Unknown model', cost: firstNumber(source, ['cost_usd', 'costUsd', 'total_cost', 'cost', 'amount_usd', 'amount_deducted_usd', 'token_usage_usd']) || 0, input, output, cached: firstNumber(source, ['cached_tokens', 'cachedTokens']) || cachedRead + cachedWrite, tokens: firstNumber(source, ['total_tokens', 'totalTokens']) || input + output }; }
 		function data() { const snapshot = record(state.snapshot), summary = unwrap(snapshot.summary), balance = unwrap(snapshot.balance), all = recent(snapshot.recent).map(eventFrom); const cutoff = new Date(); cutoff.setHours(0, 0, 0, 0); cutoff.setDate(cutoff.getDate() - state.range + 1); const events = all.some(event => event.date) ? all.filter(event => event.date && event.date >= cutoff) : all; const itemized = all.length > 0; const input = itemized ? events.reduce((sum, event) => sum + event.input, 0) : firstNumber(summary, ['token_input_tokens', 'input_tokens']) || 0; const output = itemized ? events.reduce((sum, event) => sum + event.output, 0) : firstNumber(summary, ['token_output_tokens', 'output_tokens']) || 0; return { events, cost: itemized ? events.reduce((sum, event) => sum + event.cost, 0) : firstNumber(summary, ['total_spending_usd', 'token_usage_usd', 'spending', 'cost']), input, output, cached: itemized ? events.reduce((sum, event) => sum + event.cached, 0) : firstNumber(summary, ['cached_tokens', 'cache_read_tokens']) || 0, count: itemized ? events.length : firstNumber(summary, ['events_count', 'request_count']) || 0, balance: firstNumber(balance, ['balance_usd', 'balance']), fetchedAt: number(snapshot.fetchedAt) }; }
 		function aggregate(events, key) { const map = new Map(); for (const event of events) { const label = key === 'day' ? event.date ? dayKey(event.date) : 'Undated' : event[key]; const row = map.get(label) || { label, cost: 0, tokens: 0, count: 0 }; row.cost += event.cost; row.tokens += event.tokens; row.count++; map.set(label, row); } return [...map.values()].sort(key === 'day' ? (a, b) => a.label.localeCompare(b.label) : (a, b) => b.cost - a.cost || b.tokens - a.tokens); }
 		function escapeHtml(value) { const node = document.createElement('span'); node.textContent = String(value); return node.innerHTML; }
-		function render() { document.querySelectorAll('[data-range]').forEach(button => button.setAttribute('aria-pressed', String(Number(button.dataset.range) === state.range))); document.querySelectorAll('[data-mode]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.mode === state.mode))); document.querySelectorAll('[data-breakdown]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.breakdown === state.breakdown))); const end = new Date(), start = new Date(); start.setDate(start.getDate() - state.range + 1); byId('period').textContent = start.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + ' to ' + end.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); const covered = covers(state.range); byId('status').className = state.error ? 'status visible error' : state.loading && !covered ? 'status visible' : 'status'; byId('status').textContent = state.error || 'Loading Backboard usage…'; document.querySelector('.shell').classList.toggle('stale', Boolean(state.snapshot) && !covered); if (!state.snapshot) return; const value = data(); byId('cost').textContent = money(value.cost); byId('updated').textContent = state.loading && covered ? 'Updating…' : value.fetchedAt ? 'Updated ' + new Date(value.fetchedAt).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) : 'Backboard billing usage'; renderProviders(value); renderChart(value); renderMetrics(value); renderTable(value); }
-		function renderProviders(value) { const rows = aggregate(value.events, 'provider'); if (!rows.length && value.cost !== undefined) rows.push({ label: 'Backboard', cost: value.cost, tokens: value.input + value.output }); const total = rows.reduce((sum, row) => sum + row.cost, 0) || value.cost || 0; byId('providers').innerHTML = rows.slice(0, 5).map(row => '<div><div class="provider-head"><span class="provider-name">' + escapeHtml(row.label) + '</span><span class="provider-cost">' + money(row.cost) + '</span></div><div class="bar"><span style="width:' + Math.max(2, total ? row.cost / total * 100 : 0) + '%"></span></div><div class="muted">' + percent(total ? row.cost / total : 0) + ' of cost · ' + compact(row.tokens) + ' tokens</div></div>').join(''); }
+		function render() { document.querySelectorAll('[data-range]').forEach(button => button.setAttribute('aria-pressed', String(Number(button.dataset.range) === state.range))); document.querySelectorAll('[data-mode]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.mode === state.mode))); document.querySelectorAll('[data-breakdown]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.breakdown === state.breakdown))); const end = new Date(), start = new Date(); start.setDate(start.getDate() - state.range + 1); byId('period').textContent = start.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + ' to ' + end.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); const covered = covers(state.range); byId('status').className = state.error ? 'status visible error' : state.loading && !covered ? 'status visible' : 'status'; byId('status').textContent = state.error || 'Loading DQuant Lab usage…'; document.querySelector('.shell').classList.toggle('stale', Boolean(state.snapshot) && !covered); if (!state.snapshot) return; const value = data(); byId('cost').textContent = money(value.cost); byId('updated').textContent = state.loading && covered ? 'Updating…' : value.fetchedAt ? 'Updated ' + new Date(value.fetchedAt).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) : 'DQuant Lab billing usage'; renderProviders(value); renderChart(value); renderMetrics(value); renderTable(value); }
+		function renderProviders(value) { const rows = aggregate(value.events, 'provider'); if (!rows.length && value.cost !== undefined) rows.push({ label: 'DQuant Lab', cost: value.cost, tokens: value.input + value.output }); const total = rows.reduce((sum, row) => sum + row.cost, 0) || value.cost || 0; byId('providers').innerHTML = rows.slice(0, 5).map(row => '<div><div class="provider-head"><span class="provider-name">' + escapeHtml(row.label) + '</span><span class="provider-cost">' + money(row.cost) + '</span></div><div class="bar"><span style="width:' + Math.max(2, total ? row.cost / total * 100 : 0) + '%"></span></div><div class="muted">' + percent(total ? row.cost / total : 0) + ' of cost · ' + compact(row.tokens) + ' tokens</div></div>').join(''); }
 		function renderChart(value) { const rows = aggregate(value.events.filter(event => event.date), 'day'), svg = byId('chart'); byId('chart-title').textContent = state.mode === 'cost' ? 'Daily cost' : 'Daily tokens'; if (!rows.length) { svg.innerHTML = ''; byId('chart-empty').classList.add('visible'); return; } byId('chart-empty').classList.remove('visible'); const values = rows.map(row => state.mode === 'cost' ? row.cost : row.tokens), max = Math.max(...values, 1), left = 48, right = 668, top = 18, bottom = 194, x = index => rows.length === 1 ? (left + right) / 2 : left + index / (rows.length - 1) * (right - left), y = item => bottom - item / max * (bottom - top), points = values.map((item, index) => [x(index), y(item)]), line = points.map((point, index) => (index ? 'L' : 'M') + point[0] + ',' + point[1]).join(' '), area = line + ' L' + points.at(-1)[0] + ',' + bottom + ' L' + points[0][0] + ',' + bottom + ' Z'; const grid = [0, .5, 1].map(fraction => '<line class="grid" x1="' + left + '" x2="' + right + '" y1="' + y(max * fraction) + '" y2="' + y(max * fraction) + '"></line><text class="axis" x="0" y="' + (y(max * fraction) + 3) + '">' + (state.mode === 'cost' ? money(max * fraction) : compact(max * fraction)) + '</text>').join(''); const labels = [...new Set([0, Math.floor((rows.length - 1) / 2), rows.length - 1])].map(index => '<text class="axis" x="' + x(index) + '" y="216" text-anchor="middle">' + new Date(rows[index].label + 'T00:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + '</text>').join(''); svg.innerHTML = grid + '<path class="area" d="' + area + '"></path><path class="line" d="' + line + '"></path>' + labels; }
 		function renderMetrics(value) { const total = value.input + value.output; const metrics = [['Processed tokens', compact(total), compact(value.input) + ' input'], ['Output', compact(value.output), total ? percent(value.output / total) + ' of tokens' : 'No output reported'], ['Cached input', compact(value.cached), value.cached ? percent(value.cached / Math.max(1, value.input)) + ' of input' : 'Not reported'], ['Usage events', compact(value.count), state.range + '-day view'], ['Balance', money(value.balance), 'Available credit']]; byId('metrics').innerHTML = metrics.map(metric => '<div class="metric"><div class="muted">' + metric[0] + '</div><div class="metric-value">' + metric[1] + '</div><div class="muted">' + metric[2] + '</div></div>').join(''); }
 		function renderTable(value) { const rows = aggregate(value.events, state.breakdown), total = rows.reduce((sum, row) => sum + row.cost, 0); byId('first-column').textContent = state.breakdown === 'day' ? 'Day' : 'Model'; byId('table').style.display = rows.length ? 'table' : 'none'; byId('table-empty').classList.toggle('visible', !rows.length); byId('rows').innerHTML = rows.map(row => '<tr><td>' + escapeHtml(state.breakdown === 'day' && row.label !== 'Undated' ? new Date(row.label + 'T00:00:00').toLocaleDateString() : row.label) + '</td><td>' + money(row.cost) + '</td><td>' + percent(total ? row.cost / total : 0) + '</td><td>' + compact(row.tokens) + '</td></tr>').join(''); }

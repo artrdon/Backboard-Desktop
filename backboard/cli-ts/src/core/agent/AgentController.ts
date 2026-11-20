@@ -500,7 +500,7 @@ export class AgentController {
 				attemptedModelKeys: ReadonlySet<string>,
 			): Promise<ModelRef | null> => {
 				// A key-billed turn has exactly one place to go: no other model may
-				// be billed to the key on its behalf, and Backboard must not pay
+				// be billed to the key on its behalf, and DQuant Lab must not pay
 				// for a turn the user routed to their own key.
 				if (route.source === "byok") return null;
 				fallbackCandidatesPromise ??= this.deps.client
@@ -526,7 +526,7 @@ export class AgentController {
 				_current: ModelRef,
 				attemptedModelKeys: ReadonlySet<string>,
 			): Promise<ModelRef | null> => {
-				// A key-billed turn is never blocked on Backboard credit, and must
+				// A key-billed turn is never blocked on DQuant Lab credit, and must
 				// not be moved off the user's key.
 				if (route.source === "byok") return null;
 				const catalog = await this.deps.client
@@ -923,7 +923,7 @@ export class AgentController {
 		await this.deps.agentTasks?.waitForIdle();
 	}
 
-	/** Cancels any active turn and starts a fresh Backboard thread. */
+	/** Cancels any active turn and starts a fresh DQuant Lab thread. */
 	newThread(): void {
 		this.cancel({ clearQueue: true });
 		this.pendingAutoResume = undefined;

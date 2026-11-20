@@ -156,13 +156,13 @@ int main(int argc, char **argv) {
 	char launcher_path[PATH_MAX];
 	uint32_t launcher_path_size = (uint32_t)sizeof(launcher_path);
 	if (_NSGetExecutablePath(launcher_path, &launcher_path_size) != 0) {
-		fprintf(stderr, "Backboard bootstrap launcher path is too long.\n");
+		fprintf(stderr, "DQuant Lab bootstrap launcher path is too long.\n");
 		return 126;
 	}
 
 	char *last_separator = strrchr(launcher_path, '/');
 	if (last_separator == NULL) {
-		fprintf(stderr, "Backboard bootstrap launcher has no executable directory.\n");
+		fprintf(stderr, "DQuant Lab bootstrap launcher has no executable directory.\n");
 		return 126;
 	}
 	*last_separator = '\0';
@@ -176,7 +176,7 @@ int main(int argc, char **argv) {
 		BACKBOARD_REAL_EXECUTABLE_NAME
 	);
 	if (real_path_length < 0 || (size_t)real_path_length >= sizeof(real_executable_path)) {
-		fprintf(stderr, "Backboard real executable path is too long.\n");
+		fprintf(stderr, "DQuant Lab real executable path is too long.\n");
 		return 126;
 	}
 
@@ -193,7 +193,7 @@ int main(int argc, char **argv) {
 	if (delayed_first_launch) {
 		launch_argv = calloc((size_t)argc + 2, sizeof(char *));
 		if (launch_argv == NULL) {
-			fprintf(stderr, "Could not allocate Backboard launch arguments.\n");
+			fprintf(stderr, "Could not allocate DQuant Lab launch arguments.\n");
 			return 126;
 		}
 		for (int index = 0; index < argc; index++) {
@@ -204,6 +204,6 @@ int main(int argc, char **argv) {
 	}
 	launch_argv[0] = launcher_path;
 	execve(real_executable_path, launch_argv, environ);
-	fprintf(stderr, "Could not launch Backboard Studio: %s\n", strerror(errno));
+	fprintf(stderr, "Could not launch DQuant Lab: %s\n", strerror(errno));
 	return 126;
 }

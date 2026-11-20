@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Kill any running Backboard Studio instance, recompile, relaunch, and tail the launch log.
+# Kill any running DQuant Lab Studio instance, recompile, relaunch, and tail the launch log.
 # Usage: ./watch-and-relaunch.sh [--watch]
 #   --watch   use `npm run watch` (continuous rebuild) instead of a one-shot `npm run compile`
 set -euo pipefail
 cd "$(dirname "$0")"
 
-pkill -f "Backboard Studio" || true
+pkill -f "DQuant Lab Studio" || true
 
 if [[ "${1:-}" == "--watch" ]]; then
   echo "Starting continuous watch build (npm run watch)..."

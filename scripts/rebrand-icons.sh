@@ -24,6 +24,9 @@
 #   resources/server/code-192.png     192x192 PNG
 #   resources/server/favicon.ico      16, 32, 48
 #   resources/darwin/code.icns        ICNS, 16..1024 PNG frames
+#   resources/darwin/code-dev-8bit.icns
+#                                     ICNS used by the dev Electron bundle
+#   resources/win32/inno-*.bmp        Inno Setup wizard images (blue logo on white)
 #
 # With --in-app the UI logos are rewritten as 256px PNGs embedded in SVG, using
 # the colour each surface expects (black silhouettes for the mark/title icons,
@@ -307,6 +310,17 @@ build_icns() {
 	fi
 }
 
+# Renders the logo onto an opaque white canvas for the Inno Setup wizard art.
+build_bmp() {
+	local width="$1" height="$2" scale="$3" out="$4" logo_size
+	logo_size="$(awk -v w="${width}" -v h="${height}" -v s="${scale}" 'BEGIN { m = (w < h ? w : h); printf "%d", m * s }')"
+	"${MAGICK[@]}" "${SOURCE}" -background none -alpha on -filter Lanczos \
+		-resize "${logo_size}x${logo_size}" -fill '#1677ff' -colorize 100 \
+		-strip "PNG32:${WORK}/bmp-logo.png"
+	"${MAGICK[@]}" -size "${width}x${height}" xc:white "${WORK}/bmp-logo.png" \
+		-gravity center -composite -type TrueColor -strip "BMP3:${out}"
+}
+
 # Wraps a PNG in a minimal SVG so the UI can keep loading a single .svg asset.
 write_ui_svg() {
 	local png="$1" outer="$2" extra="$3" out="$4"
@@ -391,6 +405,28 @@ else
 	warn "resources/darwin/code.icns not rebuilt: install 'icnsutils' (png2icns) or run this on macOS"
 fi
 
+# The dev Electron bundle on macOS carries its own icon file. Keep it in sync so
+# "npm run electron" launches show the product logo instead of Electron's.
+if build_icns "${WORK}/code-dev.icns"; then
+	install_asset "${WORK}/code-dev.icns" "${APP_DIR}/resources/darwin/code-dev-8bit.icns"
+else
+	warn "resources/darwin/code-dev-8bit.icns not rebuilt: install 'icnsutils' (png2icns) or run this on macOS"
+fi
+
+# Inno Setup draws these bitmaps in the Windows installer wizard.
+INNO_BIG=(100:164x314 125:192x386 150:246x459 175:273x556 200:328x604 225:355x700 250:410x797)
+INNO_SMALL=(100:55x55 125:64x68 150:83x80 175:92x97 200:110x106 225:119x123 250:138x140)
+for entry in "${INNO_BIG[@]}"; do
+	name="${entry%%:*}"; dims="${entry#*:}"
+	build_bmp "${dims%x*}" "${dims#*x}" 0.62 "${WORK}/inno-big-${name}.bmp"
+	install_asset "${WORK}/inno-big-${name}.bmp" "${APP_DIR}/resources/win32/inno-big-${name}.bmp"
+done
+for entry in "${INNO_SMALL[@]}"; do
+	name="${entry%%:*}"; dims="${entry#*:}"
+	build_bmp "${dims%x*}" "${dims#*x}" 0.78 "${WORK}/inno-small-${name}.bmp"
+	install_asset "${WORK}/inno-small-${name}.bmp" "${APP_DIR}/resources/win32/inno-small-${name}.bmp"
+done
+
 DOCK_NAMES=(classic octopus peek terminal face)
 if ((DOCK)); then
 	for name in "${DOCK_NAMES[@]}"; do
@@ -412,8 +448,23 @@ src/vs/workbench/contrib/chat/browser/media/backboard_logo_blue.svg|blue||role="
 src/vs/sessions/browser/media/sessions-logo-light.svg|gray|128|
 src/vs/sessions/browser/media/sessions-logo-dark.svg|black|128|
 src/vs/sessions/browser/media/sessions-icon.svg|black|1024|
+src/vs/workbench/browser/media/code-icon.svg|blue||
+src/vs/sessions/browser/media/vscode-icon.svg|blue|96|
 src/vs/workbench/contrib/chat/browser/widget/media/model-provider-icons/ai_backboard.svg|black||
 src/vs/workbench/contrib/welcomeOnboarding/browser/media/model-provider-icons/ai_backboard.svg|black||
+extensions/backboard/media/icons/backboard_logo.svg|black||
+extensions/backboard/media/icons/backboard_agent.svg|black||
+extensions/backboard/media/icons/backboard_agent_two.svg|black||
+extensions/backboard/media/icons/backboard_assistant.svg|black||
+extensions/backboard/media/icons/backboard_predict.svg|black||
+extensions/backboard/media/icons/backboard_predict_up.svg|black||
+extensions/backboard/media/icons/backboard_predict_down.svg|black||
+extensions/backboard/media/icons/backboard_predict_error.svg|black||
+extensions/backboard/media/icons/backboard_predict_disabled.svg|black||
+extensions/backboard/media/icons/backboard_src_custom.svg|black||
+extensions/backboard/media/icons/backboard_src_extension.svg|black||
+extensions/backboard/media/icons/ai_backboard.svg|black||
+extensions/backboard/media/ai_backboard.svg|black||
 ROWS
 )"
 
@@ -448,6 +499,15 @@ verify_ico_frames "${APP_DIR}/resources/server/favicon.ico" 16 32 48
 if ((ICNS_OK)); then
 	verify_icns "${APP_DIR}/resources/darwin/code.icns"
 fi
+verify_icns "${APP_DIR}/resources/darwin/code-dev-8bit.icns"
+for entry in "${INNO_BIG[@]}"; do
+	name="${entry%%:*}"; dims="${entry#*:}"
+	verify_dims "${APP_DIR}/resources/win32/inno-big-${name}.bmp" "${dims}"
+done
+for entry in "${INNO_SMALL[@]}"; do
+	name="${entry%%:*}"; dims="${entry#*:}"
+	verify_dims "${APP_DIR}/resources/win32/inno-small-${name}.bmp" "${dims}"
+done
 if ((DOCK)); then
 	for name in "${DOCK_NAMES[@]}"; do
 		verify_dims "${APP_DIR}/src/vs/code/electron-main/media/dock-${name}.png" 1024x1024
@@ -463,9 +523,13 @@ if ((IN_APP)); then
 
 In-app UI logos were rebuilt from the same source (256px PNG inside SVG):
   black      backboard_mark.svg, backboard_icon.svg, sessions-logo-dark.svg,
-             sessions-icon.svg, model-provider-icons/ai_backboard.svg (x2)
+             sessions-icon.svg, model-provider-icons/ai_backboard.svg (x2),
+             extensions/backboard/media/icons/*.svg
   #D9D9D9    sessions-logo-light.svg
-  #1677ff    backboard_logo_blue.svg
+  #1677ff    backboard_logo_blue.svg, code-icon.svg, vscode-icon.svg
+
+Windows/macOS packaging assets were rebuilt too:
+  resources/win32/inno-{big,small}-*.bmp, resources/darwin/code-dev-8bit.icns
 
 Next steps:
   * dev app: restart it (on macOS preLaunch copies code.icns into .build/electron)
@@ -485,6 +549,10 @@ Not touched on purpose (rerun with --in-app to rebuild them too):
   backboard/src/vs/sessions/browser/media/sessions-icon.svg
   backboard/src/vs/workbench/contrib/chat/browser/widget/media/model-provider-icons/ai_backboard.svg
   backboard/src/vs/workbench/contrib/welcomeOnboarding/browser/media/model-provider-icons/ai_backboard.svg
+  backboard/src/vs/workbench/browser/media/code-icon.svg
+  backboard/src/vs/sessions/browser/media/vscode-icon.svg
+  backboard/extensions/backboard/media/icons/{backboard_logo,backboard_agent,backboard_agent_two,backboard_assistant,ai_backboard}.svg
+  backboard/extensions/backboard/media/ai_backboard.svg
 
 Next steps:
   * dev app: restart it (on macOS preLaunch copies code.icns into .build/electron)

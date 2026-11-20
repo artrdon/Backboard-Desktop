@@ -71,7 +71,7 @@
 	pointer-events: auto !important;
 }
 
-/* Backboard code blocks use a real header rail. Keeping actions in flow means
+/* DQuant Lab code blocks use a real header rail. Keeping actions in flow means
  * the first command line remains fully readable, and constraining the editor as
  * a flex child lets Monaco own horizontal scrolling for long, unwrapped lines. */
 .monaco-workbench .backboard-clean-chat .interactive-result-code-block:not(.compare):has(> .interactive-result-code-block-toolbar) {

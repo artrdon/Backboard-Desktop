@@ -67,11 +67,11 @@ export function refreshTokens(commandService: ICommandService): void {
 
 /**
  * Builds a redirect URL that GitHub will use to return the user to VS Code
- * after completing a plan upgrade. The redirect goes through Backboard's redirect
+ * after completing a plan upgrade. The redirect goes through DQuant Lab's redirect
  * which triggers the native protocol handler back into the desktop app.
  *
  * @param baseUpgradeUrl The direct GitHub upgrade URL (from `resolveGitHubUrl`).
- * @param urlProtocol The Backboard URL protocol scheme.
+ * @param urlProtocol The DQuant Lab URL protocol scheme.
  * @param quality The product quality (`stable`, `insider`, or `undefined` for OSS).
  * @returns The upgrade URL with a `return_to` query parameter appended.
  */

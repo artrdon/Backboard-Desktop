@@ -101,7 +101,7 @@ function assertInputOutputDetails(details: unknown): asserts details is IToolRes
 
 // ---- Tests ------------------------------------------------------------------
 
-suite('Backboard API context usage', () => {
+suite('DQuant Lab API context usage', () => {
 	ensureNoDisposablesAreLeakedInTestSuite();
 	test('preserves zero occupancy and API metadata independently of billing tokens', () => {
 		const measurement = { source: 'backboard-api', usedTokens: 0, contextLimit: 1050000, percent: 0, summaryTokens: 0, model: 'model-a' };

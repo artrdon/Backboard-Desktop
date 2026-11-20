@@ -106,7 +106,7 @@ const vscodeResourceIncludes = [
 	'out-build/vs/workbench/contrib/welcomeGettingStarted/common/media/**/*.{svg,png}',
 	'out-build/vs/workbench/contrib/welcomeOnboarding/browser/media/**/*.{svg,png}',
 
-	// Backboard upsell cards and plan art
+	// DQuant Lab upsell cards and plan art
 	'out-build/vs/workbench/contrib/backboardUpsell/browser/media/*.jpg',
 	'out-build/vs/workbench/contrib/backboardBilling/browser/media/*.jpg',
 

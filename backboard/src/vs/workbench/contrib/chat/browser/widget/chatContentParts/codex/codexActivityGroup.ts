@@ -110,7 +110,7 @@ export class CodexActivityGroup extends Disposable {
 		return this.rows.length === 0 && !this.thinkingLabel;
 	}
 
-	/** Adds a work item. `content` is the native Backboard part, shown as the row's expanded body. */
+	/** Adds a work item. `content` is the native DQuant Lab part, shown as the row's expanded body. */
 	addRow(metadata: CodexActivityMetadata, content: HTMLElement | undefined): string | undefined {
 		const activity = describeCodexActivity(metadata);
 		if (!activity) {

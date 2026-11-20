@@ -50,7 +50,7 @@ describe("Studio conversation handoff", () => {
 		expect(await readdir(root)).toEqual([]);
 	});
 
-	it("bounds a long Backboard chat when switching to Codex with a tiny new prompt", async () => {
+	it("bounds a long DQuant Lab chat when switching to Codex with a tiny new prompt", async () => {
 		const root = await temporarySession();
 		const transcript = [
 			"The user changed model providers while keeping this chat.",

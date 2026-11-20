@@ -12,7 +12,7 @@
 /* --- One tab strip: chat sessions + installed agent panels ---------------- */
 
 /*
- * The right panel has a single row of tabs, Devin-style: every Backboard chat
+ * The right panel has a single row of tabs, Devin-style: every DQuant Lab chat
  * session opened in this window is a tab, and every agent panel installed
  * from the marketplace (Claude Code, Codex) is a tab beside them. One is
  * active and owns the whole surface.
@@ -308,7 +308,7 @@
 	opacity: 1;
 }
 
-/* --- Trim header: drop the nav toolbar (Go Back arrow + "Backboard" session
+/* --- Trim header: drop the nav toolbar (Go Back arrow + "DQuant Lab" session
    label) and the Sessions-sidebar toggle — the tabs already show the session. */
 
 .monaco-workbench .part.auxiliarybar .composite.title.has-chat-tabs .chat-view-title-navigation-toolbar {
@@ -1025,7 +1025,7 @@
 	right: 8px;
 }
 
-/* --- Cohesive Backboard composer -----------------------------------------
+/* --- Cohesive DQuant Lab composer -----------------------------------------
  * Keep one restrained surface and one sizing scale across the prompt editor,
  * model chip and action row. This intentionally comes last so it resolves the
  * older shared/T3/Cursor composer rules without affecting chat elsewhere. */
@@ -1582,7 +1582,7 @@
 	padding-top: 0;
 }
 
-/* The shared Cursor transcript skin lives in chat.css so every Backboard
+/* The shared Cursor transcript skin lives in chat.css so every DQuant Lab
  * ChatWidget host uses the editor panel experience. */
 
 /* Blue currents retain definition against a light canvas without a white glow. */

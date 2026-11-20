@@ -14,7 +14,7 @@ import { IPathService } from '../../../services/path/common/pathService.js';
 import { BackboardOAuth, backboardConfigResource, readBackboardConfigJson } from '../common/backboardAuth.js';
 
 /**
- * Identity of the signed-in Backboard user, as far as it can be resolved from
+ * Identity of the signed-in DQuant Lab user, as far as it can be resolved from
  * the stored credentials and the OAuth `userinfo` endpoint. Every field is
  * optional — a signed-in user always has a name, but email and plan are only
  * present when the SSO profile / userinfo response provides them.
@@ -28,7 +28,7 @@ export interface IBackboardUserInfo {
 
 /**
  * Resolves the identity (display name, and — when available — email and plan)
- * of the signed-in Backboard user.
+ * of the signed-in DQuant Lab user.
  *
  * Fields are resolved from the credentials stored in `~/.backboard_ide/config.json`
  * (written by the SSO sign-in flow):
@@ -43,7 +43,7 @@ export interface IBackboardUserInfo {
  * runs while the chat UI is opening, and stale OAuth metadata can otherwise
  * add two failed requests even though a cached name or email is already enough
  * to render the account. Requests go through
- * {@link IRequestService} (main process) because the Backboard endpoints do not
+ * {@link IRequestService} (main process) because the DQuant Lab endpoints do not
  * allow cross-origin renderer fetches. A newly resolved name is cached back into
  * the config file so later lookups work offline. Returns an empty object when
  * the user is not signed in.
@@ -226,7 +226,7 @@ function emailFromClaims(claims: Record<string, unknown>): string | undefined {
 }
 
 /**
- * Best-effort plan/tier extraction. The Backboard SSO profile has no single
+ * Best-effort plan/tier extraction. The DQuant Lab SSO profile has no single
  * canonical field, so probe the common OIDC/entitlement claim names and use the
  * first string value found (title-cased, e.g. "pro" → "Pro").
  */

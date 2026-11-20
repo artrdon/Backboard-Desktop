@@ -357,7 +357,7 @@ describe("ClaudeSubscriptionClient", () => {
 		}
 	});
 
-	it("parks Claude's SDK tool loop in Backboard and completes with Backboard's result", async () => {
+	it("parks Claude's SDK tool loop in DQuant Lab and completes with DQuant Lab's result", async () => {
 		const capture: SdkCapture = { tools: [], closed: false };
 		const client = new ClaudeSubscriptionClient({
 			cwd: "/workspace",
@@ -450,7 +450,7 @@ describe("ClaudeSubscriptionClient", () => {
 					cacheWriteTokens: 2,
 					costUsd: 0,
 					// Occupancy includes the cached prompt portions and this
-					// turn's output, matching the level Backboard reports.
+					// turn's output, matching the level DQuant Lab reports.
 					contextTokens: 21,
 					contextLimit: 200_000,
 					provider: "anthropic-subscription",
@@ -721,7 +721,7 @@ describe("ClaudeSubscriptionClient", () => {
 		});
 	});
 
-	it("resets persistence revision when a resumed Claude thread is rebound to a new Backboard session", async () => {
+	it("resets persistence revision when a resumed Claude thread is rebound to a new DQuant Lab session", async () => {
 		const cwd = await mkdtemp(path.join(os.tmpdir(), "claude-rebind-"));
 		try {
 			const store = new ClaudeSubscriptionConversationStore(cwd);

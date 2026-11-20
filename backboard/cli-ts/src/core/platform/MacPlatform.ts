@@ -13,12 +13,12 @@ import type {
 } from "./types.ts";
 
 const SCREEN_RECORDING_HELP =
-	"Backboard needs macOS Screen Recording permission to capture the screen. " +
-	"Enable it for Backboard in System Settings → Privacy & Security → Screen Recording, then relaunch the app.";
+	"DQuant Lab needs macOS Screen Recording permission to capture the screen. " +
+	"Enable it for DQuant Lab in System Settings → Privacy & Security → Screen Recording, then relaunch the app.";
 
 const ACCESSIBILITY_HELP =
-	"Backboard needs macOS Accessibility and Automation permission to control the mouse and keyboard. " +
-	"Enable it for Backboard in System Settings → Privacy & Security → Accessibility (and allow the System Events prompt), then relaunch the app.";
+	"DQuant Lab needs macOS Accessibility and Automation permission to control the mouse and keyboard. " +
+	"Enable it for DQuant Lab in System Settings → Privacy & Security → Accessibility (and allow the System Events prompt), then relaunch the app.";
 
 /**
  * Maps known macOS TCC (privacy) denial fingerprints to actionable guidance.

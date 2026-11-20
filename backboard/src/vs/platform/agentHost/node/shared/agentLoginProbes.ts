@@ -73,11 +73,11 @@ function readClaudeCodeVersion(binary: string): Promise<string | undefined> {
 	return version;
 }
 
-/** A path the user pinned before Backboard started; never overridden. */
+/** A path the user pinned before DQuant Lab started; never overridden. */
 const USER_PINNED_CLAUDE_PATH = process.env.BACKBOARD_CLAUDE_CODE_PATH?.trim() || undefined;
 
 /**
- * The Claude Code binary Backboard uses. A machine can carry several (an old
+ * The Claude Code binary DQuant Lab uses. A machine can carry several (an old
  * npm global ahead of a newer native install in PATH); the newest wins, and
  * the cli-ts runtime is pointed at the same one through
  * `BACKBOARD_CLAUDE_CODE_PATH` so login, status and turns never disagree.
@@ -308,7 +308,7 @@ export async function installClaudeCode(): Promise<void> {
 
 /**
  * Whether this Claude Code has the `auth login --claudeai` / `auth status --json`
- * commands Backboard signs in with. Older releases treat `auth` as a prompt
+ * commands DQuant Lab signs in with. Older releases treat `auth` as a prompt
  * and fail with "unknown option '--claudeai'" (exit code 1).
  */
 export function claudeSupportsAuthCommands(binary: string): Promise<boolean> {

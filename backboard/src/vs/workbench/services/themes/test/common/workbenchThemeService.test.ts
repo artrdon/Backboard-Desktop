@@ -11,7 +11,7 @@ suite('WorkbenchThemeService', () => {
 
 	ensureNoDisposablesAreLeakedInTestSuite();
 
-	test('uses Backboard themes as the first-install defaults', () => {
+	test('uses DQuant Lab themes as the first-install defaults', () => {
 		assert.strictEqual(ThemeSettingDefaults.COLOR_THEME_DARK, 'Backboard Obsidian');
 		assert.strictEqual(ThemeSettingDefaults.COLOR_THEME_LIGHT, 'Backboard Porcelain');
 	});

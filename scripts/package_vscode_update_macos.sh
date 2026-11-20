@@ -286,7 +286,7 @@ rebuild_backboard_runtime() {
     return
   fi
 
-  echo "Rebuilding Backboard extension and CLI runtime"
+  echo "Rebuilding DQuant Lab extension and CLI runtime"
   (cd "${VSCODE_ROOT}" && npm --prefix extensions/backboard run compile)
   # bun compiles for the host unless told otherwise, which puts an arm64 CLI in
   # an Intel release when cross-building on Apple Silicon.
@@ -304,7 +304,7 @@ rebuild_backboard_runtime() {
 }
 
 sync_backboard_extension_runtime() {
-  echo "Syncing Backboard extension runtime files"
+  echo "Syncing DQuant Lab extension runtime files"
   require_file "${BACKBOARD_EXTENSION_SOURCE}/package.json"
   require_file "${BACKBOARD_EXTENSION_SOURCE}/out/extension.js"
   require_file "${BACKBOARD_EXTENSION_SOURCE}/media"
@@ -351,21 +351,21 @@ prune_release_app() {
 
   echo "Pruning production-only release bloat"
 
-  # Backboard's supported chat/runtime path is the native agent host. The
+  # DQuant Lab's supported chat/runtime path is the native agent host. The
   # GitHub.copilot-chat extension is a separate legacy chat stack that starts
-  # its own Copilot CLI/MCP services and is not used by Backboard, Codex, or
+  # its own Copilot CLI/MCP services and is not used by DQuant Lab, Codex, or
   # Claude agent-host sessions. Do not ship that parallel implementation.
   rm -rf "${app_resources_path}/extensions/copilot"
 
   # The current agent-host entrypoint does not register CopilotAgent. Its SDK
   # packages are therefore unreachable after removing the extension above.
-  # Backboard, Codex, and Claude use their own runtimes.
+  # DQuant Lab, Codex, and Claude use their own runtimes.
   rm -rf \
     "${app_resources_path}/node_modules/@github/copilot" \
     "${app_resources_path}/node_modules/@github/copilot-sdk"
 
   # Source maps are useful for debugging, but they are not required for runtime
-  # chat, Backboard agent-host, or the right-side AI UI.
+  # chat, DQuant Lab agent-host, or the right-side AI UI.
   find "${app_resources_path}" -type f \( -name "*.map" -o -name "*.d.ts.map" \) -delete
   find "${app_resources_path}" -type f -name "*.tsbuildinfo" -delete
 
@@ -448,7 +448,7 @@ prune_release_app() {
   fi
 
   # Electron ships localized framework resources for every supported language.
-  # Backboard's compact release defaults to English and Base resources. Set
+  # DQuant Lab's compact release defaults to English and Base resources. Set
   # BACKBOARD_KEEP_ALL_LOCALES=1 when producing a multilingual distribution.
   case "${BACKBOARD_KEEP_ALL_LOCALES}" in
     0)
@@ -463,8 +463,8 @@ prune_release_app() {
     *) echo "BACKBOARD_KEEP_ALL_LOCALES must be 0 or 1." >&2; exit 1 ;;
   esac
 
-  # The Backboard extension only needs package.json, out/, media/, and bin/ in
-  # production. Keep Copilot installed; this only removes Backboard source/build
+  # The DQuant Lab extension only needs package.json, out/, media/, and bin/ in
+  # production. Keep Copilot installed; this only removes DQuant Lab source/build
   # leftovers if the upstream VS Code packaging copied them.
   rm -rf \
     "${app_resources_path}/extensions/backboard/rust" \
@@ -509,7 +509,7 @@ set_plist_string "${INFO_PLIST}" "CFBundleDisplayName" "${APP_DISPLAY_NAME}"
 set_plist_string "${INFO_PLIST}" "CFBundleIdentifier" "${BUNDLE_IDENTIFIER}"
 set_plist_string "${INFO_PLIST}" "CFBundleShortVersionString" "${VERSION}"
 set_plist_string "${INFO_PLIST}" "CFBundleVersion" "${VERSION}"
-echo "Writing Backboard release metadata"
+echo "Writing DQuant Lab release metadata"
 write_release_metadata
 case "${ARCH}" in
   aarch64) LIVE_UPDATE_PLATFORM="darwin-arm64" ;;
@@ -572,13 +572,13 @@ rename_helper_app "Code - OSS Helper (Renderer)" "${APP_DISPLAY_NAME} Helper (Re
 BACKBOARD_EXTENSION_PATH="${APP_PATH}/Contents/Resources/app/extensions/backboard"
 if [[ -d "${BACKBOARD_EXTENSION_PATH}" ]]; then
   if [[ "${SKIP_BACKBOARD_RUNTIME_SYNC:-0}" == "1" ]]; then
-    echo "Reusing Backboard extension runtime already present in the source app"
+    echo "Reusing DQuant Lab extension runtime already present in the source app"
   else
     sync_backboard_extension_runtime
   fi
   rm -rf "${BACKBOARD_EXTENSION_PATH}/rust/target"
 else
-  echo "Missing Backboard extension in packaged VSCode app: ${BACKBOARD_EXTENSION_PATH}" >&2
+  echo "Missing DQuant Lab extension in packaged VSCode app: ${BACKBOARD_EXTENSION_PATH}" >&2
   exit 1
 fi
 
@@ -731,6 +731,16 @@ stage_dmg_layout() {
   if [[ ! -f "${ds_src}" || ! -f "${bg_src}" ]]; then
     echo "Warning: DMG layout assets missing (${ds_src} / ${bg_src}); using Finder defaults" >&2
     return 0
+  fi
+  # Finder keys the window layout to the volume and app filename. After a
+  # product rename the committed .DS_Store is stale, so author a fresh one on
+  # this macOS build machine; keep going with a warning when Finder is
+  # unavailable (headless CI) so packaging never fails on cosmetic assets.
+  if ! grep -aqF "${APP_DISPLAY_NAME}" "${ds_src}"; then
+    echo "DMG layout is stale for '${APP_DISPLAY_NAME}'; re-authoring with Finder" >&2
+    if ! CHANNEL="${CHANNEL}" "${DMG_ASSETS_DIR}/author_dsstore_finder.sh" >/dev/null 2>&1; then
+      echo "Warning: could not re-author ${ds_src}; run scripts/dmg-assets/build_layout_assets.sh on macOS" >&2
+    fi
   fi
   mkdir -p "${src_folder}/.background"
   cp "${bg_src}" "${src_folder}/.background/background.tiff"

@@ -16,7 +16,7 @@ if [[ -f "$ENV_FILE" ]]; then
 fi
 
 APP_BUNDLE=""
-for candidate in "$ROOT/.build/electron/Backboard Studio Dev.app" "$ROOT/.build/electron/Backboard Studio.app" "$ROOT/.build/electron/Backboard IDE.app" "$ROOT/.build/electron/Code - OSS.app"; do
+for candidate in "$ROOT/.build/electron/DQuant Lab Dev.app" "$ROOT/.build/electron/DQuant Lab.app" "$ROOT/.build/electron/DQuant Lab IDE.app" "$ROOT/.build/electron/Backboard Studio Dev.app" "$ROOT/.build/electron/Backboard Studio.app" "$ROOT/.build/electron/Backboard IDE.app" "$ROOT/.build/electron/Code - OSS.app"; do
 	if [[ -d "$candidate" ]]; then
 		APP_BUNDLE="$candidate"
 		break
@@ -31,12 +31,12 @@ fi
 
 APP_PLIST="$APP_BUNDLE/Contents/Info.plist"
 if [[ -f "$APP_PLIST" ]]; then
-	/usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier io.backboard.studio.dev" "$APP_PLIST" 2>/dev/null || true
+	/usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier io.dquant.lab.dev" "$APP_PLIST" 2>/dev/null || true
 	# Electron derives helper bundle names from CFBundleName, so keep the binary
 	# name stable while giving LaunchServices a distinct dev-facing display name.
-	/usr/libexec/PlistBuddy -c "Set :CFBundleName Backboard Studio" "$APP_PLIST" 2>/dev/null || true
-	/usr/libexec/PlistBuddy -c "Set :CFBundleDisplayName Backboard Studio Dev" "$APP_PLIST" 2>/dev/null || true
-	/usr/libexec/PlistBuddy -c "Set :CFBundleURLTypes:0:CFBundleURLName Backboard Studio Dev" "$APP_PLIST" 2>/dev/null || true
+	/usr/libexec/PlistBuddy -c "Set :CFBundleName DQuant Lab" "$APP_PLIST" 2>/dev/null || true
+	/usr/libexec/PlistBuddy -c "Set :CFBundleDisplayName DQuant Lab Dev" "$APP_PLIST" 2>/dev/null || true
+	/usr/libexec/PlistBuddy -c "Set :CFBundleURLTypes:0:CFBundleURLName DQuant Lab Dev" "$APP_PLIST" 2>/dev/null || true
 	/usr/libexec/PlistBuddy -c "Set :CFBundleURLTypes:0:CFBundleURLSchemes:0 backboard" "$APP_PLIST" 2>/dev/null || true
 	touch "$APP_BUNDLE"
 fi
@@ -86,7 +86,7 @@ if [[ ! -f "$ROOT/out/nls.messages.json" ]]; then
 	printf '{}\n' > "$ROOT/out/nls.messages.json"
 fi
 
-echo "Starting Backboard Studio Dev"
+echo "Starting DQuant Lab Dev"
 if [[ "$ISOLATED_PROFILE" == "1" ]]; then
 	mkdir -p "$RUN_DIR/user-data" "$RUN_DIR/extensions" "$RUN_DIR/shared-data"
 	echo "Profile: $RUN_DIR/user-data"

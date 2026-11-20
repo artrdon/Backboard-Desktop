@@ -171,7 +171,7 @@ describe("SubscriptionAuth", () => {
 		await rm(root, { recursive: true, force: true });
 	});
 
-	it("completes Backboard-native PKCE login without a Codex process", async () => {
+	it("completes DQuant Lab-native PKCE login without a Codex process", async () => {
 		const homeDir = await mkdtemp(join(tmpdir(), "subscription-login-"));
 		const accessToken = jwt({
 			exp: 4_000_000_000,
@@ -237,7 +237,7 @@ describe("SubscriptionAuth", () => {
 			chatgptSubscriptionAuthFile: authFile,
 			model: { provider: "openai-subscription", model: "gpt-native" },
 		});
-		// Success lands on Backboard SSO's completion page; the code stays local.
+		// Success lands on DQuant Lab SSO's completion page; the code stays local.
 		expect(callbackResponse?.status).toBe(302);
 		expect(callbackResponse?.location).toBe(
 			"https://app.backboard.io/oauth/device/complete",

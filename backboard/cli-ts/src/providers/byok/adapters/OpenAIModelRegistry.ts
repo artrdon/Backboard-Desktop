@@ -108,5 +108,5 @@ export function openAiReasoningControls(id: string): {
 
 /** The one line a turn fails with when its selection is outside the registry. */
 export function unsupportedOpenAiModelMessage(id: string): string {
-	return `OpenAI model "${id.trim()}" is not available with an API key in Backboard: only Chat Completions models with function-tool support are offered. Pick another OpenAI API Key model.`;
+	return `OpenAI model "${id.trim()}" is not available with an API key in DQuant Lab: only Chat Completions models with function-tool support are offered. Pick another OpenAI API Key model.`;
 }

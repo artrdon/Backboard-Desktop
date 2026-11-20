@@ -15,7 +15,7 @@ if ! command -v cargo >/dev/null 2>&1; then
 fi
 
 # The driver reports usage to its authors unless told not to, including from
-# build scripts. Backboard never enables it; cli-ts also disables it at runtime.
+# build scripts. DQuant Lab never enables it; cli-ts also disables it at runtime.
 export CUA_DRIVER_RS_TELEMETRY_ENABLED=false
 export CUA_TELEMETRY_ENABLED=false
 

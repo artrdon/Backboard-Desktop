@@ -814,7 +814,7 @@ suite('CliTsAgent tool metadata', () => {
 		});
 	});
 
-	test('a Backboard-route turn fails closed when the runtime cannot honour host-managed keys', async () => {
+	test('a DQuant Lab-route turn fails closed when the runtime cannot honour host-managed keys', async () => {
 		const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'backboard-cli-ts-old-runtime-'));
 		try {
 			const agent = createAgent({}, {}, {}, { getSessionConfigValues: () => ({ isolation: 'folder' }) });
@@ -836,7 +836,7 @@ suite('CliTsAgent tool metadata', () => {
 				start: () => { },
 				nextRequestId: () => 'fixture-request',
 				// The process gate rejects every request to a runtime without the capability.
-				request: async () => { throw new Error('The bundled Backboard runtime does not support API keys. Update Backboard.'); },
+				request: async () => { throw new Error('The bundled DQuant Lab runtime does not support API keys. Update DQuant Lab.'); },
 				notify: () => { },
 				dispose: () => { },
 			});
@@ -846,7 +846,7 @@ suite('CliTsAgent tool metadata', () => {
 			await agent.sendMessage(sessionUri, 'hello');
 
 			const errors = failureNotes(progress);
-			assert.deepStrictEqual(errors, ["_This response couldn't start: The bundled Backboard runtime does not support API keys. Update Backboard._"]);
+			assert.deepStrictEqual(errors, ["_This response couldn't start: The bundled DQuant Lab runtime does not support API keys. Update DQuant Lab._"]);
 		} finally {
 			fs.rmSync(tempRoot, { recursive: true, force: true });
 		}
@@ -957,7 +957,7 @@ suite('CliTsAgent tool metadata', () => {
 		assert.deepStrictEqual(captures, []);
 		const session = internals._sessions.get(AgentSession.id(created.session));
 		assert.ok(session);
-		// No explicit isolation: ordinary Backboard sessions must stay in the
+		// No explicit isolation: ordinary DQuant Lab sessions must stay in the
 		// selected folder instead of creating an adjacent project worktree.
 		await internals._materialize(session, 'Make the requested change');
 		await internals._materialize(session, 'A repeated call is idempotent');
@@ -1158,7 +1158,7 @@ suite('CliTsAgent tool metadata', () => {
 				sessions: [
 					{ id: 'stored', title: 'Stored', createdAt: 3, modifiedAt: 3, model: { id: 'openai-subscription/gpt-5.5' }, turns: [turn('gpt-5.5')] },
 					{ id: 'legacy-claude', title: 'Legacy', createdAt: 2, modifiedAt: 2, turns: [turn('deepseek/deepseek-v4-flash'), turn('opus')] },
-					{ id: 'legacy-backboard', title: 'Backboard', createdAt: 1, modifiedAt: 1, turns: [turn('claude-sonnet-5-5')] },
+					{ id: 'legacy-backboard', title: 'DQuant Lab', createdAt: 1, modifiedAt: 1, turns: [turn('claude-sonnet-5-5')] },
 				],
 			}));
 			const agent = createAgent();
@@ -1170,7 +1170,7 @@ suite('CliTsAgent tool metadata', () => {
 			const expected = [
 				['Stored', 'openai-subscription/gpt-5.5'],
 				['Legacy', 'anthropic-subscription/opus'],
-				['Backboard', undefined],
+				['DQuant Lab', undefined],
 			];
 
 			assert.deepStrictEqual((await agent.listSessions()).map(session => [session.summary, session.model?.id]), expected);
@@ -1776,15 +1776,15 @@ suite('CliTsAgent tool metadata', () => {
 	test('a failed turn says why it stopped and what to do', async () => {
 		const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'backboard-cli-ts-failure-notes-'));
 		try {
-			const onGemini = " You're on gemini-3-pro, billed to Backboard credits.";
+			const onGemini = " You're on gemini-3-pro, billed to DQuant Lab credits.";
 			const cases: Array<[string, string, string?, boolean?]> = [
-				['Backboard request failed: HTTP 401: Not authenticated', `_Your DQuant Lab sign-in has expired, so models billed to DQuant Lab credits can't run._ [Sign In Again](command:backboard.signIn) or pick a different model in the model picker.${onGemini}`],
-				// The boss's case: a Backboard-billed Claude model while the Claude plan is connected.
-				['Backboard request failed: HTTP 401: Not authenticated', "_Your DQuant Lab sign-in has expired, so models billed to DQuant Lab credits can't run._ [Sign In Again](command:backboard.signIn) or pick a model under **Claude subscription** in the model picker to use your own plan. You're on claude-opus-5-5, billed to DQuant Lab credits (not your Claude subscription).", 'anthropic/claude-opus-5-5', true],
-				['This conversation is bound to a subscription, but this request bills to Backboard. Start a new conversation to switch.', `_This chat runs on a subscription, but the selected model bills to Backboard._ Pick a model from a subscription in the model picker to continue here, or start a new chat to use this one.${onGemini}`],
+				['DQuant Lab request failed: HTTP 401: Not authenticated', `_Your DQuant Lab sign-in has expired, so models billed to DQuant Lab credits can't run._ [Sign In Again](command:backboard.signIn) or pick a different model in the model picker.${onGemini}`],
+				// The boss's case: a DQuant Lab-billed Claude model while the Claude plan is connected.
+				['DQuant Lab request failed: HTTP 401: Not authenticated', "_Your DQuant Lab sign-in has expired, so models billed to DQuant Lab credits can't run._ [Sign In Again](command:backboard.signIn) or pick a model under **Claude subscription** in the model picker to use your own plan. You're on claude-opus-5-5, billed to DQuant Lab credits (not your Claude subscription).", 'anthropic/claude-opus-5-5', true],
+				['This conversation is bound to a subscription, but this request bills to DQuant Lab. Start a new conversation to switch.', `_This chat runs on a subscription, but the selected model bills to DQuant Lab._ Pick a model from a subscription in the model picker to continue here, or start a new chat to use this one.${onGemini}`],
 				['Claude Code returned prompt is too long: 1204331 tokens > 1000000 maximum.', '_This chat is too long for the model now._ Start a new chat to keep going; this one stays as it is.'],
 				['Claude Code returned invalid_request_error: bad_thing.', `_This response stopped before it finished: Claude Code returned invalid\\_request\\_error: bad\\_thing._\n\nSend your message again to retry. If it keeps stopping, pick a different model in the model picker, or start a new chat.${onGemini}`],
-				['Unknown Claude subscription conversation claude_sub_1. Start a new one with /new.', "_This chat's saved conversation couldn't be loaded, so Backboard reconnected it._ Send your message again to continue; the chat keeps its history."],
+				['Unknown Claude subscription conversation claude_sub_1. Start a new one with /new.', "_This chat's saved conversation couldn't be loaded, so DQuant Lab reconnected it._ Send your message again to continue; the chat keeps its history."],
 			];
 			for (const [index, [error, expected, modelId, claudeConnected]] of cases.entries()) {
 				const storePath = path.join(tempRoot, `sessions-${index}.json`);

@@ -105,7 +105,7 @@ export interface AgentLoopDeps {
 	durableSession?: () => RunMessageOptions["durableSession"];
 	resolveCapacityFallback?: CapacityFallbackResolver;
 	/**
-	 * A model Backboard runs with no credit, for a turn the account is blocked
+	 * A model DQuant Lab runs with no credit, for a turn the account is blocked
 	 * from paying for (see TurnRetry.isAccountBlockedError).
 	 */
 	resolveFreeFallback?: CapacityFallbackResolver;
@@ -450,7 +450,7 @@ export class AgentLoop {
 					continue;
 				}
 				const accountBlocked = isAccountBlockedError(err);
-				// Out of credit: no paid model will run, but Backboard's $0 models
+				// Out of credit: no paid model will run, but DQuant Lab's $0 models
 				// still do. Move the turn to one once instead of failing it.
 				if (
 					accountBlocked &&

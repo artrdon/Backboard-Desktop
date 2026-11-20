@@ -53,7 +53,7 @@ export function isAgentHostEnabled(configurationService: IConfigurationService):
 
 /**
  * `ErrorInfo.errorType` of an MCP server customization whose runtime needs the
- * user to sign in. Providers that run the OAuth flow themselves (the Backboard
+ * user to sign in. Providers that run the OAuth flow themselves (the DQuant Lab
  * runtime) report this instead of `McpServerStatus.AuthRequired`; re-enabling
  * the server starts the sign-in.
  */
@@ -150,7 +150,7 @@ export function isAgentEnabled(envValue: string | undefined, defaultEnabled: boo
 export const AgentHostSdkSandboxEnabledSettingId = 'chat.agentHost.sdkSandbox.enabled';
 
 /**
- * Whether an agent-host provider is allowed to surface in Backboard. Claude
+ * Whether an agent-host provider is allowed to surface in DQuant Lab. Claude
  * and Codex are extension-only integrations: their built-in agent-host
  * implementations use external Claude/ChatGPT subscriptions and must remain
  * hidden on local and remote hosts.

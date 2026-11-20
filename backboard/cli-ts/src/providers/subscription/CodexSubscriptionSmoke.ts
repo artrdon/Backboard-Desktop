@@ -42,7 +42,7 @@ const PROBE_TOOL = {
 	type: "function",
 	name: "backboard_probe",
 	description:
-		"Calls a deterministic tool owned by the external Backboard smoke harness.",
+		"Calls a deterministic tool owned by the external DQuant Lab smoke harness.",
 	strict: true,
 	parameters: {
 		type: "object",
@@ -228,7 +228,7 @@ export async function runCodexSubscriptionSmoke(
 	options.onProgress?.(`Using subscription model ${model}`);
 	const prompt =
 		options.prompt ??
-		"Call backboard_probe once with the message 'subscription model reached Backboard harness'.";
+		"Call backboard_probe once with the message 'subscription model reached DQuant Lab harness'.";
 	const initialInput = [userMessage(prompt)];
 	const firstResponse = await fetchImpl(
 		`${baseUrl.replace(/\/$/, "")}/responses`,
@@ -246,14 +246,14 @@ export async function runCodexSubscriptionSmoke(
 	const toolArguments = parseToolArguments(toolCall);
 
 	// This is the important boundary: the subscription model requested a tool,
-	// but this local process (standing in for Backboard's scheduler) executes it.
+	// but this local process (standing in for DQuant Lab's scheduler) executes it.
 	const toolOutput: JsonObject = {
 		handledBy: "backboard-smoke-harness",
 		received: toolArguments.message,
 		proof: `local-tool-${sessionId.slice(0, 8)}`,
 	};
 	options.onProgress?.(
-		"Backboard smoke harness executed backboard_probe locally",
+		"DQuant Lab smoke harness executed backboard_probe locally",
 	);
 
 	const continuationInput = [

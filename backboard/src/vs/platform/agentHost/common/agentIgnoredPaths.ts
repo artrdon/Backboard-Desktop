@@ -5,7 +5,7 @@
 
 /**
  * Directory names that agent tooling treats as noise: VCS internals and
- * dependency/build output. Shared by the Backboard agent's ripgrep-based
+ * dependency/build output. Shared by the DQuant Lab agent's ripgrep-based
  * search tools and the per-turn filesystem watcher that reports out-of-band
  * file edits — both must agree so a search never surfaces a path the edit
  * tracker would discard (and vice versa).

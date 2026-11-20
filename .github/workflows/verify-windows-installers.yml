@@ -7,7 +7,7 @@ on:
         description: Successful Windows Release run to verify
         required: true
       version:
-        description: Backboard release version
+        description: DQuant Lab release version
         required: true
 
 permissions:

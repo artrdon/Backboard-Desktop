@@ -69,7 +69,7 @@ describe("parseControlLine", () => {
 		});
 	});
 
-	it("parses the Backboard Studio submit settings", () => {
+	it("parses the DQuant Lab Studio submit settings", () => {
 		// The full per-turn surface the IDE sends: `auto` permission (the
 		// Default approvals tier) plus the feature toggles.
 		const control = {

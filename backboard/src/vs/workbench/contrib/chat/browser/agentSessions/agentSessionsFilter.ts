@@ -381,7 +381,7 @@ export class AgentSessionsFilter extends Disposable implements Required<IAgentSe
 
 	exclude(session: IAgentSession): boolean {
 		// Chats from the Claude Code and Codex apps are never listed; chats
-		// Backboard ran on a Claude or ChatGPT subscription are Backboard
+		// DQuant Lab ran on a Claude or ChatGPT subscription are DQuant Lab
 		// sessions and stay. Checked before any override can re-admit them.
 		if (isClaudeAgentSessionProvider(session.providerType) || isCodexAgentSessionProvider(session.providerType)) {
 			return true;

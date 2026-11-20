@@ -6,7 +6,7 @@
 		"- file associations: https://github.com/jesseweed/seti-ui/blob/master/styles/components/icons/mapping.less",
 		"If you want to provide a fix or improvement, please create a pull request against the jesseweed/seti-ui repository.",
 		"Once accepted there, we are happy to receive an update request.",
-		"Backboard icon overrides are maintained in build/backboard-icons.js and icons/backboard/."
+		"DQuant Lab icon overrides are maintained in build/backboard-icons.js and icons/backboard/."
 	],
 	"fonts": [
 		{

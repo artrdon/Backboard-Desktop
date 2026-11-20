@@ -1074,7 +1074,7 @@ export class OpenModePickerAction extends Action2 {
 				{
 					id: MenuId.ChatInput,
 					order: 1,
-					// Backboard keeps the composer focused on model/tools controls.
+					// DQuant Lab keeps the composer focused on model/tools controls.
 					// The current chat mode still exists, but the visible "Agent" chip is hidden.
 					when: ContextKeyExpr.false(),
 					group: 'navigation',
@@ -1107,7 +1107,7 @@ export class OpenSessionTargetPickerAction extends Action2 {
 				{
 					id: MenuId.ChatInput,
 					order: 0,
-					// Backboard ships with a single local provider, so there is
+					// DQuant Lab ships with a single local provider, so there is
 					// no session target to choose from in the composer.
 					when: ContextKeyExpr.false(),
 					group: 'navigation',
@@ -1146,7 +1146,7 @@ export class OpenDelegationPickerAction extends Action2 {
 				{
 					id: MenuId.ChatInputSecondary,
 					order: 0.5,
-					// Backboard keeps session execution local, so do not surface
+					// DQuant Lab keeps session execution local, so do not surface
 					// the "Delegate Session" composer chip.
 					when: ContextKeyExpr.false(),
 					group: 'navigation',
@@ -1214,7 +1214,7 @@ export class ChatSessionPrimaryPickerAction extends Action2 {
 					id: MenuId.ChatInput,
 					order: 4,
 					group: 'navigation',
-					// Backboard does not surface remote/cloud session controls in the composer.
+					// DQuant Lab does not surface remote/cloud session controls in the composer.
 					when: ContextKeyExpr.false(),
 				},
 				{
@@ -1225,7 +1225,7 @@ export class ChatSessionPrimaryPickerAction extends Action2 {
 					id: MenuId.ChatInputSecondary,
 					order: 4,
 					group: 'navigation',
-					// Backboard does not surface remote/cloud session controls in the composer.
+					// DQuant Lab does not surface remote/cloud session controls in the composer.
 					when: ContextKeyExpr.false(),
 				},
 			]

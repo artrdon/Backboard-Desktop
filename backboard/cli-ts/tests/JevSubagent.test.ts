@@ -130,7 +130,7 @@ describe("Jev computer-use sub-agent", () => {
 
 	it("reports an orderly handoff in words, not as a failed turn", async () => {
 		// Regression: a stalled run surfaced in the IDE as an unexplained
-		// "BackboardSubagentFailed: The Backboard subagent reported a failed turn."
+		// "BackboardSubagentFailed: The DQuant Lab subagent reported a failed turn."
 		const bus = new EventBus();
 		const events: AgentEvent[] = [];
 		bus.onAny((event) => events.push(event));

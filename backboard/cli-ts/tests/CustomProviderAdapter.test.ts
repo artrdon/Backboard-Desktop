@@ -190,7 +190,7 @@ describe("customAdapter.stream", () => {
 		};
 		const streamRequest: ByokStreamRequest = {
 			model: "deepseek-chat",
-			systemPrompt: "You are Backboard.",
+			systemPrompt: "You are DQuant Lab.",
 			tools: [
 				{
 					type: "function",
@@ -231,7 +231,7 @@ describe("customAdapter.stream", () => {
 			model: "deepseek-chat",
 			stream: true,
 			messages: [
-				{ role: "system", content: "You are Backboard." },
+				{ role: "system", content: "You are DQuant Lab." },
 				{ role: "user", content: "read a" },
 				{ role: "assistant", content: null, tool_calls: [{ id: "call_0" }] },
 				{ role: "tool", tool_call_id: "call_0", content: "ok" },

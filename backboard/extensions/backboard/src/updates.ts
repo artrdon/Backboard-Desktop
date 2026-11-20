@@ -346,7 +346,7 @@ function inPlaceInstallUnavailableReason(): string | undefined {
 	}
 	switch (process.platform) {
 		case 'win32':
-			return 'This install can only download the installer. In-place updates need an install made with Backboard-Studio-User-Setup-x64.exe; system-wide installs and the portable ZIP are not updated in place.';
+			return 'This install can only download the installer. In-place updates need a per-user install created by the DQuant Lab installer; system-wide installs and the portable ZIP are not updated in place.';
 		case 'darwin':
 			return 'This build can only download the DMG. In-place updates need the packaged DQuant Lab.app, not a development build.';
 		default:
@@ -1164,7 +1164,7 @@ export function readCurrentAppVersion(): string {
 		return metadataVersion;
 	}
 
-	// `backboardVersion` is the canonical Backboard product version declared in
+	// `backboardVersion` is the canonical DQuant Lab product version declared in
 	// product.json (decoupled from the VS Code engine version). It is the source
 	// of truth for both the About dialog and this update check.
 	const productVersion = readBackboardProductMetadataString('backboardStudioVersion', 'backboardVersion');
@@ -1198,7 +1198,7 @@ export function readCurrentAppVersion(): string {
 				}
 			}
 		} catch {
-			// Development hosts may not have packaged Backboard release metadata.
+			// Development hosts may not have packaged DQuant Lab release metadata.
 		}
 	}
 
@@ -1260,7 +1260,7 @@ function readBackboardMetadataString(metadataPath: string, keys: readonly string
 			}
 		}
 	} catch {
-		// Development hosts may not have packaged Backboard release metadata.
+		// Development hosts may not have packaged DQuant Lab release metadata.
 	}
 	return undefined;
 }

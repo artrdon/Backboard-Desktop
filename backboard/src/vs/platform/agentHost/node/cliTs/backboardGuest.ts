@@ -10,7 +10,7 @@ import { dirname, join } from '../../../../base/common/path.js';
 import { ILogService } from '../../../log/common/log.js';
 
 /**
- * Guest access: someone who hasn't signed in still gets Backboard's free
+ * Guest access: someone who hasn't signed in still gets DQuant Lab's free
  * models. The server mints a guest account per device (`POST /auth/guest`)
  * and returns an API key, stored under `guest` in `~/.backboard_ide/config.json`.
  * Only the agent runtime uses it ({@link guestApiKey} via `bridgeConfig`); the

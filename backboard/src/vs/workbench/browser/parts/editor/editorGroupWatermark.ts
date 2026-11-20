@@ -46,7 +46,7 @@ export class EditorGroupWatermark extends Disposable {
 			h('.editor-group-watermark-toolbar-container@toolbarContainer'),
 			h('.editor-group-watermark', [
 				h('.watermark-container', [
-					// The Backboard welcome lives in its own container: `.shortcuts` is
+					// The DQuant Lab welcome lives in its own container: `.shortcuts` is
 					// hidden once the group is short (see `max-height-478px` in
 					// editorgroupview.css), which would make the welcome vanish as soon
 					// as the panel is dragged up.

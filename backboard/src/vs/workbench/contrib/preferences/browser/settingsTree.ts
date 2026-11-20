@@ -2444,7 +2444,7 @@ function cleanRenderedMarkdown(element: Node): void {
 }
 
 function fixSettingLinks(text: string, linkify = true): string {
-	// Debrand before linkifying: VS Code doc links → Backboard docs, other
+	// Debrand before linkifying: VS Code doc links → DQuant Lab docs, other
 	// VS Code links unlinked, "VS Code" text → product name.
 	text = sanitizeSettingsText(text);
 	return text.replace(/`#([^#\s`]+)#`|'#([^#\s']+)#'/g, (match, backticksGroup, quotesGroup) => {

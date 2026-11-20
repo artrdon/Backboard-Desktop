@@ -6,7 +6,7 @@ import {
 	runBackboardDeviceLogin,
 } from "../src/core/auth/BackboardOAuth.ts";
 
-describe("Backboard OAuth login", () => {
+describe("DQuant Lab OAuth login", () => {
 	it("falls back to the baked-in client id when the environment is empty", () => {
 		expect(loadOAuthClientId({})).toBe("Backboard_oauth_q_cli");
 	});

@@ -43,7 +43,7 @@ export class BrowserSessionManager {
 	async getPlatform(signal?: AbortSignal): Promise<BrowserHarnessPlatform> {
 		if (this.platform) return this.platform;
 
-		// The Backboard IDE's integrated browser wins when the user has shared a
+		// The DQuant Lab IDE's integrated browser wins when the user has shared a
 		// page there — the agent then drives the very tab the user is looking
 		// at. Never fatal: with no shared page (or no endpoint) resolution
 		// falls through to the regular discovery/launch path below.

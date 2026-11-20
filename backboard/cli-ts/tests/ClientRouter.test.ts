@@ -143,7 +143,7 @@ describe("ClientRouter precedence", () => {
 		expect(client.sourceForThread("thread_backboard")).toBe("backboard");
 	});
 
-	it("prefers a saved key over Backboard for the same vendor", () => {
+	it("prefers a saved key over DQuant Lab for the same vendor", () => {
 		expect(
 			router({
 				backboardClient: backboard(),
@@ -182,7 +182,7 @@ describe("ClientRouter precedence", () => {
 		).toBe("subscription");
 	});
 
-	it("falls back to Backboard when no key covers the vendor", () => {
+	it("falls back to DQuant Lab when no key covers the vendor", () => {
 		expect(
 			router({
 				backboardClient: backboard(),
@@ -192,7 +192,7 @@ describe("ClientRouter precedence", () => {
 		).toBe("backboard");
 	});
 
-	it("falls back to Backboard for vendors with no adapter at all", () => {
+	it("falls back to DQuant Lab for vendors with no adapter at all", () => {
 		expect(
 			router({
 				backboardClient: backboard(),
@@ -243,7 +243,7 @@ describe("ClientRouter explicit sources (host-managed mode)", () => {
 		});
 		expect(keyRoute.sourceFor(live)).toBe("byok");
 
-		// Same model, same key on hand, but no explicit route: Backboard bills.
+		// Same model, same key on hand, but no explicit route: DQuant Lab bills.
 		const backboardRoute = router({
 			backboardClient: backboard(),
 			byokClient: byok(),
@@ -260,7 +260,7 @@ describe("ClientRouter explicit sources (host-managed mode)", () => {
 		const key = byok();
 		// The picker moved on to another model after these requests captured
 		// their route; a worker or RLM leg still naming the old model stays on
-		// the key, and a Backboard-routed request stays on Backboard even while
+		// the key, and a DQuant Lab-routed request stays on DQuant Lab even while
 		// the live selection is key-billed.
 		const routed = router({
 			backboardClient: bb,
@@ -393,7 +393,7 @@ describe("ClientRouter explicit sources (host-managed mode)", () => {
 		expect(key.messages).toHaveLength(0);
 	});
 
-	it("keeps Backboard and key-backed entries for the same model", async () => {
+	it("keeps DQuant Lab and key-backed entries for the same model", async () => {
 		const result = await router({
 			backboardClient: backboard([anthropicModel, openaiModel]),
 			byokClient: byok([openaiModel]),
@@ -563,7 +563,7 @@ describe("ClientRouter request routing", () => {
 	it("keeps a thread on its original backend even after keys change", async () => {
 		const bb = backboard();
 		const key = byok();
-		// A Backboard thread with an anthropic key now enabled would otherwise
+		// A DQuant Lab thread with an anthropic key now enabled would otherwise
 		// flip mid-conversation to a backend that has never seen it.
 		const target = router({
 			backboardClient: bb,
@@ -798,9 +798,9 @@ describe("ClientRouter.sendMessage routing", () => {
 });
 
 describe("ClientRouter sign-in state", () => {
-	// The Backboard client is constructed unconditionally so a mid-session
+	// The DQuant Lab client is constructed unconditionally so a mid-session
 	// /login works without a restart; routing has to gate on live auth instead.
-	it("ignores the Backboard client while no sign-in is active", () => {
+	it("ignores the DQuant Lab client while no sign-in is active", () => {
 		const routed = router({
 			backboardClient: backboard(),
 			byokClient: byok(),
@@ -813,7 +813,7 @@ describe("ClientRouter sign-in state", () => {
 		);
 	});
 
-	it("routes to Backboard once a sign-in lands", () => {
+	it("routes to DQuant Lab once a sign-in lands", () => {
 		const routed = router({
 			backboardClient: backboard(),
 			byokClient: byok(),
@@ -837,7 +837,7 @@ describe("ClientRouter sessions", () => {
 		messages: [],
 	};
 
-	it("merges local BYOK and Backboard sessions", async () => {
+	it("merges local BYOK and DQuant Lab sessions", async () => {
 		const local = new RecordingClient(
 			"byok",
 			{ assistants: false, threads: true, memory: false },
@@ -860,7 +860,7 @@ describe("ClientRouter sessions", () => {
 		).toEqual([localThread, remoteThread]);
 	});
 
-	it("keeps successful Backboard sessions when the local store fails", async () => {
+	it("keeps successful DQuant Lab sessions when the local store fails", async () => {
 		class FailingListClient extends RecordingClient {
 			override async listThreads(): Promise<BackboardThread[]> {
 				throw new Error("local sessions unreadable");

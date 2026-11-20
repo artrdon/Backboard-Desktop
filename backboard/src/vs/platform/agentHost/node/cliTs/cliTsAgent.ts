@@ -175,7 +175,7 @@ function jwtExpiration(token: string): number | undefined {
 	}
 }
 
-/** Whether Backboard can use or refresh its configured ChatGPT login. */
+/** Whether DQuant Lab can use or refresh its configured ChatGPT login. */
 export function hasUsableChatGptSubscriptionLogin(homeDir = os.homedir(), now = Date.now()): boolean {
 	try {
 		const envAuthFile = process.env['BACKBOARD_CHATGPT_SUBSCRIPTION_AUTH_FILE']?.trim();
@@ -261,7 +261,7 @@ export function requiresProviderThreadHandoff(threadId: string | undefined, prev
 	if (previousProvider) {
 		return previousProvider !== nextProvider;
 	}
-	// A Backboard thread has no prefix, so a restored unprefixed thread cannot
+	// A DQuant Lab thread has no prefix, so a restored unprefixed thread cannot
 	// be adopted by a subscription transport or by the user's own key.
 	return nextProvider === CHATGPT_SUBSCRIPTION_PROVIDER || nextProvider === CLAUDE_SUBSCRIPTION_PROVIDER || nextProvider === 'byok';
 }
@@ -629,7 +629,7 @@ function createTurnState(turnId: string, prompt: string): CliTsTurnState {
 }
 
 /**
- * Backboard provider backed by the cli-ts serve process (`backboard-cli-ts
+ * DQuant Lab provider backed by the cli-ts serve process (`backboard-cli-ts
  * --serve`) instead of the legacy Rust bridge. cli-ts owns the agent loop and
  * executes its own tools in the session's working directory; this class is a
  * translator: control ops out (submit/cancel/respond*), `AgentEvent` records
@@ -650,7 +650,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 
 	/**
 	 * Starts with the locally-authenticated ChatGPT and Claude subscription routes,
-	 * immediately hydrates the previous live Backboard API result from disk,
+	 * immediately hydrates the previous live DQuant Lab API result from disk,
 	 * and refreshes from the backend once a serve process is up. API catalog
 	 * providers such as OpenRouter are never supplemented from a compiled list.
 	 */
@@ -704,7 +704,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 	private readonly _byokDiscovery = new Map<ByokProviderId, Promise<void>>();
 	/** Monotonic revision of the credential snapshot; acks echo it. */
 	private _credentialRevision = 0;
-	/** The Backboard API catalog as last reported by a serve process, key-billed rows stripped. */
+	/** The DQuant Lab API catalog as last reported by a serve process, key-billed rows stripped. */
 	private _lastServeModels: readonly BridgeModel[] = [];
 	/** How long a running serve process gets to acknowledge a credential change. */
 	private _credentialAckTimeoutMs = CLI_TS_CREDENTIAL_ACK_TIMEOUT_MS;
@@ -825,7 +825,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 	}
 
 	/**
-	 * Recomputes the published catalog: the Backboard API rows, the key-billed
+	 * Recomputes the published catalog: the DQuant Lab API rows, the key-billed
 	 * rows under their `-key` provider ids, and the bundled subscription routes,
 	 * each stamped with its connection state. Key-billed rows are listed
 	 * whenever a catalog is known, and `byokKeyConfigured` says whether they are
@@ -1819,8 +1819,8 @@ export class CliTsAgent extends Disposable implements IAgent {
 			}
 			if (session.threadId?.startsWith('byok_') && settings.source !== 'byok') {
 				// A conversation started on the user's key (possibly by an older
-				// build that read the CLI key file) must not continue on Backboard
-				// just because the restored selection is a Backboard model.
+				// build that read the CLI key file) must not continue on DQuant Lab
+				// just because the restored selection is a DQuant Lab model.
 				throw new Error(localize('cliTsAgent.byok.threadRequiresKey', "This conversation was started with your own API key. Select an API Key model to continue it, or start a new session."));
 			}
 			// Resolve folder/worktree isolation from the latest live config before
@@ -2406,7 +2406,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 	 * Receives the IDE's customization refs and pushes the MCP servers they
 	 * carry into this session's serve process.
 	 *
-	 * The IDE's MCP set (marketplace installs, the seeded Backboard docs
+	 * The IDE's MCP set (marketplace installs, the seeded DQuant Lab docs
 	 * server, and the user's `~/.backboard/mcp.json`, which the IDE imports)
 	 * is the same in every window, so Simple and Editor chats see the same
 	 * servers. The push is authoritative for the user-level file; the runtime
@@ -3258,7 +3258,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 			if (unexpected.length) {
 				this._logService.warn(`[cli-ts] runtime listed ${unexpected.length} key-billed models without a host-provided key (${[...new Set(unexpected.map(model => model.provider))].join(', ')}); ignoring them`);
 			}
-			// The Backboard API is authoritative for catalog providers; key-billed
+			// The DQuant Lab API is authoritative for catalog providers; key-billed
 			// rows come from the host's own discovery, and the subscription
 			// routes are supplemented locally.
 			this._lastServeModels = models.filter(model => model.source !== 'byok');
@@ -3857,7 +3857,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 					return;
 				}
 				const name = event.name ?? turn.toolInputs.get(event.toolCallId)?.name ?? 'Tool';
-				// Backboard's early tool events are advisory. If the final
+				// DQuant Lab's early tool events are advisory. If the final
 				// tool_submit_required frame omits one, close its speculative card
 				// instead of leaving a permanent spinner behind.
 				fire({
@@ -4239,7 +4239,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 				if (!usage) {
 					return;
 				}
-				// Backboard's `context_usage` measurement rides the open `_meta`
+				// DQuant Lab's `context_usage` measurement rides the open `_meta`
 				// bag (the protocol dir is generated and must not grow fields):
 				// `contextTokens` is the thread's measured occupancy — a level
 				// with the turn's output included — and `contextLimit` is the
@@ -4255,7 +4255,7 @@ export class CliTsAgent extends Disposable implements IAgent {
 					meta.contextLimit = usage.contextLimit;
 				}
 				// `model` is the provider's bare id (`opus`); the footer needs the
-				// billed route to tell a subscription from Backboard credits.
+				// billed route to tell a subscription from DQuant Lab credits.
 				const billingModelId = session.activeModel?.id ?? session.model?.id;
 				if (billingModelId) {
 					meta.billingModelId = billingModelId;
@@ -4991,7 +4991,7 @@ function clientToolDefinitionToWire(tool: ToolDefinition): CliTsClientToolDefini
 
 /**
  * Maps a workbench {@link ToolCallResult} to the serve wire payload. Image
- * blocks stay images (the Backboard API routes them through vision); other
+ * blocks stay images (the DQuant Lab API routes them through vision); other
  * embedded resources are passed through as opaque base64 resources.
  */
 function clientToolResultToWire(result: ToolCallResult): CliTsClientToolResultPayload {
@@ -6010,13 +6010,13 @@ function storedFileEditContent(sessionUri: string, edit: IFileEditRecord): ToolR
 
 /**
  * The model a failed turn ran on, so its note can say which account it bills
- * to. A Claude or GPT model billed to Backboard credits looks the same in the
+ * to. A Claude or GPT model billed to DQuant Lab credits looks the same in the
  * footer as the user's own subscription; saying which one ran is the point.
  */
 interface CliTsNoteModel {
 	readonly name: string;
 	readonly route: 'backboard' | 'byok' | 'claude' | 'chatgpt';
-	/** The subscription a Backboard-billed model of the same vendor could use instead. */
+	/** The subscription a DQuant Lab-billed model of the same vendor could use instead. */
 	readonly connectedSubscription?: 'claude' | 'chatgpt';
 }
 
@@ -6118,8 +6118,8 @@ function cliTsConnectQuickFix(message: string, model?: CliTsNoteModel): string |
 		return localize('cliTsAgent.quickFix.backboard', "_This model is billed to DQuant Lab credits and needs a DQuant Lab sign-in._ [Sign In]({0}) or {1}.{2}", command('backboard.signIn'), pick, onModel);
 	}
 	// An expired sign-in (its refresh token rejected) leaves the account looking
-	// signed in while Backboard answers every turn with 401.
-	if (/Backboard request failed: HTTP 401\b/.test(message)) {
+	// signed in while DQuant Lab answers every turn with 401.
+	if (/DQuant Lab request failed: HTTP 401\b/.test(message)) {
 		return localize('cliTsAgent.quickFix.signInExpired', "_Your DQuant Lab sign-in has expired, so models billed to DQuant Lab credits can't run._ [Sign In Again]({0}) or {1}.{2}", command('backboard.signIn'), pick, onModel);
 	}
 	if (isLostCliTsConversation(message)) {
@@ -6144,7 +6144,7 @@ function cliTsConnectQuickFix(message: string, model?: CliTsNoteModel): string |
 	return undefined;
 }
 
-/** Whose model a Backboard-billed id is, when that vendor also sells a subscription. */
+/** Whose model a DQuant Lab-billed id is, when that vendor also sells a subscription. */
 function vendorOfModel(provider: string, model: string): 'anthropic' | 'openai' | undefined {
 	const id = `${provider}/${model}`.toLowerCase();
 	if (/(^|\/)(anthropic|claude)/.test(id)) {

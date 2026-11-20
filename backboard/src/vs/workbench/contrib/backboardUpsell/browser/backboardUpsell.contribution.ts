@@ -173,7 +173,7 @@ function showSignInCard(container: HTMLElement, commandService: ICommandService,
 			? localize('upsell.signIn.titleModel', "Sign in to use {0}", modelName)
 			: localize('upsell.signIn.title', "Sign in to use every model"),
 		text: localize('upsell.signIn.text', "Free models work without an account. Sign in to unlock every model."),
-		// The Backboard sign-in page offers both signing up and logging in.
+		// The DQuant Lab sign-in page offers both signing up and logging in.
 		ctaLabel: localize('upsell.signIn.continue', "Continue"),
 		onCta: () => {
 			close();
@@ -233,7 +233,7 @@ const AFTER_CHAT_DELAY_MS = 60_000;
 const DISMISS_FOR_MS = 24 * 60 * 60_000;
 const DISMISSED_KEY_PREFIX = 'backboardUpsell.balanceCard.dismissed.';
 
-/** The subset of `GET /billing/balance` (Backboard-API `CreditWallet`) the cards read. */
+/** The subset of `GET /billing/balance` (DQuant Lab-API `CreditWallet`) the cards read. */
 interface IWalletBalance {
 	readonly paid_credit_usd?: number;
 	readonly subscription_credits_usd?: number;

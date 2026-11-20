@@ -15,7 +15,7 @@ import { IURLHandler, IURLService } from '../../../../../platform/url/common/url
 import { attributionFromQuery, BackboardAnalyticsProps, IBackboardAnalyticsService } from '../../../../services/backboardAnalytics/common/backboardAnalytics.js';
 import { BackboardAttributionContribution, LINK_ATTRIBUTION_COMMAND } from '../../electron-browser/backboardAttribution.contribution.js';
 
-suite('Backboard campaign handoff', () => {
+suite('DQuant Lab campaign handoff', () => {
 	const disposables = ensureNoDisposablesAreLeakedInTestSuite();
 
 	test('denied consent strips click IDs and untrusted identity fields', () => {

@@ -28,7 +28,7 @@ suite('ChatInputPart', () => {
 		}
 	});
 
-	test('uses input placement only for explicit Backboard composer hosts', () => {
+	test('uses input placement only for explicit DQuant Lab composer hosts', () => {
 		const backboardHost = document.createElement('div');
 		backboardHost.classList.add('backboard-composer');
 		const backboardInput = backboardHost.appendChild(document.createElement('div'));

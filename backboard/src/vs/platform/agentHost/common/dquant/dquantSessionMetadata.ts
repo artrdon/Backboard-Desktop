@@ -13,7 +13,7 @@
  * another session.
  *
  * Keys are namespaced with {@link DQUANT_CONFIG_PREFIX} so they survive the
- * Backboard runtime's config normalization (see
+ * DQuant Lab runtime's config normalization (see
  * `resolveBackboardSessionConfig` in `cliTs/backboardRuntimeShared.ts`).
  */
 

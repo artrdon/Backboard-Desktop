@@ -20,7 +20,7 @@ export function getDynamicVariablesForWidget(widget: IChatWidget): ReadonlyArray
 		return [];
 	}
 
-	// Simple chat hosts can disable file references, but Backboard capability
+	// Simple chat hosts can disable file references, but DQuant Lab capability
 	// tokens are per-turn settings rather than file context. Preserve only
 	// those variables in that mode so their request metadata and sent UI row
 	// survive without reopening support for unrelated reference types.

@@ -72,7 +72,7 @@ export function ContextPanel({ report, onClose }: Props): React.ReactElement {
 				<Text color={theme.subtle} wrap="truncate-end">
 					{narrow ? "" : "  "}
 					{formatModel(report.model)}
-					{report.source === "byok" ? " · your key" : " · Backboard"}
+					{report.source === "byok" ? " · your key" : " · DQuant Lab"}
 				</Text>
 			</Box>
 

@@ -72,7 +72,7 @@ type OnboardingStepViewEvent = {
 
 type OnboardingActionClassification = {
 	owner: 'cwebster-99';
-	comment: 'Tracks actions taken on the Backboard onboarding wizard.';
+	comment: 'Tracks actions taken on the DQuant Lab onboarding wizard.';
 	action: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'The action performed.' };
 	step: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'The step the action was performed on.' };
 	argument: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Optional context such as selected mode or theme id.' };
@@ -167,7 +167,7 @@ function getBackboardEnvKeys(config: Record<string, unknown>): Record<string, st
 }
 
 /**
- * Backboard onboarding modal.
+ * DQuant Lab onboarding modal.
  *
  * This ports the Zed onboarding flow into the VS Code workbench shell:
  * welcome, experience picker, theme picker, and optional settings import.
@@ -817,7 +817,7 @@ export class OnboardingVariationA extends Disposable implements IOnboardingServi
 		// reload before the device-code flow can open the browser or save the
 		// tokens). So wait for the sign-in to finish before advancing; the
 		// browser opens once the device code is ready, and this page stays up
-		// until approval. Signing up and logging in share the Backboard SSO
+		// until approval. Signing up and logging in share the DQuant Lab SSO
 		// page, which offers both.
 		const startSignIn = async (sourceButton: HTMLButtonElement, action: string): Promise<void> => {
 			if (signUpButton.disabled) {

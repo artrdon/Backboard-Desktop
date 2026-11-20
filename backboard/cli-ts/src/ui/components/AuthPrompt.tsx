@@ -14,7 +14,7 @@ import type {
 } from "./TerminalComponents.types.ts";
 
 const ACTIONS: Record<AuthPromptSelection, string> = {
-	login: "Login with Backboard",
+	login: "Login with DQuant Lab",
 	byok: "Use my own API key",
 	exit: "Exit",
 };
@@ -43,7 +43,7 @@ export function AuthPrompt({
 			>
 				<CardHeader layout={layout}>
 					<Text color={theme.subtle}>
-						{clipEnd("Login or signup to use Backboard CLI.", headerTextWidth)}
+						{clipEnd("Login or signup to use DQuant Lab CLI.", headerTextWidth)}
 					</Text>
 					<Text color={theme.warning}>
 						{clipEnd("Status: Not Connected", headerTextWidth)}
@@ -52,7 +52,7 @@ export function AuthPrompt({
 			</Box>
 			<Box flexDirection="column" marginTop={1} paddingX={1}>
 				<Text color={theme.accentBright}>
-					Sign in with Backboard, or bring your own provider API key.
+					Sign in with DQuant Lab, or bring your own provider API key.
 				</Text>
 				<Box flexDirection="column" marginTop={1}>
 					{Object.entries(ACTIONS).map(([key, label]) => {

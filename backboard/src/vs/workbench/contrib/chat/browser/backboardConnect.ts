@@ -18,7 +18,7 @@ import { CHATGPT_SUBSCRIPTION_SETUP_ID, CHECK_CLAUDE_CODE_VERSION_COMMAND_ID, CL
 import { ADD_PROVIDER_KEY_COMMAND_ID, TEST_PROVIDER_KEY_COMMAND_ID } from './byokKeys/byokKeys.js';
 import './media/backboardConnect.css';
 
-/** One way to pay for models: Backboard itself, a subscription, or the user's own key. */
+/** One way to pay for models: DQuant Lab itself, a subscription, or the user's own key. */
 export type BackboardConnectTarget = 'backboard' | 'chatgpt' | 'claude' | 'key';
 
 /** What is already connected; drives each row's status and action label. */
@@ -78,7 +78,7 @@ function safeHost(baseUrl: string): string | undefined {
 
 /**
  * The single place the user connects something that can pay for models:
- * Backboard sign-in, the ChatGPT and Claude subscriptions, or an API key typed
+ * DQuant Lab sign-in, the ChatGPT and Claude subscriptions, or an API key typed
  * inline. The model picker and the signed-out card both render it, so there
  * is no separate pop-up per method.
  */

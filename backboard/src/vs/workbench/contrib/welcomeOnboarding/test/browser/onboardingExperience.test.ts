@@ -16,7 +16,7 @@ type ExperienceHarness = {
 	_openSelectedExperienceAfterOnboarding(): Promise<void>;
 };
 
-suite('Backboard onboarding experience', () => {
+suite('DQuant Lab onboarding experience', () => {
 	const disposables = ensureNoDisposablesAreLeakedInTestSuite();
 
 	test('Simple onboarding customizes, signs in, then offers plans before completion', () => {

@@ -84,7 +84,7 @@ function createBaseTools(): Tool[] {
 
 /**
  * `provider/model` of the computer-use brain, or `jev` for TypeSafe Jev through
- * Backboard's System One route. Unset means DEFAULT_COMPUTER_USE_MODEL.
+ * DQuant Lab's System One route. Unset means DEFAULT_COMPUTER_USE_MODEL.
  */
 const COMPUTER_USE_MODEL_ENV = "BACKBOARD_COMPUTER_USE_MODEL";
 
@@ -150,7 +150,7 @@ function createComputerBrain(
 		return new JevBrain((request, options) => {
 			if (!deps.client.systemOne) {
 				throw new Error(
-					"Jev computer use requires a signed-in Backboard account.",
+					"Jev computer use requires a signed-in DQuant Lab account.",
 				);
 			}
 			return deps.client.systemOne(request, options);
@@ -210,7 +210,7 @@ async function collectResponse(
  * Where the computer-use model is billed when the turn carries a route: a
  * subscription model on its subscription, a model from the turn's own
  * provider on the user's own key when the turn uses one, and anything
- * else on Backboard, as Jev was. A turn without a route leaves the choice to
+ * else on DQuant Lab, as Jev was. A turn without a route leaves the choice to
  * the client. The turn's own model follows as the fallback for an account
  * that cannot reach the first choice.
  */

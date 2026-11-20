@@ -7,7 +7,7 @@ import { IProductOnboardingTheme } from '../../../../base/common/product.js';
 import { localize } from '../../../../nls.js';
 
 /**
- * Step identifiers for the Backboard onboarding walkthrough.
+ * Step identifiers for the DQuant Lab onboarding walkthrough.
  */
 export const enum OnboardingStepId {
 	Welcome = 'onboarding.backboard.welcome',
@@ -22,7 +22,7 @@ export const enum OnboardingStepId {
 }
 
 /**
- * Backboard workspace entry points ported from the Zed onboarding flow.
+ * DQuant Lab workspace entry points ported from the Zed onboarding flow.
  */
 export const enum OnboardingExperience {
 	Simple = 'beginner',

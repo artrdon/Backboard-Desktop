@@ -58,19 +58,19 @@ node build/lib/builtInExtensions.ts
 echo "Type-checking the VS Code client"
 npm run typecheck-client
 
-echo "Type-checking and compiling the Backboard extension"
+echo "Type-checking and compiling the DQuant Lab extension"
 npm --prefix extensions/backboard run typecheck
 npm --prefix extensions/backboard run compile
 
 echo "Testing updater installation safeguards"
 npm --prefix extensions/backboard run test-updater
 
-echo "Building the Linux x86_64 Backboard CLI"
+echo "Building the Linux x86_64 DQuant Lab CLI"
 npm --prefix extensions/backboard run package-cli-ts
 CLI_SOURCE="${VSCODE_ROOT}/extensions/backboard/bin/backboard-cli-ts"
 CLI_SOURCE_INFO="$(file -b "${CLI_SOURCE}")"
 if [[ "${CLI_SOURCE_INFO}" != *ELF* || "${CLI_SOURCE_INFO}" != *x86-64* ]]; then
-	echo "Backboard CLI has the wrong architecture: ${CLI_SOURCE_INFO}" >&2
+	echo "DQuant Lab CLI has the wrong architecture: ${CLI_SOURCE_INFO}" >&2
 	exit 1
 fi
 
@@ -129,7 +129,7 @@ for required_path in \
 	fi
 done
 
-echo "Syncing the tested Backboard extension runtime into the packaged app"
+echo "Syncing the tested DQuant Lab extension runtime into the packaged app"
 rm -rf \
 	"${BACKBOARD_PACKAGED}/out" \
 	"${BACKBOARD_PACKAGED}/media" \
@@ -314,7 +314,7 @@ DEB_PACKAGE="$(dpkg-deb --field "${OUTPUT_ROOT}/${DEB_NAME}" Package)"
 (
 	apt-get update
 	apt-get install -y --no-install-recommends "${OUTPUT_ROOT}/${DEB_NAME}"
-	# Backboard releases come from our download channel. The fork must not
+	# DQuant Lab releases come from our download channel. The fork must not
 	# install Microsoft's VS Code apt repository or its signing key.
 	test ! -e /etc/apt/sources.list.d/vscode.sources
 	test ! -e /etc/apt/sources.list.d/vscode.list
@@ -323,17 +323,17 @@ DEB_PACKAGE="$(dpkg-deb --field "${OUTPUT_ROOT}/${DEB_NAME}" Package)"
 	test "$(dpkg-query --show --showformat='${Status}' "${DEB_PACKAGE}")" = 'install ok installed'
 	test -x "/usr/bin/${APP_NAME}"
 	"/usr/bin/${APP_NAME}" --no-sandbox --user-data-dir=/tmp/backboard-installed-cli-check --version
-	# A user's separately installed VS Code owns these files. Backboard removal
+	# A user's separately installed VS Code owns these files. DQuant Lab removal
 	# must preserve them; comments are valid apt source fixture contents.
-	printf '# Backboard removal preservation fixture\n' > /etc/apt/sources.list.d/vscode.sources
-	printf 'Backboard removal preservation fixture\n' > /usr/share/keyrings/microsoft.gpg
+	printf '# DQuant Lab removal preservation fixture\n' > /etc/apt/sources.list.d/vscode.sources
+	printf 'DQuant Lab removal preservation fixture\n' > /usr/share/keyrings/microsoft.gpg
 	dpkg --purge "${DEB_PACKAGE}"
 	test ! -e "/usr/share/${APP_NAME}/${APP_NAME}"
-	grep -Fxq '# Backboard removal preservation fixture' /etc/apt/sources.list.d/vscode.sources
-	grep -Fxq 'Backboard removal preservation fixture' /usr/share/keyrings/microsoft.gpg
+	grep -Fxq '# DQuant Lab removal preservation fixture' /etc/apt/sources.list.d/vscode.sources
+	grep -Fxq 'DQuant Lab removal preservation fixture' /usr/share/keyrings/microsoft.gpg
 	rm /etc/apt/sources.list.d/vscode.sources /usr/share/keyrings/microsoft.gpg
 
-	echo "Testing upgrade from Backboard 3.0.0 with its real postrm"
+	echo "Testing upgrade from DQuant Lab 3.0.0 with its real postrm"
 	OLD_PACKAGE_ROOT="$(mktemp -d /tmp/backboard-old-deb.XXXXXX)"
 	mkdir -p "${OLD_PACKAGE_ROOT}/DEBIAN" "${OLD_PACKAGE_ROOT}/usr/share/${APP_NAME}/bin"
 	printf 'Package: %s\nVersion: 3.0.0\nArchitecture: amd64\nMaintainer: Backboard Release Test <support@backboard.io>\nDescription: Previous installer upgrade fixture\n' "${DEB_PACKAGE}" > "${OLD_PACKAGE_ROOT}/DEBIAN/control"
@@ -347,19 +347,19 @@ DEB_PACKAGE="$(dpkg-deb --field "${OUTPUT_ROOT}/${DEB_NAME}" Package)"
 	# Seed it so the fixture exercises its destructive upgrade path.
 	printf '%s %s/add-microsoft-repo boolean true\n' "${DEB_PACKAGE}" "${DEB_PACKAGE}" | debconf-set-selections
 	test "$(printf 'GET %s/add-microsoft-repo\n' "${DEB_PACKAGE}" | debconf-communicate "${DEB_PACKAGE}")" = '0 true'
-	printf '# Backboard upgrade preservation fixture\n' > /etc/apt/sources.list.d/vscode.sources
-	printf 'Backboard upgrade preservation fixture\n' > /usr/share/keyrings/microsoft.gpg
+	printf '# DQuant Lab upgrade preservation fixture\n' > /etc/apt/sources.list.d/vscode.sources
+	printf 'DQuant Lab upgrade preservation fixture\n' > /usr/share/keyrings/microsoft.gpg
 	chmod 0640 /usr/share/keyrings/microsoft.gpg
 	apt-get install -y --no-install-recommends "${OUTPUT_ROOT}/${DEB_NAME}"
 	test "$(dpkg-query --show --showformat='${Version}' "${DEB_PACKAGE}")" = "${VERSION}"
-	grep -Fxq '# Backboard upgrade preservation fixture' /etc/apt/sources.list.d/vscode.sources
-	grep -Fxq 'Backboard upgrade preservation fixture' /usr/share/keyrings/microsoft.gpg
+	grep -Fxq '# DQuant Lab upgrade preservation fixture' /etc/apt/sources.list.d/vscode.sources
+	grep -Fxq 'DQuant Lab upgrade preservation fixture' /usr/share/keyrings/microsoft.gpg
 	test "$(stat -c %a /usr/share/keyrings/microsoft.gpg)" = 640
 	test ! -e "/var/lib/${APP_NAME}/apt-upgrade-backup"
 	"/usr/bin/${APP_NAME}" --no-sandbox --user-data-dir=/tmp/backboard-upgraded-cli-check --version
 	dpkg --purge "${DEB_PACKAGE}"
-	grep -Fxq '# Backboard upgrade preservation fixture' /etc/apt/sources.list.d/vscode.sources
-	grep -Fxq 'Backboard upgrade preservation fixture' /usr/share/keyrings/microsoft.gpg
+	grep -Fxq '# DQuant Lab upgrade preservation fixture' /etc/apt/sources.list.d/vscode.sources
+	grep -Fxq 'DQuant Lab upgrade preservation fixture' /usr/share/keyrings/microsoft.gpg
 	rm /etc/apt/sources.list.d/vscode.sources /usr/share/keyrings/microsoft.gpg
 	rm -rf "${OLD_PACKAGE_ROOT}" /tmp/backboard-previous-fixture.deb
 ) 2>&1 | tee "${OUTPUT_ROOT}/debian-install.log"

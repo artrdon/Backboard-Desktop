@@ -85,7 +85,7 @@ suite('getDynamicVariablesForWidget', () => {
 		assert.deepStrictEqual(getDynamicVariablesForWidget(widget), []);
 	});
 
-	test('preserves only Backboard capabilities when file references are not supported', () => {
+	test('preserves only DQuant Lab capabilities when file references are not supported', () => {
 		const capability = createMockVariable({
 			id: 'backboard-capability:computerUse',
 			_meta: { backboardCapability: true, backboardCapabilityId: 'computerUse' },

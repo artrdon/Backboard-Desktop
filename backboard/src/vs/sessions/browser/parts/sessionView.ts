@@ -262,7 +262,7 @@ export class SessionView extends Disposable implements ISerializableView {
 		this._createBackboardAuthGate();
 		this._updateBackboardAuthGate();
 		this._refreshBackboardAuthGateFromConfig().catch(error => {
-			this.logService.error(`[Backboard] Failed to refresh agents middle panel auth gate: ${error instanceof Error ? error.message : String(error)}`);
+			this.logService.error(`[DQuant Lab] Failed to refresh agents middle panel auth gate: ${error instanceof Error ? error.message : String(error)}`);
 		});
 
 		this._applyActiveSessionStyles();

@@ -5,7 +5,7 @@
 
 /*
  * Simple mode follows the ChatGPT/Codex desktop app rather than the denser
- * editor chrome used by the other Backboard workbenches.  Keep the parity
+ * editor chrome used by the other DQuant Lab workbenches.  Keep the parity
  * layer last in the Sessions workbench import order: the shared chat widget
  * and the legacy T3 treatment still provide behavior, while these rules own
  * the Simple window's visual language.

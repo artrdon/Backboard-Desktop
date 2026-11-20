@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Backboard Studio developer environment.
+# DQuant Lab Studio developer environment.
 #
 #   ./scripts/dev.sh              bring everything up: deps -> watcher -> launch (default)
 #   ./scripts/dev.sh doctor       report on the local toolchain, tell you what is missing
@@ -135,7 +135,7 @@ app_bundle() {
 
 cmd_doctor() {
 	local ok=0
-	bold "Backboard Studio dev environment"
+	bold "DQuant Lab Studio dev environment"
 	echo
 
 	if bootstrap_path; then
@@ -319,8 +319,8 @@ app_running() {
 
 start_app() {
 	mkdir -p "$STATE_DIR"
-	info "Launching Backboard Studio"
-	# Launching from inside a running VS Code / Backboard extension host inherits that
+	info "Launching DQuant Lab Studio"
+	# Launching from inside a running VS Code / DQuant Lab extension host inherits that
 	# host's environment. ELECTRON_RUN_AS_NODE=1 in particular makes the Electron binary
 	# start as plain Node, which fails at `import { Menu } from 'electron'` in out/main.js.
 	# The other VSCODE_* vars point the new instance at the host's IPC socket and NLS

@@ -24,7 +24,7 @@ import { IChatWidgetService } from './chat.js';
  * Tool names that plausibly opened or previewed a web page. URLs found in
  * these tools' inputs are navigation targets and can be carded without a
  * liveness probe. URLs in any other tool (shell commands, generic MCP tools —
- * the only path available to providers without client tools, e.g. Backboard)
+ * the only path available to providers without client tools, e.g. DQuant Lab)
  * must pass a probe first so incidental mentions (`grep localhost`, config
  * dumps) never produce a card.
  */
@@ -295,7 +295,7 @@ export class ChatWebPreviewTracker extends Disposable implements IWorkbenchContr
 
 	/**
 	 * Scans every completed tool invocation for localhost URLs — the only
-	 * signal available for providers without client tools (e.g. the Backboard
+	 * signal available for providers without client tools (e.g. the DQuant Lab
 	 * agent, whose dev servers start via plain shell tools). Browser-ish tools
 	 * are trusted; everything else is probe-gated.
 	 */

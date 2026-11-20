@@ -154,7 +154,7 @@ export interface GeneratedMediaInfo {
 }
 
 /**
- * One System One question. Backboard routes these to a decision model
+ * One System One question. DQuant Lab routes these to a decision model
  * (TypeSafe Jev) that answers with probabilities instead of generated text.
  */
 export type SystemOneQuestion =
@@ -185,7 +185,7 @@ export type SystemOneAnswer =
 export interface SystemOneRequest {
 	/** Defaults to `jev-latest`. */
 	model_name?: string;
-	/** Reuses one Backboard thread across a decision loop instead of creating one per call. */
+	/** Reuses one DQuant Lab thread across a decision loop instead of creating one per call. */
 	thread_id?: string;
 	/** Text-only context the questions are answered against. */
 	state: Record<string, string>;
@@ -250,7 +250,7 @@ export interface BackboardThread {
 }
 
 /**
- * Provider-neutral turn events. Backboard can yield these from either one JSON
+ * Provider-neutral turn events. DQuant Lab can yield these from either one JSON
  * response or many SSE payloads without changing the agent loop contract.
  */
 export type ProviderEvent =
@@ -319,7 +319,7 @@ export interface ProviderToolCall {
 }
 
 export interface ProviderUsage {
-	/** Latest Backboard API measurement; never billing-token accumulation. */
+	/** Latest DQuant Lab API measurement; never billing-token accumulation. */
 	backboardContextUsage?: {
 		source: "backboard-api";
 		usedTokens?: number;
@@ -341,7 +341,7 @@ export interface ProviderUsage {
 	model?: string;
 }
 
-/** Which backend serves a model: a saved key, subscription, or Backboard routing. */
+/** Which backend serves a model: a saved key, subscription, or DQuant Lab routing. */
 export type ModelSource = "byok" | "subscription" | "backboard";
 
 /**
@@ -366,7 +366,7 @@ export interface ModelInfo extends ThinkingModelMetadata {
 	/** Context window in tokens, when the catalog reports one. */
 	contextLimit?: number;
 	/**
-	 * Backboard runs this model with no credit or plan behind it (every catalog
+	 * DQuant Lab runs this model with no credit or plan behind it (every catalog
 	 * price is exactly $0). Mirrors the server's `is_free_llm_model` gate.
 	 */
 	free?: boolean;
@@ -395,7 +395,7 @@ export interface ModelCatalogItem {
 	thinking_controls?: ThinkingModelMetadata["thinking_controls"];
 	source?: ModelSource;
 	context_limit?: number | null;
-	/** Live OpenRouter serving routes returned by Backboard's billing catalog. */
+	/** Live OpenRouter serving routes returned by DQuant Lab's billing catalog. */
 	openrouter_providers?: OpenRouterModelProvider[];
 	input_cost_per_1m_tokens?: number | null;
 	output_cost_per_1m_tokens?: number | null;

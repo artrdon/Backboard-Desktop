@@ -264,7 +264,7 @@ export class SessionTypePicker extends Disposable {
 			?? this._folderSessionTypes.find(t => t.sessionType.id === pick.sessionTypeId);
 		// Preserve an explicitly selected provider while it is temporarily
 		// unavailable. This keeps the combined picker on (for example) Codex so
-		// its Install action is shown instead of silently presenting Backboard.
+		// its Install action is shown instead of silently presenting DQuant Lab.
 		const storedChatSessionType = userPick ? this._readStoredPickRaw()?.chatSessionType : undefined;
 		return match?.sessionType.chatSessionType ?? storedChatSessionType ?? pick.sessionTypeId;
 	}

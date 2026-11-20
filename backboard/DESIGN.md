@@ -1,6 +1,6 @@
 ---
 version: alpha
-name: Backboard Editor
+name: DQuant Lab Editor
 description: Editor-mode chat follows the existing VS Code workbench theme and density.
 omitted:
   - section: colors
@@ -15,7 +15,7 @@ omitted:
     reason: Canonical owners and theme mappings are recorded below instead of duplicated tokens.
 ---
 
-# Backboard Editor design context
+# DQuant Lab Editor design context
 
 ## Overview
 

@@ -32,7 +32,7 @@ export interface IStudioProcess {
 	readonly windowsStore?: boolean;
 }
 
-/** Maps Node's platform and arch to the Backboard release name, e.g. `macos-aarch64`. */
+/** Maps Node's platform and arch to the DQuant Lab release name, e.g. `macos-aarch64`. */
 export function studioPlatform(platform: string, arch: string): string | undefined {
 	const os = platform === 'darwin' ? 'macos' : platform === 'win32' ? 'windows' : platform === 'linux' ? 'linux' : undefined;
 	const cpu = arch === 'arm64' ? 'aarch64' : arch === 'x64' ? 'x86_64' : undefined;
@@ -40,7 +40,7 @@ export function studioPlatform(platform: string, arch: string): string | undefin
 }
 
 /**
- * Reports this installation's first launch to Backboard once, for Studio adoption analytics.
+ * Reports this installation's first launch to DQuant Lab once, for Studio adoption analytics.
  *
  * Optional telemetry: a failure is only logged. The "reported" flag is set after the server
  * accepts the report, so an offline or rejected launch is reported again on the next start,

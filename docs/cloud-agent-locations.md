@@ -6,8 +6,8 @@ remote host runs a new task in a folder on that host.
 
 ## Connect an existing EC2 agent server
 
-1. Start a compatible Backboard agent server on the EC2 machine, with the
-   Backboard runtime and its provider credentials configured there. The host
+1. Start a compatible DQuant Lab agent server on the EC2 machine, with the
+   DQuant Lab runtime and its provider credentials configured there. The host
    must advertise the `backboard` agent. An ordinary SSH server or an EC2
    instance ID alone is not an agent-server endpoint.
 2. Make its WebSocket endpoint reachable. For a private server, forward its
@@ -44,7 +44,7 @@ storage. Do not share settings containing connection tokens.
 
 The location applies to new tasks. Existing conversations keep their original
 host. Local files are not uploaded automatically: clone or copy the project
-onto EC2 first. The model picker uses the Backboard models advertised by the
+onto EC2 first. The model picker uses the DQuant Lab models advertised by the
 selected host.
 
 ## Server entry point
@@ -56,7 +56,7 @@ It accepts `--host`, `--port`, and `--connection-token-file`.
 
 Build the same revision on the host with Linux-compatible native dependencies
 and the repository's pinned Node version. Keep the server bound to loopback
-when using a tunnel. Do not use `--quiet` for a real Backboard host: that mode
+when using a tunnel. Do not use `--quiet` for a real DQuant Lab host: that mode
 skips production-agent registration. A supervisor must also keep the server's
 stdin open: the current server shuts down when stdin reaches EOF.
 

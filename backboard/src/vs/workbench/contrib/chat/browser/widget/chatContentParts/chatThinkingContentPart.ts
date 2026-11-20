@@ -835,7 +835,7 @@ export class ChatThinkingContentPart extends ChatCollapsibleContentPart implemen
 	private readonly useCursorPanelPresentation: boolean;
 	private readonly useEditorPanelPresentation: boolean;
 	private readonly useCursorTranscriptPresentation: boolean;
-	/** Codex presentation: this part renders as one Codex activity unit (all Backboard modes). */
+	/** Codex presentation: this part renders as one Codex activity unit (all DQuant Lab modes). */
 	private codexSequence: CodexActivitySequence | undefined;
 	/** Codex: key of the reasoning section `updateThinking` currently streams into. */
 	private codexReasoningKey = 0;
@@ -1003,7 +1003,7 @@ export class ChatThinkingContentPart extends ChatCollapsibleContentPart implemen
 			&& (this.configurationService.getValue<boolean>(ChatConfiguration.ProgressBorder) !== true || accessibilityService.isMotionReduced());
 		const configuredMode = getEffectiveThinkingDisplayMode(this.configurationService, contextKeyService);
 
-		// The Backboard middle panel follows T3's document-flow timeline. VS
+		// The DQuant Lab middle panel follows T3's document-flow timeline. VS
 		// Code's fixed-height reasoning viewport clips and scrolls the whole work
 		// log as one unit, while T3 keeps every work row in ordinary page flow.
 		this.fixedScrollingMode = !this.useCursorPanelPresentation && configuredMode === ThinkingDisplayMode.FixedScrolling;
@@ -1170,7 +1170,7 @@ export class ChatThinkingContentPart extends ChatCollapsibleContentPart implemen
 		}
 
 		// Restored completed turns do not pass through finalizeTitleIfDefault(),
-		// so give Backboard's clean transcript the same quiet completed label on
+		// so give DQuant Lab's clean transcript the same quiet completed label on
 		// first render that a live turn receives when it finishes.
 		if (this.useCursorPanelPresentation && (this.streamingCompleted || this.element.isComplete)) {
 			this.setFinalizedTitle(this.defaultTitle);
@@ -1181,7 +1181,7 @@ export class ChatThinkingContentPart extends ChatCollapsibleContentPart implemen
 		// T3's timeline always mounts its work entries; only their individual
 		// details are disclosed on demand. The native chat renderer normally
 		// delays the entire thinking body until VS Code's outer fold is opened,
-		// which leaves restored Backboard threads with styled but unmounted rows.
+		// which leaves restored DQuant Lab threads with styled but unmounted rows.
 		return this.useCursorPanelPresentation || (this.fixedScrollingMode && !this.streamingCompleted);
 	}
 
@@ -2166,7 +2166,7 @@ export class ChatThinkingContentPart extends ChatCollapsibleContentPart implemen
 	// --- Codex-style activity groups -------------------------------------------------
 
 	/**
-	 * Gives Backboard's clean transcript the same compact anatomy as a T3 work
+	 * Gives DQuant Lab's clean transcript the same compact anatomy as a T3 work
 	 * row. The native VS Code tool part remains mounted for its output and
 	 * lifecycle, but it is revealed only when this individual row is opened.
 	 */
@@ -2475,7 +2475,7 @@ export class ChatThinkingContentPart extends ChatCollapsibleContentPart implemen
 		// regardless of whether the individual calls read, edit, search, or run a
 		// command. A commentary/reasoning row ends the run. Keep the existing
 		// category summaries for other VS Code chat surfaces, but use Cursor's
-		// provider-neutral work-log grouping in Backboard's right transcript.
+		// provider-neutral work-log grouping in DQuant Lab's right transcript.
 		if (!group
 			|| (!this.useCursorTranscriptPresentation && group.category !== category)
 			|| (this.useCursorTranscriptPresentation && !mutation && !!group.mutationBatchId)
@@ -3632,7 +3632,7 @@ ${this.hookCount > 0 ? `EXAMPLES WITH BLOCKED CONTENT (from hooks):
 		// T3 renders work entries directly in the timeline instead of deferring
 		// them behind VS Code's outer "Worked" disclosure. Keep the native tool
 		// part mounted for lifecycle/output, but materialize it immediately in
-		// Backboard's clean middle panel.
+		// DQuant Lab's clean middle panel.
 		const isCleanTimelineTool = this.useCursorPanelPresentation && toolInvocationOrMarkdown
 			&& (toolInvocationOrMarkdown.kind === 'toolInvocation' || toolInvocationOrMarkdown.kind === 'toolInvocationSerialized');
 		const isCursorTranscriptArtifact = this.useCursorTranscriptPresentation && toolInvocationOrMarkdown

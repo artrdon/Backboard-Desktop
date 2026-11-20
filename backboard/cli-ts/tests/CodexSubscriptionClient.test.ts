@@ -197,7 +197,7 @@ describe("CodexSubscriptionClient", () => {
 			outputTokens: 20,
 			totalTokens: 120,
 			cachedTokens: 80,
-			// Occupancy matches the level Backboard reports: prompt + output.
+			// Occupancy matches the level DQuant Lab reports: prompt + output.
 			contextTokens: 120,
 			provider: "openai-subscription",
 			model: "gpt-5.6-sol",

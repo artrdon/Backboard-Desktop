@@ -1057,7 +1057,7 @@ describe("WorkerWorkspaceManager", () => {
 			(await git(project, ["log", "--all", "--format=%s"]))
 				.split("\n")
 				.filter(
-					(subject) => subject === "Initialize Backboard parallel workspace",
+					(subject) => subject === "Initialize DQuant Lab parallel workspace",
 				),
 		).toHaveLength(1);
 		expect(await readFile(join(project, "worker-a.txt"), "utf8")).toBe(
@@ -1888,7 +1888,7 @@ describe("WorkerWorkspaceManager", () => {
 			"--no-ff",
 			"--no-commit",
 			"--message",
-			`Backboard worker integration\n\nBackboard-Worker-Integration: ${records.map((record) => record.resultCommit).join(" ")}`,
+			`DQuant Lab worker integration\n\nBackboard-Worker-Integration: ${records.map((record) => record.resultCommit).join(" ")}`,
 			...records.map((record) => record.resultCommit ?? ""),
 		]);
 		expect(await gitManager.mergeInProgress(fixture.repository)).toBe(true);

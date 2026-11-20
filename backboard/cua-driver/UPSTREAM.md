@@ -1,8 +1,8 @@
-# Backboard Studio Cua Driver integration
+# DQuant Lab Studio Cua Driver integration
 
 This directory vendors the open-source
 [Cua Driver](https://github.com/trycua/cua/tree/main/libs/cua-driver) so the
-desktop-automation binary Backboard Studio ships can be built and audited from
+desktop-automation binary DQuant Lab Studio ships can be built and audited from
 the same repository.
 
 ## Upstream snapshot
@@ -64,23 +64,23 @@ The remaining integration lives outside this directory:
 
 - `cli-ts/src/core/computer/CuaDriverSurface.ts` talks to the driver over a
   persistent `cua-driver mcp --direct --embedded` stdio connection.
-  `--embedded` attributes macOS Accessibility to Backboard Studio, so users
+  `--embedded` attributes macOS Accessibility to DQuant Lab Studio, so users
   see no second permission prompt.
 - `cli-ts/src/core/computer/JevUseLoop.ts` is the decide-act-observe loop.
   Its brain is pluggable. The default, `ModelBrain.ts`, is a fast tool-calling
-  chat model (`openrouter/deepseek/deepseek-v4.1-flash` through Backboard),
+  chat model (`openrouter/deepseek/deepseek-v4.1-flash` through DQuant Lab),
   following upstream's `examples/agent-sdks` agents. It picks one tool per step
   over the filtered controls and writes its own text.
   `BACKBOARD_COMPUTER_USE_MODEL` selects another `provider/model`, or `jev`.
   `jev` selects `JevBrain.ts`, which follows upstream's `examples/jev-use`
-  recipe but reaches TypeSafe Jev through Backboard (`system_one` on
+  recipe but reaches TypeSafe Jev through DQuant Lab (`system_one` on
   `/threads/messages`), so no separate TypeSafe key is needed.
 - `scripts/build-cua-driver.sh` builds the binary into
   `extensions/backboard/bin/`, which is gitignored like the cli-ts binary.
 
 ## Telemetry
 
-The driver sends product telemetry to its authors by default. Backboard turns
+The driver sends product telemetry to its authors by default. DQuant Lab turns
 it off everywhere it runs the driver (`CUA_DRIVER_RS_TELEMETRY_ENABLED=false`,
 `CUA_TELEMETRY_ENABLED=false`). Re-check those variable names when updating
 the snapshot: if upstream renames them, telemetry silently comes back on.
@@ -108,7 +108,7 @@ Build the driver, then from `backboard/cli-ts` run:
 bun run test:computer-use --app Brave --goal "open pixlr on brave and draw a picture of a cat"
 ```
 
-This is an opt-in live test: it uses Backboard credentials and the configured
+This is an opt-in live test: it uses DQuant Lab credentials and the configured
 writer model. It exercises the production Computer tool and saves Jev requests,
 answers, the result, and an exact-window screenshot. Inspect the screenshot;
 `done` means Jev reported completion, not independent visual verification.

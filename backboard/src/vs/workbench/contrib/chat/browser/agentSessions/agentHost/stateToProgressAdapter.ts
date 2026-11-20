@@ -162,7 +162,7 @@ const BACKBOARD_CORE_TOOL_KINDS: ReadonlySet<ChatCoreToolKind> = new Set([
 /**
  * Returns the explicit built-in tool UI hint produced by cli-ts. Requiring the
  * source marker prevents an extension or MCP server with a coincidentally
- * matching display name from being routed to Backboard's native cards.
+ * matching display name from being routed to DQuant Lab's native cards.
  */
 export function getBackboardCoreToolKind(tc: { readonly _meta?: Record<string, unknown> }): ChatCoreToolKind | undefined {
 	if (tc._meta?.source !== 'cli-ts') {
@@ -323,7 +323,7 @@ export interface TurnModelLookup {
  * `_meta` bag. `contextTokens` is the provider-measured occupancy — a
  * level with the turn's output already included, never something to add
  * `outputTokens` on top of. The limit accepts `contextLimit` (cli-ts /
- * Backboard, Claude) or `modelContextWindow` (codex).
+ * DQuant Lab, Claude) or `modelContextWindow` (codex).
  */
 function getContextUsageMeta(meta: Record<string, unknown> | undefined): { contextTokens?: number; contextLimit?: number } {
 	const contextTokens = typeof meta?.contextTokens === 'number' && Number.isFinite(meta.contextTokens) && meta.contextTokens >= 0 ? meta.contextTokens : undefined;

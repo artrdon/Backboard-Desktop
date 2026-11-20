@@ -32,7 +32,7 @@ export async function loginWithBackboardSso(
 		result.token.backboard_api_key || result.token.personal_api_key;
 	if (!apiKey) {
 		throw new Error(
-			"Backboard SSO did not return a workspace or personal API key. Check that the OAuth client returns individual user tokens, or set BACKBOARD_API_KEY for non-interactive use.",
+			"DQuant Lab SSO did not return a workspace or personal API key. Check that the OAuth client returns individual user tokens, or set BACKBOARD_API_KEY for non-interactive use.",
 		);
 	}
 	// Signing in adds a credential. It must not drop what the file already
@@ -70,9 +70,9 @@ export async function logoutSavedCredentials(
 }
 
 /**
- * Signing out of Backboard leaves a connected ChatGPT or Claude subscription
+ * Signing out of DQuant Lab leaves a connected ChatGPT or Claude subscription
  * connected: those are separate accounts, and they are what keeps the app
- * usable without a Backboard sign-in.
+ * usable without a DQuant Lab sign-in.
  */
 async function removeSavedBackboardCredentials(
 	homeDir: string,
@@ -89,10 +89,10 @@ async function removeSavedBackboardCredentials(
 		const result = await deleteBackboardConfig(homeDir);
 		return result.removed
 			? `Signed out. Removed saved credentials from ${result.path}.`
-			: `No saved Backboard credentials found at ${result.path}.`;
+			: `No saved DQuant Lab credentials found at ${result.path}.`;
 	}
 	const configPath = await saveBackboardConfig(remaining, homeDir);
 	return apiKey
-		? `Signed out. Removed saved Backboard credentials from ${configPath}; connected subscriptions were kept.`
-		: `No saved Backboard credentials found at ${configPath}.`;
+		? `Signed out. Removed saved DQuant Lab credentials from ${configPath}; connected subscriptions were kept.`
+		: `No saved DQuant Lab credentials found at ${configPath}.`;
 }

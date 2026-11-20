@@ -11,7 +11,7 @@ import { shouldOpenSimpleOnStartup } from '../../electron-main/startupMode.js';
 import { IOpenConfiguration, OpenContext } from '../../electron-main/windows.js';
 import { IWindowState } from '../../electron-main/windowsStateHandler.js';
 
-suite('Backboard startup mode', () => {
+suite('DQuant Lab startup mode', () => {
 	ensureNoDisposablesAreLeakedInTestSuite();
 	const config: IOpenConfiguration = { context: OpenContext.DESKTOP, initialStartup: true, cli: { _: [] } };
 	const savedWindow: IWindowState = { uiState: { mode: WindowMode.Normal, x: 0, y: 0, width: 1000, height: 800 } };

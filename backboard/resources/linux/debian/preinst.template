@@ -2,7 +2,7 @@
 
 set -e
 
-# Backboard 3.0.0's postrm removes shared VS Code apt files even on upgrade.
+# DQuant Lab 3.0.0's postrm removes shared VS Code apt files even on upgrade.
 # dpkg runs the new preinst before that old postrm, then the new postinst.
 if [ "@@NAME@@" = "backboard-studio" ] && { [ "$1" = "upgrade" ] || [ "$1" = "install" ]; }; then
 	eval "$(apt-config shell APT_SOURCE_PARTS Dir::Etc::sourceparts/d)"

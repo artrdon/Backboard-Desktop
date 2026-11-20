@@ -127,10 +127,10 @@ suite('SessionTypePicker', () => {
 
 	ensureNoDisposablesAreLeakedInTestSuite();
 
-	test('Backboard allowlist routes remote folders to the remote Backboard session type', () => {
+	test('DQuant Lab allowlist routes remote folders to the remote DQuant Lab session type', () => {
 		management.setSessionTypes([
 			sessionType('agenthost-ec2', 'claude', 'Claude', 'remote-ec2-claude'),
-			sessionType('agenthost-ec2', 'backboard', 'Backboard', 'remote-ec2-backboard'),
+			sessionType('agenthost-ec2', 'backboard', 'DQuant Lab', 'remote-ec2-backboard'),
 		]);
 		const picker = createPicker(disposables, session, management, storage);
 		picker.setAllowedSessionTypeIds(['agent-host-backboard', 'backboard']);
@@ -178,7 +178,7 @@ suite('SessionTypePicker', () => {
 
 	test('preserves the stored chat-session provider while its CLI is unavailable', () => {
 		management.setSessionTypes([
-			sessionType('local-1', 'backboard', 'Backboard', 'agent-host-backboard'),
+			sessionType('local-1', 'backboard', 'DQuant Lab', 'agent-host-backboard'),
 			sessionType('local-1', 'codex', 'Codex', 'agent-host-codex'),
 		]);
 		const picker = createPicker(disposables, session, management, storage);
@@ -186,7 +186,7 @@ suite('SessionTypePicker', () => {
 
 		picker.pick({ providerId: 'local-1', sessionTypeId: 'codex' });
 		management.setSessionTypes([
-			sessionType('local-1', 'backboard', 'Backboard', 'agent-host-backboard'),
+			sessionType('local-1', 'backboard', 'DQuant Lab', 'agent-host-backboard'),
 		]);
 
 		assert.strictEqual(picker.getPickedChatSessionType(folder), 'agent-host-codex');

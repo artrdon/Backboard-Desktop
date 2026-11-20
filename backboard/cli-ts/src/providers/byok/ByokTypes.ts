@@ -114,7 +114,7 @@ export interface ProviderAdapter {
 		transport?: ProviderTransport,
 	): boolean | Promise<boolean>;
 
-	/** Streams one assistant turn as the same ProviderEvents Backboard yields. */
+	/** Streams one assistant turn as the same ProviderEvents DQuant Lab yields. */
 	stream(
 		request: ByokStreamRequest,
 		key: ProviderCredential,

@@ -3,7 +3,7 @@ import { resolveBudget } from "../../config/thinking.budgets.ts";
 import { fallbackThinkingProfile } from "../../config/thinking.profiles.ts";
 
 /**
- * `ThinkingConfig` is the union Backboard accepts (`effort`, `budget_tokens`,
+ * `ThinkingConfig` is the union DQuant Lab accepts (`effort`, `budget_tokens`,
  * or `max_tokens`). Direct vendor APIs each take exactly one of those shapes,
  * so these helpers collapse the union per provider rather than making every
  * adapter re-derive it.

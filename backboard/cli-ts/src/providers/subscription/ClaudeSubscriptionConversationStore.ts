@@ -24,7 +24,7 @@ export interface StoredClaudeSubscriptionConversation {
 	memoryContext?: string;
 }
 
-/** Durable Backboard metadata for a Claude-owned transcript. */
+/** Durable DQuant Lab metadata for a Claude-owned transcript. */
 export class ClaudeSubscriptionConversationStore {
 	constructor(private readonly baseDir: string) {}
 

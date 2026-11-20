@@ -210,7 +210,7 @@ python3 "${REPO_ROOT}/scripts/test_packaged_card_images.py" --app "${STAGED_APP}
 
 UPDATER_JS="${STAGED_APP}/Contents/Resources/app/extensions/backboard/out/updatesInstaller.js"
 if [[ ! -f "${UPDATER_JS}" ]]; then
-  echo "Packaged app is missing the Backboard updater implementation." >&2
+  echo "Packaged app is missing the DQuant Lab updater implementation." >&2
   exit 1
 fi
 for marker in \

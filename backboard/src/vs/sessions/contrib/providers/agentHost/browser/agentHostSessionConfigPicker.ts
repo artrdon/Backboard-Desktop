@@ -274,7 +274,7 @@ export class AgentHostSessionConfigPicker extends Disposable {
 		super();
 
 		this._register(autorun(reader => {
-			// The model decides which chips apply (Backboard-only features are
+			// The model decides which chips apply (DQuant Lab-only features are
 			// hidden for key-billed models), so re-render on model changes too.
 			this._session.read(reader)?.modelId.read(reader);
 			this._renderConfigPickers();
@@ -425,7 +425,7 @@ export class AgentHostSessionConfigPicker extends Disposable {
 	 */
 	protected _shouldRenderProperty(property: string, schema: SessionConfigPropertySchema, isNewSession: boolean): boolean {
 		if (!isConfigPropertyAvailableForModel(property, this._session.get()?.modelId.get())) {
-			// Backboard's media (and, for keys, memory) never reaches a request
+			// DQuant Lab's media (and, for keys, memory) never reaches a request
 			// billed to the user's own key or subscription.
 			return false;
 		}

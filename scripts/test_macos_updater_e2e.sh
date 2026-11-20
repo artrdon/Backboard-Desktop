@@ -46,7 +46,7 @@ if [[ ! -f "$UPDATE_DMG" ]]; then
 fi
 if [[ ! -f "$TEST_FILE" ]]; then
   echo "Compiled updater test is missing: $TEST_FILE" >&2
-  echo "Run the Backboard extension compile/typecheck workflow first." >&2
+  echo "Run the DQuant Lab extension compile/typecheck workflow first." >&2
   exit 1
 fi
 if [[ -n "$INSTALLER_MODULE" && ! -f "$INSTALLER_MODULE" ]]; then

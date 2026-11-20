@@ -112,8 +112,8 @@ export interface ISessionShowMore {
 export type SessionListItem = ISession | ISessionSection | ISessionShowMore;
 
 /**
- * Chats from the Claude Code and Codex apps are never listed. Chats Backboard
- * ran on a Claude or ChatGPT subscription are Backboard sessions and stay.
+ * Chats from the Claude Code and Codex apps are never listed. Chats DQuant Lab
+ * ran on a Claude or ChatGPT subscription are DQuant Lab sessions and stay.
  */
 export function isListedSessionType(sessionType: string): boolean {
 	return !isClaudeAgentSessionProvider(sessionType) && !isCodexAgentSessionProvider(sessionType);
@@ -146,7 +146,7 @@ interface ISessionProviderPresentation {
 
 /**
  * Returns the user-facing agent identity for a session. Simple mode surfaces
- * this beside every thread, so keep the well-known Backboard agents stable
+ * this beside every thread, so keep the well-known DQuant Lab agents stable
  * even when they are served by different local or remote session providers.
  */
 function providerPresentationForSession(session: ISession, sessionsProvidersService: ISessionsProvidersService): ISessionProviderPresentation {
@@ -171,7 +171,7 @@ function providerPresentationForSession(session: ISession, sessionsProvidersServ
 
 /**
  * The subscription a chat bills to, shown in place of the provider: a
- * Backboard chat on a subscription model, or a Claude Code / Codex session.
+ * DQuant Lab chat on a subscription model, or a Claude Code / Codex session.
  * Undefined when it is not subscription-billed.
  */
 function subscriptionPresentationForSession(session: ISession, modelId: string | undefined): ISessionProviderPresentation | undefined {
@@ -547,7 +547,7 @@ class SessionItemRenderer implements ITreeRenderer<SessionListItem, FuzzyScore, 
 			persistence: { hideOnHover: false },
 		}), { groupId: 'sessions-list' }));
 
-		// Provider logo — identifies which agent (Backboard, Claude, Codex,
+		// Provider logo — identifies which agent (DQuant Lab, Claude, Codex,
 		// and future providers) owns the session, rendered just before the title.
 		const workspace = element.workspace.get();
 		const isWorkspaceFolder = workspace && workspace.folders.length > 0 && workspace.folders[0]?.gitRepository?.workTreeUri === undefined;
@@ -558,7 +558,7 @@ class SessionItemRenderer implements ITreeRenderer<SessionListItem, FuzzyScore, 
 			? `session-provider-icon ${ThemeIcon.asClassName(providerIcon)}`
 			: 'session-provider-icon';
 		template.providerIcon.classList.toggle('no-icon', !providerIcon);
-		// Provider pill — reactive: a Backboard chat on a Claude or ChatGPT
+		// Provider pill — reactive: a DQuant Lab chat on a Claude or ChatGPT
 		// subscription names that subscription, since the model can change.
 		const providerPresentation = providerPresentationForSession(element, this.sessionsProvidersService);
 		template.elementDisposables.add(autorun(reader => {

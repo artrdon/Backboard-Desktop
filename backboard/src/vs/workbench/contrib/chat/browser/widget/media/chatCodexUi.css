@@ -10,7 +10,7 @@
  * modules), reduced to the classes the Codex presentation emits
  * (chatContentParts/codex/*.ts) and scoped to `.cx-pf` roots so its resets and
  * utilities never reach VS Code's own DOM. Regenerate rather than hand-edit the
- * generated section; Backboard-specific glue lives at the end of the file.
+ * generated section; DQuant Lab-specific glue lives at the end of the file.
  */
 
 /* Perf: the generated `group-[:hover:not(:has(...))]/activity-header` and
@@ -193,7 +193,7 @@
 
 
 
-/* ---- Backboard glue ---- */
+/* ---- DQuant Lab glue ---- */
 
 /* A thinking part in the Codex presentation is one Codex activity unit: its
  * legacy "Thoughts" disclosure header is replaced by the unit's own header. */
@@ -283,7 +283,7 @@
 	font-size: var(--text-size-chat, 14px);
 }
 
-/* Native Backboard bodies (tool output, diffs) keep their own styling inside a row. */
+/* Native DQuant Lab bodies (tool output, diffs) keep their own styling inside a row. */
 .cx-pf .cx-native-body {
 	all: revert;
 	display: block;

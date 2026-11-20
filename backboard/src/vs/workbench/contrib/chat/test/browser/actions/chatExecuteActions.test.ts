@@ -34,7 +34,7 @@ interface IExecuteHandoffResult {
 }
 
 
-suite('Backboard realtime voice', () => {
+suite('DQuant Lab realtime voice', () => {
 	test('downsamples microphone frames to 16 kHz signed PCM', () => {
 		const encoded = encodeBackboardRealtimePcm(new Float32Array([1, 1, 1, -1, -1, -1]), 48000);
 		const pcm = new DataView(encoded);

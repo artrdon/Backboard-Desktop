@@ -8,7 +8,7 @@ import { DisposableStore, toDisposable } from '../../../../../base/common/lifecy
 import { ensureNoDisposablesAreLeakedInTestSuite } from '../../../../../base/test/common/utils.js';
 import { OnboardingVariationA } from '../../browser/onboardingVariationA.js';
 
-suite('Backboard onboarding provider key', () => {
+suite('DQuant Lab onboarding provider key', () => {
 	const disposables = ensureNoDisposablesAreLeakedInTestSuite();
 
 	for (const connected of [true, false]) {

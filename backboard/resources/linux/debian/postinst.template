@@ -3,7 +3,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 
-# Restore shared apt files removed by Backboard 3.0.0's upgrade postrm.
+# Restore shared apt files removed by DQuant Lab 3.0.0's upgrade postrm.
 if [ "@@NAME@@" = "backboard-studio" ]; then
 	BACKUP_DIR=/var/lib/@@NAME@@/apt-upgrade-backup
 	if [ -d "$BACKUP_DIR" ]; then

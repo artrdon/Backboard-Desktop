@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 /**
- * Live updates ship Backboard's JavaScript without a new signed app. A signed
- * manifest lists components; the Backboard extension downloads and verifies
+ * Live updates ship DQuant Lab's JavaScript without a new signed app. A signed
+ * manifest lists components; the DQuant Lab extension downloads and verifies
  * them into `<userData>/LiveUpdates`, then writes a small pointer file per
  * component. The boot loader (`bootstrap-live.ts`) and the agent host only read
  * those pointers, re-checking the signature against the keys pinned in the

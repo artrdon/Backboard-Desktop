@@ -38,7 +38,7 @@ export interface RunMessageOptions extends RequestOptions {
 
 /**
  * What a turn engine may ask of a model backend. Declaring these capabilities
- * up front is what lets one `AgentLoop` drive both Backboard (server-held
+ * up front is what lets one `AgentLoop` drive both DQuant Lab (server-held
  * threads, assistants, and memory) and a direct vendor key (none of those)
  * without either path special-casing the other.
  */
@@ -47,7 +47,7 @@ export interface AgentClientCapabilities {
 	assistants: boolean;
 	/** Threads are server-held and can be listed/resumed. */
 	threads: boolean;
-	/** The backend applies Backboard memory to the conversation. */
+	/** The backend applies DQuant Lab memory to the conversation. */
 	memory: boolean;
 }
 
@@ -114,7 +114,7 @@ export interface AgentClient {
 
 	listModels(options?: RequestOptions): Promise<ModelsListResponse>;
 
-	/** Backboard System One decisions (TypeSafe Jev); absent on non-Backboard clients. */
+	/** DQuant Lab System One decisions (TypeSafe Jev); absent on non-DQuant Lab clients. */
 	systemOne?(
 		request: SystemOneRequest,
 		options?: RequestOptions,

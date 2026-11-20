@@ -272,7 +272,7 @@ of the navigation** (old frame can never blend through mid-load), and on
 
 **Verification order matters:** every fix above lives in the **main process**.
 A running instance from before the fix keeps the old code no matter how many
-times the window reloads. Fully quit Backboard Studio, relaunch, then re-test:
+times the window reloads. Fully quit DQuant Lab Studio, relaunch, then re-test:
 1. scroll the chats list hard (with and without `smoothScrolling`),
 2. open/close a modal over the sidebar,
 3. switch Editor→Simple→Editor a few times.

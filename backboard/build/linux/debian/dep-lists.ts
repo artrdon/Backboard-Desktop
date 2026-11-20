@@ -23,7 +23,7 @@ export const recommendedDeps = [
 ];
 
 export const referenceGeneratedDepsByArch = {
-	// Verified against Backboard's Ubuntu 22.04 x86_64 release payload.
+	// Verified against DQuant Lab's Ubuntu 22.04 x86_64 release payload.
 	'amd64': [
 		'ca-certificates',
 		'libasound2 (>= 1.0.17)',

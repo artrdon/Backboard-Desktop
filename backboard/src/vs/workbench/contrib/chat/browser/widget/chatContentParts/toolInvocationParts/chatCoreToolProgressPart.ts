@@ -46,7 +46,7 @@ export interface ICoreToolCardPreview {
 }
 
 /**
- * Provider-neutral rendering model for Backboard's built-in tools. Keeping the
+ * Provider-neutral rendering model for DQuant Lab's built-in tools. Keeping the
  * input normalization here pure makes malformed and restored payloads safe to
  * test without constructing the service-heavy chat renderer.
  */

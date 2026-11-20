@@ -288,7 +288,7 @@ describe("BackboardClient streaming transport", () => {
 
 		expect(thrown).toBeInstanceOf(BackboardTransportError);
 		expect((thrown as Error).message).toContain(
-			"Backboard stream failed for /threads/tool-outputs",
+			"DQuant Lab stream failed for /threads/tool-outputs",
 		);
 		expect((thrown as Error).message).toContain("The operation timed out.");
 	});

@@ -30,12 +30,12 @@ fi
 
 case "${CHANNEL}" in
   stable)
-    APP_DISPLAY_NAME="Backboard Studio"
+    APP_DISPLAY_NAME="DQuant Lab"
     BG_SRC="${ASSETS_DIR}/background.tiff"
     DS_OUT="${ASSETS_DIR}/DS_Store"
     ;;
   sandbox)
-    APP_DISPLAY_NAME="Backboard Studio Sandbox"
+    APP_DISPLAY_NAME="DQuant Lab Sandbox"
     BG_SRC="${ASSETS_DIR}/background-sandbox.tiff"
     DS_OUT="${ASSETS_DIR}/DS_Store-sandbox"
     ;;

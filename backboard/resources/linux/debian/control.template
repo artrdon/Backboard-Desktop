@@ -5,12 +5,12 @@ Depends: @@DEPENDS@@
 Recommends: @@RECOMMENDS@@
 Priority: optional
 Architecture: @@ARCHITECTURE@@
-Maintainer: Backboard
-Homepage: https://docs.backboard.io/
+Maintainer: DQuant Lab
+Homepage: https://github.com/artrdon/Backboard-Desktop
 Installed-Size: @@INSTALLEDSIZE@@
 Provides: backboard-@@NAME@@
 Conflicts: backboard-@@NAME@@
 Replaces: backboard-@@NAME@@
-Description: Backboard IDE.
- Backboard IDE combines the simplicity of a code editor with Backboard-powered
+Description: DQuant Lab.
+ DQuant Lab combines the simplicity of a code editor with DQuant Lab-powered
  development workflows.

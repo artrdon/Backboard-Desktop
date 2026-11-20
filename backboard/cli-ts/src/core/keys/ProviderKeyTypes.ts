@@ -1,8 +1,8 @@
 /**
  * BYOK (bring-your-own-key) provider identity and storage shapes.
  *
- * A provider id here is always a Backboard catalog provider name too, so a
- * BYOK model and a Backboard-routed model of the same vendor share one
+ * A provider id here is always a DQuant Lab catalog provider name too, so a
+ * BYOK model and a DQuant Lab-routed model of the same vendor share one
  * `provider/model` string and the `/model` picker can dedupe across sources.
  */
 export const BYOK_PROVIDER_IDS = [

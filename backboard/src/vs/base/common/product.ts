@@ -88,13 +88,13 @@ export interface IProductConfiguration {
 	 * The underlying VS Code engine version (e.g. `1.126.0`). This is what
 	 * `vscode.version` returns and what extension `engines.vscode` ranges are
 	 * validated against, so it MUST stay within the VS Code `1.x` line even as
-	 * the Backboard product version advances. Bumping this into `2.x` makes every
+	 * the DQuant Lab product version advances. Bumping this into `2.x` makes every
 	 * extension that declares a `^1.x` engine (including the built-in language
 	 * servers) fail activation. Use `backboardVersion` for product branding.
 	 */
 	readonly version: string;
 	/**
-	 * The Backboard product version (e.g. `2.3.2`), shown to users in the About
+	 * The DQuant Lab product version (e.g. `2.3.2`), shown to users in the About
 	 * dialog. Decoupled from `version` so branding can advance independently of
 	 * the VS Code engine version without breaking extension compatibility.
 	 */
@@ -293,7 +293,7 @@ export interface IProductConfiguration {
 		readonly publicKeys?: readonly string[];
 	};
 
-	/** PostHog project for Backboard product analytics. Unset = analytics off. */
+	/** PostHog project for DQuant Lab product analytics. Unset = analytics off. */
 	readonly backboardAnalytics?: {
 		readonly posthogKey?: string;
 		readonly posthogHost?: string;

@@ -64,7 +64,7 @@ function readKeyFile(homeDir: string): KeyFileShape {
 	try {
 		parsed = JSON.parse(readFileSync(file, "utf8")) as JsonValue;
 	} catch {
-		// Missing or corrupt: the CLI still has Backboard SSO and `/keys` to
+		// Missing or corrupt: the CLI still has DQuant Lab SSO and `/keys` to
 		// repair things, so this must never be fatal.
 		return { salt: newSalt(), keys: {}, needsUpgrade: false, unreadable: [] };
 	}

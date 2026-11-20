@@ -6,7 +6,7 @@
 /*
  * Codex transcript layer.
  *
- * Every Backboard mode (Simple, Editor panel, Advanced) mounts the same
+ * Every DQuant Lab mode (Simple, Editor panel, Advanced) mounts the same
  * `.backboard-clean-chat .backboard-cursor-transcript` list, so this one layer
  * gives all of them the Codex desktop app's transcript: plain prose, and every
  * tool call, group, command, edit and agent as a single muted 21px line with a

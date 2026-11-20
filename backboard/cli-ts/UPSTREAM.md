@@ -1,7 +1,7 @@
-# Backboard Studio R-CLI integration
+# DQuant Lab Studio R-CLI integration
 
 This directory vendors the public
-[Backboard R-CLI](https://github.com/Backboard-io/Backboard-R-CLI) source so the
+[DQuant Lab R-CLI](https://github.com/Backboard-io/Backboard-R-CLI) source so the
 open-source IDE and its bundled agent backend can be built and audited from the
 same repository.
 
@@ -15,7 +15,7 @@ same repository.
 
 ## Studio integration patches
 
-The vendored source stays functionally owned by R-CLI. Backboard Studio carries
+The vendored source stays functionally owned by R-CLI. DQuant Lab Studio carries
 only the small host integration needed to run that public runtime inside the
 IDE:
 
@@ -40,4 +40,4 @@ R-CLI source.
 2. Reapply the documented Studio integration patches above.
 3. Update the commit, version, and date in this file.
 4. Run `bun install --frozen-lockfile`, `bun run validate`, and `bun run build`
-   here, then run the Backboard Studio typecheck and protocol smoke test.
+   here, then run the DQuant Lab Studio typecheck and protocol smoke test.

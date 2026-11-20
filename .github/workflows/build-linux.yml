@@ -101,12 +101,12 @@ jobs:
         working-directory: backboard/cli-ts
         run: bun install --frozen-lockfile
 
-      # The packaged app loads the Backboard extension from extensions/backboard,
+      # The packaged app loads the DQuant Lab extension from extensions/backboard,
       # and its runtime binary from extensions/backboard/bin. Both are generated
       # artifacts, so they must exist before gulp packs the built-in extensions;
       # otherwise the installer ships an extension without out/ and bin/ and
       # every key validation fails with "cli-ts binary not found".
-      - name: Build the Backboard extension and CLI runtime
+      - name: Build the DQuant Lab extension and CLI runtime
         working-directory: backboard
         run: npm --prefix extensions/backboard run compile
 
@@ -118,10 +118,10 @@ jobs:
             ./node_modules/gulp/bin/gulp.js \
             vscode-linux-x64
 
-      # Fail the build instead of publishing an installer whose Backboard
+      # Fail the build instead of publishing an installer whose DQuant Lab
       # extension or CLI runtime is missing; the packaged app cannot validate
       # provider keys or start agent sessions without them.
-      - name: Verify the packaged Backboard extension
+      - name: Verify the packaged DQuant Lab extension
         working-directory: backboard
         run: |
           set -euo pipefail

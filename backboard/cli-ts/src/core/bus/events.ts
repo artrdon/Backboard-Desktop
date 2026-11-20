@@ -68,7 +68,7 @@ export interface AgentChildToolCall {
 }
 
 export interface UsageInfo {
-	/** Latest Backboard API measurement; never billing-token accumulation. */
+	/** Latest DQuant Lab API measurement; never billing-token accumulation. */
 	backboardContextUsage?: {
 		source: "backboard-api";
 		usedTokens?: number;

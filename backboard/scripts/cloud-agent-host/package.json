@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "Prototype: run the Backboard agent host in a Daytona sandbox and connect the desktop app to it as a remote agent host.",
+  "description": "Prototype: run the DQuant Lab agent host in a Daytona sandbox and connect the desktop app to it as a remote agent host.",
   "scripts": {
     "up": "node daytona.mjs up",
     "url": "node daytona.mjs url",

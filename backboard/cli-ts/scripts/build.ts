@@ -12,7 +12,7 @@ const command = [
 	"./src/entrypoints/cli.tsx",
 ];
 
-// Backboard Studio may cross-build for a target different from the host.
+// DQuant Lab Studio may cross-build for a target different from the host.
 const compileTarget = process.env.BACKBOARD_CLI_TARGET?.trim();
 if (compileTarget) {
 	command.splice(3, 0, "--target", compileTarget);

@@ -296,7 +296,7 @@ describe("ModelBrain", () => {
 			async (request, options) => {
 				used.push(`${request.llm_provider}/${request.model_name}`);
 				if (request.llm_provider === "openrouter")
-					throw new Error("No Backboard account");
+					throw new Error("No DQuant Lab account");
 				return send(request, options);
 			},
 			{ routes: [FAST, session], status },
@@ -316,7 +316,7 @@ describe("ModelBrain", () => {
 				"anthropic/claude-sonnet-5",
 			],
 			status: [
-				"openrouter/deepseek/deepseek-v4.1-flash failed (No Backboard account); retrying",
+				"openrouter/deepseek/deepseek-v4.1-flash failed (No DQuant Lab account); retrying",
 				"openrouter/deepseek/deepseek-v4.1-flash failed again; continuing with anthropic/claude-sonnet-5",
 			],
 		});
@@ -365,7 +365,7 @@ describe("ModelBrain", () => {
 						"hand_off",
 						{
 							instruction:
-								"Sign in to LinkedIn in the Backboard browser window.",
+								"Sign in to LinkedIn in the DQuant Lab browser window.",
 						},
 					],
 					["done", { summary: "The feed is showing." }],
@@ -393,7 +393,7 @@ describe("ModelBrain", () => {
 			offersEmailField: true,
 			offersPasswordField: false,
 			asked: [
-				"Sign in to LinkedIn in the Backboard browser window. [Done, continue | Stop the task]",
+				"Sign in to LinkedIn in the DQuant Lab browser window. [Done, continue | Stop the task]",
 			],
 			steps: ["HAND_OFF", "DONE"],
 			typedNothing: [],
@@ -404,7 +404,7 @@ describe("ModelBrain", () => {
 	it("asks before a consequential control and respects the answer", async () => {
 		const script = () =>
 			sender([
-				["type_text", { id: "t1", text: "Hello from Backboard" }],
+				["type_text", { id: "t1", text: "Hello from DQuant Lab" }],
 				["click", { id: "c1" }],
 			]);
 		const screens = () => [
@@ -430,12 +430,12 @@ describe("ModelBrain", () => {
 			],
 			ok: "done",
 			pressed: [
-				'type "Hello from Backboard" into What do you want to talk about?',
+				'type "Hello from DQuant Lab" into What do you want to talk about?',
 				"press Post",
 			],
 			no: "declined",
 			notPressed: [
-				'type "Hello from Backboard" into What do you want to talk about?',
+				'type "Hello from DQuant Lab" into What do you want to talk about?',
 			],
 		});
 	});
@@ -477,7 +477,7 @@ describe("ModelBrain", () => {
 		);
 	});
 
-	it("bills the fast model to Backboard only when the turn carries a route", () => {
+	it("bills the fast model to DQuant Lab only when the turn carries a route", () => {
 		const fast = {
 			provider: "openrouter",
 			model: "deepseek/deepseek-v4.1-flash",
@@ -493,7 +493,7 @@ describe("ModelBrain", () => {
 				model: "moonshotai/kimi-k3",
 			}),
 			sameModel: computerUseRoutes(fast, { ...fast, source: "backboard" }),
-			// A subscription model bills its subscription, never Backboard.
+			// A subscription model bills its subscription, never DQuant Lab.
 			subscriptionBrain: computerUseRoutes(
 				{ provider: "anthropic-subscription", model: "claude-sonnet-5" },
 				{

@@ -48,7 +48,7 @@ export type ProviderKeyResolver = (
 
 /**
  * A locally held conversation. Vendor APIs are stateless, so the client keeps
- * what Backboard would keep server-side - including the turn settings that
+ * what DQuant Lab would keep server-side - including the turn settings that
  * `submit-tool-outputs` does not resend.
  */
 /** Ceiling on retained conversations; see `threads`. */
@@ -82,14 +82,14 @@ export const BYOK_SESSION_ID_METADATA_KEY = "backboard_session_id";
  * Drives direct vendor APIs behind the same contract as `BackboardClient`.
  *
  * The one real difference between the two backends is where conversation state
- * lives: Backboard holds it under a thread id, and here it is held in-process
+ * lives: DQuant Lab holds it under a thread id, and here it is held in-process
  * under a locally minted one. Everything above this class - the agent loop,
  * tool scheduling, the event bus, the UI - sees identical `ProviderEvent`
  * streams and cannot tell which backend produced them.
  */
 export class ByokClient implements AgentClient {
 	readonly capabilities: AgentClientCapabilities = {
-		// Vendor APIs have no assistant records or Backboard memory. Durable
+		// Vendor APIs have no assistant records or DQuant Lab memory. Durable
 		// threads are provided by the local conversation store.
 		assistants: false,
 		threads: true,
@@ -136,7 +136,7 @@ export class ByokClient implements AgentClient {
 		// adopted with an empty history: the caller believes it is continuing a
 		// conversation, and answering from nothing would send only the newest
 		// message while the UI still shows the full transcript - context lost
-		// with no visible sign. Reachable when a Backboard thread falls through
+		// with no visible sign. Reachable when a DQuant Lab thread falls through
 		// to this client, e.g. after `/logout` mid-session.
 		let threadId = req.thread_id;
 		if (threadId && !this.threads.has(threadId)) {
@@ -178,7 +178,7 @@ export class ByokClient implements AgentClient {
 		// the client holds it.
 		const thread = this.touch(threadId) as ByokThread;
 		// `/model` can switch mid-thread; the newest turn's settings win, exactly
-		// as they would on a Backboard thread.
+		// as they would on a DQuant Lab thread.
 		thread.provider = adapter.id;
 		thread.model = model;
 		if (req.system_prompt !== undefined) {
@@ -566,7 +566,7 @@ export class ByokClient implements AgentClient {
 	}
 
 	async createAssistant(): Promise<AssistantInfo> {
-		throw new Error("Assistants are a Backboard feature and need a sign-in.");
+		throw new Error("Assistants are a DQuant Lab feature and need a sign-in.");
 	}
 
 	async listThreads(): Promise<BackboardThread[]> {
@@ -758,7 +758,7 @@ export class ByokClient implements AgentClient {
 		const adapter = provider ? byokAdapterFor(provider) : null;
 		if (!adapter) {
 			throw new Error(
-				`No API key provider handles "${provider ?? "unknown"}". Run /keys to add one, or sign in with Backboard for the full catalog.`,
+				`No API key provider handles "${provider ?? "unknown"}". Run /keys to add one, or sign in with DQuant Lab for the full catalog.`,
 			);
 		}
 		return adapter;

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # =============================================================================
-# Backboard Frontend Deploy
+# DQuant Lab Frontend Deploy
 # Reusable builder EC2 -> sync frontend -> AMI -> update LT -> ASG refresh
 # Production instances are NEVER touched directly.
 # Builder instance persists between deploys for speed.
@@ -183,7 +183,7 @@ main() {
         esac
     done
 
-    echo -e "\n${GREEN}=== Backboard Frontend Deploy ===${NC}"
+    echo -e "\n${GREEN}=== DQuant Lab Frontend Deploy ===${NC}"
     info "ASG: $ASG_NAME | Region: $AWS_REGION"
 
     if [ "$status_only" = true ]; then

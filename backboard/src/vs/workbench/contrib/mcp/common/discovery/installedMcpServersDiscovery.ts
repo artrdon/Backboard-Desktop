@@ -78,7 +78,7 @@ export class InstalledMcpServersDiscovery extends Disposable implements IMcpDisc
 			const mcpConfigPathInfos = new ResourceMap<Promise<IMcpConfigPath & { locations: Map<string, Location> } | undefined>>();
 			for (const server of this.mcpWorkbenchService.getEnabledLocalMcpServers()) {
 				if (isUnsupportedGalleryOAuthMcpServer(server)) {
-					this.logService.info(`Skipping installed MCP server ${server.name}: unsupported OAuth setup for Backboard`);
+					this.logService.info(`Skipping installed MCP server ${server.name}: unsupported OAuth setup for DQuant Lab`);
 					continue;
 				}
 

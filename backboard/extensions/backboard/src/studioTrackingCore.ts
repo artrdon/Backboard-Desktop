@@ -9,7 +9,7 @@ import * as https from 'https';
 
 export type StudioSignInSource = 'sign_in' | 'startup';
 
-/** Maps Node's platform and arch to the Backboard release name, e.g. `macos-aarch64`. */
+/** Maps Node's platform and arch to the DQuant Lab release name, e.g. `macos-aarch64`. */
 export function studioPlatform(platform: string, arch: string): string | undefined {
 	const os = platform === 'darwin' ? 'macos' : platform === 'win32' ? 'windows' : platform === 'linux' ? 'linux' : undefined;
 	const cpu = arch === 'arm64' ? 'aarch64' : arch === 'x64' ? 'x86_64' : undefined;

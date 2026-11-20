@@ -34,7 +34,7 @@ import { IsWindowAlwaysOnTopContext } from '../../../common/contextkeys.js';
  * macOS title bar with the command center: a 38px row, the height of the
  * Simple window's header strips (SessionsPanelHeader.HEIGHT), above the
  * title bar's 1px bottom border, so the mode switch and the traffic lights
- * sit at the same height in every Backboard mode.
+ * sit at the same height in every DQuant Lab mode.
  */
 const MAC_TITLEBAR_HEIGHT = 39;
 

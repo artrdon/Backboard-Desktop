@@ -12,8 +12,8 @@ import { CMDSendCompletionsFeedbackChat } from './constants';
 
 export const sendCompletionFeedbackCommand: Command = {
 	command: CMDSendCompletionsFeedbackChat,
-	title: 'Send Backboard Completion Feedback',
-	tooltip: 'Send feedback about the last shown Backboard completion item',
+	title: 'Send DQuant Lab Completion Feedback',
+	tooltip: 'Send feedback about the last shown DQuant Lab completion item',
 };
 
 export class CopilotCompletionFeedbackTracker extends Disposable {
@@ -47,7 +47,7 @@ async function openGitHubIssue(
 ) {
 	const body = generateGitHubIssueBody(accessor, item, telemetry);
 	await commands.executeCommand('workbench.action.openIssueReporter', {
-		issueTitle: 'Backboard completion feedback',
+		issueTitle: 'DQuant Lab completion feedback',
 		issueSource: 'vscode',
 		issueBody: body,
 	});
@@ -64,7 +64,7 @@ function generateGitHubIssueBody(
 		return '';
 	}
 
-	return `## Backboard Completion Feedback
+	return `## DQuant Lab Completion Feedback
 ### Describe the issue, feedback, or steps to reproduce it:
 
 

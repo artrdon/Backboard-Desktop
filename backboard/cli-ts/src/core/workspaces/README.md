@@ -47,7 +47,7 @@ guards still require external branch switches to wait for integration to finish.
 A staged coordinator index leaves results pending with an actionable
 message and is never committed, stashed, or reset by worker integration.
 
-When a worker merge conflicts, Backboard records the conflicting paths and aborts
+When a worker merge conflicts, DQuant Lab records the conflicting paths and aborts
 only that worker's merge transaction. Its branch, result commit, and worktree stay
 recoverable, while unrelated captured results continue through the integration
 queue. On restart, an integrated result is recognized by ancestry and an
@@ -134,5 +134,5 @@ coordinator after all worker integrations complete.
 This implements the native-worktree, concurrent-worker, result-capture,
 integration, recovery, lifecycle, and IDE presentation behavior. It does not add
 Factory's separate Droid CLI command surface (`--worktree`) or a standalone
-Missions service/dashboard. Backboard uses its existing Agent tool, persistent
+Missions service/dashboard. DQuant Lab uses its existing Agent tool, persistent
 task model, and chat UI as those entry points.

@@ -570,7 +570,7 @@ describe("SubAgentRunner", () => {
 		expect(childEventTypes).not.toContain("run:error");
 	});
 
-	it("runs worker turns without creating a Backboard assistant", async () => {
+	it("runs worker turns without creating a DQuant Lab assistant", async () => {
 		const controller = new AbortController();
 		const client = new CompletingClient();
 		const runner = runnerWith(client, []);
@@ -904,7 +904,7 @@ describe("SubAgentRunner", () => {
 			const subscription = new SubscriptionWorkerClient(
 				`${route.threadPrefix}worker`,
 			);
-			// A signed-in Backboard backend stays available so the router had a
+			// A signed-in DQuant Lab backend stays available so the router had a
 			// choice; the worker turn must still land on the subscription client.
 			const backboard = new CompletingClient();
 			const router = new ClientRouter({

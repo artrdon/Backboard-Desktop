@@ -1,4 +1,4 @@
-"""Harbor installed-agent adapter for the Backboard CLI."""
+"""Harbor installed-agent adapter for the DQuant Lab CLI."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ from harbor.models.trial.paths import EnvironmentPaths
 
 
 class BackboardAgent(BaseInstalledAgent):
-    """Run Backboard headlessly inside a Harbor task container."""
+    """Run DQuant Lab headlessly inside a Harbor task container."""
 
     _REMOTE_BINARY = PurePosixPath("/installed-agent/backboard")
     _REMOTE_ARM64_RUNTIME = PurePosixPath("/installed-agent/arm64-musl-runtime")
@@ -112,7 +112,7 @@ class BackboardAgent(BaseInstalledAgent):
         local_binary = self._binary_dir / binary_name
         if not local_binary.is_file():
             raise FileNotFoundError(
-                f"Backboard benchmark binary not found: {local_binary}. "
+                f"DQuant Lab benchmark binary not found: {local_binary}. "
                 "Run `bun run test:terminal-bench:build` first."
             )
         await environment.upload_file(local_binary, self._REMOTE_BINARY.as_posix())
@@ -175,7 +175,7 @@ class BackboardAgent(BaseInstalledAgent):
         model = self.model_name or ""
         if not self._MODEL_PATTERN.fullmatch(model):
             raise ValueError(
-                "Backboard Terminal-Bench runs require an explicit "
+                "DQuant Lab Terminal-Bench runs require an explicit "
                 "openai-subscription/<model> model"
             )
 

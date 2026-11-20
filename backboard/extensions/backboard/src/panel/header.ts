@@ -6,8 +6,8 @@
 export function renderPanelHeader(showHeader: boolean): string {
 	return showHeader ? `
 			<div class="panelHeader">
-				<div class="brandMark"><span class="codicon codicon-sparkle"></span></div>
-				<div class="brandTitle">Backboard</div>
+				<div class="brandMark" role="img" aria-label="DQuant Lab"></div>
+				<div class="brandTitle">DQuant Lab</div>
 				<div class="headerSpacer"></div>
 				<div id="headerBadge" class="headerBadge">Full Access</div>
 				<div class="headerActions" role="tablist" aria-label="DQuant Lab panel">

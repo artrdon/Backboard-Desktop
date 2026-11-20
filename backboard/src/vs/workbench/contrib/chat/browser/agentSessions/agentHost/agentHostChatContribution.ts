@@ -157,7 +157,7 @@ export class AgentHostContribution extends Disposable implements IWorkbenchContr
 	}
 
 	/**
-	 * Whether Backboard wants the given built-in agent-host provider registered.
+	 * Whether DQuant Lab wants the given built-in agent-host provider registered.
 	 * Subscription-backed Claude and Codex providers are extension-only.
 	 */
 	private _shouldRegisterAgent(provider: AgentProvider): boolean {

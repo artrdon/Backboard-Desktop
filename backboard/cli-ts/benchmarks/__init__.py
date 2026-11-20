@@ -1,1 +1,1 @@
-"""Benchmark integrations for the Backboard CLI."""
+"""Benchmark integrations for the DQuant Lab CLI."""

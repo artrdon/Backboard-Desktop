@@ -9,7 +9,7 @@ afterEach(() => {
 	globalThis.fetch = originalFetch;
 });
 
-describe("Backboard model catalog", () => {
+describe("DQuant Lab model catalog", () => {
 	it("requests targeted thinking metadata without catalog fanout", async () => {
 		const requestedUrls: string[] = [];
 		globalThis.fetch = (async (input, _init) => {

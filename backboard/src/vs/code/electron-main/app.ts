@@ -203,7 +203,7 @@ export class CodeApplication extends Disposable {
 
 		const allowedPermissionsInWebview = new Set([
 			...alwaysAllowedPermissions,
-			// Composer webviews use getUserMedia for Backboard voice input.
+			// Composer webviews use getUserMedia for DQuant Lab voice input.
 			// The OS microphone consent prompt still gates actual capture.
 			'media',
 			'clipboard-read',
@@ -1333,7 +1333,7 @@ export class CodeApplication extends Disposable {
 		const encryptionChannel = ProxyChannel.fromService(accessor.get(IEncryptionMainService), disposables);
 		mainProcessElectronServer.registerChannel('encryption', encryptionChannel);
 
-		// Backboard provider API keys: one owner for persistence and activation,
+		// DQuant Lab provider API keys: one owner for persistence and activation,
 		// so no two windows can race a replacement against a removal.
 		if (this._agentHostProcessManager) {
 			const byokKeyStore = disposables.add(accessor.get(IInstantiationService).createInstance(ByokKeyStoreMainService, this._agentHostProcessManager));

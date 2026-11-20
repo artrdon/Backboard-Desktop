@@ -71,7 +71,7 @@ export function registerBackboardSsoActions(): void {
 		}
 
 		/**
-		 * Delegates to the built-in Backboard extension, which signs in with the
+		 * Delegates to the built-in DQuant Lab extension, which signs in with the
 		 * OAuth device authorization grant (RFC 8628): open the verification page
 		 * in the browser and poll the token endpoint until the user approves. No
 		 * localhost redirect or callback server is involved.
@@ -103,7 +103,7 @@ export function registerBackboardSsoActions(): void {
 		}
 
 		/**
-		 * Removes every credential the chat can bill to (Backboard key and the
+		 * Removes every credential the chat can bill to (DQuant Lab key and the
 		 * ChatGPT/Claude connections), then re-reads auth state so the sign-in
 		 * gate blurs the chat and sessions right away.
 		 */

@@ -555,7 +555,7 @@ export class ChatViewTitleControl extends Disposable {
 			h('span.chat-view-title-tab-label@label'),
 			h('span.codicon.codicon-close.chat-view-title-tab-close@close', { role: 'button', title: localize('chat.closeSessionTab', "Close Tab"), ariaLabel: localize('chat.closeSessionTab', "Close Tab") }),
 		]);
-		// Not-yet-responded-to sessions show the Backboard mark; sessions with at
+		// Not-yet-responded-to sessions show the DQuant Lab mark; sessions with at
 		// least one response show a chat bubble. A subagent's icon slot is drawn
 		// as a tree connector to the parent tab instead (CSS).
 		if (!isSubagent) {

@@ -16,7 +16,7 @@ const IMAGE_MEDIA_TYPES: Record<string, string> = {
 const MAX_INLINE_TEXT_BYTES = 64 * 1024;
 
 /**
- * Backboard uploads attachments as multipart and resolves them server-side.
+ * DQuant Lab uploads attachments as multipart and resolves them server-side.
  * Vendor APIs have no such endpoint, so files are inlined into the message:
  * images as base64 parts, anything else as truncated text.
  */

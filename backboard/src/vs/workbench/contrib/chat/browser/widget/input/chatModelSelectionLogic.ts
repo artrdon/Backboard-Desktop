@@ -104,9 +104,9 @@ export function isModelValidForSession(
  * The provider prefix of a model id (or `vendor:provider/model` identifier)
  * that bills to the user's own account: a key (`openai-key`) or a
  * subscription (`anthropic-subscription`, `openai-subscription`). Undefined
- * for Backboard-billed models. A selection never carries across this
+ * for DQuant Lab-billed models. A selection never carries across this
  * boundary: a vanished key or subscription row must not turn into the same
- * model on Backboard's billing (or another account), and a Backboard row must
+ * model on DQuant Lab's billing (or another account), and a DQuant Lab row must
  * not turn into one billed to the user's key or plan.
  */
 function userBilledRouteOf(id: string | undefined): string | undefined {
@@ -122,7 +122,7 @@ function userBilledRouteOf(id: string | undefined): string | undefined {
  * Whether a model bills to the user's own key or subscription. Such a
  * selection stays put when its row disappears from the model list (the agent
  * host reports it unavailable and refuses to send) instead of falling back to
- * the Backboard-billed default: subscription rows in particular disappear or
+ * the DQuant Lab-billed default: subscription rows in particular disappear or
  * swap ids transiently while the plan's live model list refreshes.
  */
 export function isUserBilledModel(model: ILanguageModelChatMetadataAndIdentifier | undefined): boolean {

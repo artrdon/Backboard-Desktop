@@ -5,7 +5,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
 
 if [[ ! -f "$ROOT/package.json" || ! -x "$ROOT/run-backboard-ide.sh" ]]; then
-	echo "Run this from the VS Code / Backboard Studio checkout, or keep it in that folder." >&2
+	echo "Run this from the VS Code / DQuant Lab Studio checkout, or keep it in that folder." >&2
 	exit 1
 fi
 
@@ -67,7 +67,7 @@ fi
 RUN_STAMP="$(date +%s)"
 LOG_FILE="/tmp/backboard-studio-dev-$RUN_STAMP.launch.log"
 
-echo "Launching Backboard Studio..."
+echo "Launching DQuant Lab Studio..."
 /usr/bin/nohup "$ROOT/run-backboard-ide.sh" > "$LOG_FILE" 2>&1 &
 
 echo "Log: $LOG_FILE"

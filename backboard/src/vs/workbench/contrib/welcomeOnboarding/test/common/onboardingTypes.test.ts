@@ -15,7 +15,7 @@ import {
 	shouldOfferOnboardingTour,
 } from '../../common/onboardingTypes.js';
 
-suite('Backboard onboarding types', () => {
+suite('DQuant Lab onboarding types', () => {
 	ensureNoDisposablesAreLeakedInTestSuite();
 
 	test('upgrades do not offer tours merely because their tour flag is missing', () => {
@@ -27,7 +27,7 @@ suite('Backboard onboarding types', () => {
 		], [false, false, false, true]);
 	});
 
-	test('steps are ordered to match the Backboard onboarding flow', () => {
+	test('steps are ordered to match the DQuant Lab onboarding flow', () => {
 		assert.deepStrictEqual([...ONBOARDING_STEPS], [
 			OnboardingStepId.Theme,
 			OnboardingStepId.Welcome,

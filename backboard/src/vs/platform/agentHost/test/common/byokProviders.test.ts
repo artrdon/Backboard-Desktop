@@ -54,7 +54,7 @@ suite('byokProviders', () => {
 		);
 	});
 
-	test('withholds memory from key-billed models but keeps it for Backboard and subscriptions', () => {
+	test('withholds memory from key-billed models but keeps it for DQuant Lab and subscriptions', () => {
 		const models = ['anthropic/claude-opus-5', 'openai-key/gpt-5.5', 'backboard:openai-subscription/gpt-5.5', 'anthropic-subscription/opus[1m]', undefined];
 		assert.deepStrictEqual(
 			['memory', 'webSearch'].map(property => models.map(model => isConfigPropertyAvailableForModel(property, model))),

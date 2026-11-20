@@ -23,7 +23,7 @@
 	font-display: swap;
 }
 
-/* Backboard branding: render Copilot glyph slots with the octopus mark. */
+/* DQuant Lab branding: render Copilot glyph slots with the octopus mark. */
 .monaco-workbench .codicon.codicon-copilot,
 .monaco-workbench .codicon.codicon-copilot-large,
 .monaco-workbench .codicon.codicon-copilot-warning,

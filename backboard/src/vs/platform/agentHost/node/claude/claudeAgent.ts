@@ -111,7 +111,7 @@ function toAgentModelInfo(m: CCAModel, provider: AgentProvider): IAgentModelInfo
 /**
  * Static fallback model catalog advertised when no CAPI catalog is
  * available — no GitHub token yet, or a subscription-billed setup that
- * never signs in to Backboard. Ids use the canonical endpoint (dotted)
+ * never signs in to DQuant Lab. Ids use the canonical endpoint (dotted)
  * format; {@link toSdkModelId} converts at the SDK seam, so these work
  * against the Anthropic API directly.
  *
@@ -119,7 +119,7 @@ function toAgentModelInfo(m: CCAModel, provider: AgentProvider): IAgentModelInfo
  * 4.6+/Sonnet 4.6+; Haiku has no effort parameter); fast mode is Opus
  * 4.7+. This list is a bootstrap only — it is replaced by the SDK's own
  * per-account catalog ({@link ClaudeAgent._refreshModelsFromSdk}) after
- * the first message, and by the CAPI catalog when Backboard
+ * the first message, and by the CAPI catalog when DQuant Lab
  * authentication succeeds.
  */
 const FALLBACK_CLAUDE_MODELS: ReadonlyArray<{
@@ -315,7 +315,7 @@ export class ClaudeAgent extends Disposable implements IAgent {
 		this._metadataStore = _instantiationService.createInstance(ClaudeSessionMetadataStore, this.id);
 		// Advertise the static fallback catalog immediately so the model
 		// picker is usable before (or without) CAPI authentication — e.g.
-		// subscription-billed sessions while signed out of Backboard.
+		// subscription-billed sessions while signed out of DQuant Lab.
 		this._models.set(this._fallbackModels(), undefined);
 	}
 

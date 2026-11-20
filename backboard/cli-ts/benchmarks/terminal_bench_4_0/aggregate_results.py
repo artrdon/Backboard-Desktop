@@ -299,7 +299,7 @@ def markdown(report: dict[str, Any]) -> str:
     summary = report["summary"]
     counts = summary["status_counts"]
     lines = [
-        "# Terminal-Bench 4.0 — Backboard / ChatGPT subscription",
+        "# Terminal-Bench 4.0 — DQuant Lab / ChatGPT subscription",
         "",
         f"Generated: `{report['generated_at']}`",
         "",

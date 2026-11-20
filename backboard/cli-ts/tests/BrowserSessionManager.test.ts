@@ -92,7 +92,7 @@ describe("BrowserSessionManager integrated endpoint", () => {
 		return socket;
 	}
 
-	it("prefers the Backboard integrated endpoint when it exposes a shared page", async () => {
+	it("prefers the DQuant Lab integrated endpoint when it exposes a shared page", async () => {
 		let spawned = false;
 		const manager = new BrowserSessionManager({
 			env: { backboardBrowserWsUrl: "ws://127.0.0.1:1234/cdp/token" },

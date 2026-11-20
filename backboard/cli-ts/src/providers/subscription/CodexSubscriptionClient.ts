@@ -269,7 +269,7 @@ function usageFromResponse(response: JsonObject): ProviderUsage | null {
 	const totalTokens =
 		typeof usage.total_tokens === "number" ? usage.total_tokens : undefined;
 	// The Responses API counts cached prompt tokens inside `input_tokens`;
-	// surface the split so the context meter can show it like Backboard's.
+	// surface the split so the context meter can show it like DQuant Lab's.
 	const details = isObject(usage.input_tokens_details)
 		? usage.input_tokens_details
 		: undefined;
@@ -287,7 +287,7 @@ function usageFromResponse(response: JsonObject): ProviderUsage | null {
 		totalTokens,
 		...(cachedTokens === undefined ? {} : { cachedTokens }),
 		// Window occupancy is a level, not a billing sum: the next request
-		// resends this prompt plus this reply, so match the level Backboard
+		// resends this prompt plus this reply, so match the level DQuant Lab
 		// reports (output included) and keep auto-compaction on the same
 		// measurement for every backend.
 		contextTokens: totalTokens ?? inputTokens,

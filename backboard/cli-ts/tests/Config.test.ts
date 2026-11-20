@@ -657,7 +657,7 @@ describe("Config", () => {
 		expect(config.env.apiUrl).toBe("https://x.test/api");
 	});
 
-	it("centralizes Backboard config paths", async () => {
+	it("centralizes DQuant Lab config paths", async () => {
 		const root = await mkdtemp(path.join(os.tmpdir(), "cli-paths-"));
 		try {
 			await mkdir(path.join(root, ".git"));
@@ -872,7 +872,7 @@ describe("Config", () => {
 		).toBe(false);
 	});
 
-	it("deletes saved Backboard credentials", async () => {
+	it("deletes saved DQuant Lab credentials", async () => {
 		const homeDir = await mkdtemp(path.join(os.tmpdir(), "cli-config-"));
 
 		await withBackboardEnv({}, async () => {

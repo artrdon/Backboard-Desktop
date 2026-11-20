@@ -1123,7 +1123,7 @@ export interface IChatSearchToolInvocationData {
 }
 
 /**
- * Structured, display-safe data for Backboard's built-in tools. The agent host
+ * Structured, display-safe data for DQuant Lab's built-in tools. The agent host
  * bounds both input and output before they reach this type so chat rendering
  * stays responsive and the payload can be persisted with session history.
  */

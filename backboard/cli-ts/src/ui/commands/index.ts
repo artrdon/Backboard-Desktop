@@ -52,7 +52,7 @@ export const SLASH_COMMANDS: readonly SlashCommandDefinition[] = [
 	{
 		name: "model",
 		type: "model",
-		description: "Pick a model and thinking mode from Backboard",
+		description: "Pick a model and thinking mode from DQuant Lab",
 	},
 	{
 		name: "settings",
@@ -116,7 +116,7 @@ export const SLASH_COMMANDS: readonly SlashCommandDefinition[] = [
 		description: "Resume a session",
 		aliases: ["resume", "continue"],
 	},
-	{ name: "login", type: "login", description: "Sign in with Backboard" },
+	{ name: "login", type: "login", description: "Sign in with DQuant Lab" },
 	{
 		name: "logout",
 		type: "logout",

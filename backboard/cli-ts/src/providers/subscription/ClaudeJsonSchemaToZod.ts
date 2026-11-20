@@ -22,7 +22,7 @@ interface JsonSchemaProperty {
 	maxItems?: number;
 }
 
-/** Convert Backboard's JSON Schema tool parameters to the SDK's Zod raw shape. */
+/** Convert DQuant Lab's JSON Schema tool parameters to the SDK's Zod raw shape. */
 export function jsonSchemaToZodRawShape(
 	inputSchema: Record<string, unknown> | undefined,
 ): Record<string, ZodTypeAny> {

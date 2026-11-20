@@ -231,9 +231,9 @@ export function isSupportedChatFileScheme(accessor: ServicesAccessor, scheme: st
  * Returns the effective default session type for a new chat in the VS Code
  * editor window, honoring the experimental
  * {@link ChatConfiguration.EditorDefaultProvider} setting:
- * - `'backboardAh'` selects the integrated Backboard agent-host slot.
+ * - `'backboardAh'` selects the integrated DQuant Lab agent-host slot.
  *
- * Backboard is the integrated default for normal editor chat. Falls back to
+ * DQuant Lab is the integrated default for normal editor chat. Falls back to
  * {@link localChatSessionType} when no visible non-local provider is available.
  */
 export function getDefaultNewChatSessionType(

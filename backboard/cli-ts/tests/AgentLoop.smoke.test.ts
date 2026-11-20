@@ -55,7 +55,7 @@ async function delay(ms: number, signal?: AbortSignal): Promise<void> {
 }
 
 class FakeClient {
-	/** Stands in for Backboard, so the assistant/thread paths stay exercised. */
+	/** Stands in for DQuant Lab, so the assistant/thread paths stay exercised. */
 	readonly capabilities = { assistants: true, threads: true, memory: true };
 	messageRequests: SendMessageRequest[] = [];
 	messageAttachmentPaths: Array<string[] | undefined> = [];
@@ -259,7 +259,7 @@ function controllerWith(
 	return { ctrl, events, session, config };
 }
 
-describe("AgentController loop (mocked Backboard)", () => {
+describe("AgentController loop (mocked DQuant Lab)", () => {
 	it("checks restored history before the first provider usage measurement", async () => {
 		const client = new FakeClient(
 			[{ kind: "thread", threadId: "new" }, { kind: "completed" }],
@@ -1368,7 +1368,7 @@ describe("AgentController loop (mocked Backboard)", () => {
 			[
 				{
 					kind: "failed",
-					error: "Backboard requested tool outputs without tool calls",
+					error: "DQuant Lab requested tool outputs without tool calls",
 				},
 			],
 			[],
@@ -1400,7 +1400,7 @@ describe("AgentController loop (mocked Backboard)", () => {
 					this.failed = true;
 					yield {
 						kind: "failed",
-						error: "Backboard requested tool outputs without tool calls",
+						error: "DQuant Lab requested tool outputs without tool calls",
 					};
 					return;
 				}
@@ -1462,7 +1462,7 @@ describe("AgentController loop (mocked Backboard)", () => {
 				this.messageRequests.push(req);
 				if (req.thread_id === "thread_gone") {
 					throw new Error(
-						"Backboard request failed: HTTP 404: Thread not found",
+						"DQuant Lab request failed: HTTP 404: Thread not found",
 					);
 				}
 				yield { kind: "thread", threadId: "thread_new" };
@@ -1719,7 +1719,7 @@ describe("AgentController loop (mocked Backboard)", () => {
 		).toEqual(["first", "queued"]);
 	});
 
-	it("passes startup model, memory, thinking, profile, and tool filters to Backboard", async () => {
+	it("passes startup model, memory, thinking, profile, and tool filters to DQuant Lab", async () => {
 		const client = new FakeClient(
 			[
 				{ kind: "thread", threadId: "thr_1" },
@@ -1770,12 +1770,12 @@ describe("AgentController loop (mocked Backboard)", () => {
 		expect(req.memory).toBe("Auto");
 		expect(req.memory_profile).toBe("code");
 		expect(req.thinking).toEqual({ effort: "high" });
-		expect(req.system_prompt).toContain("You are Backboard");
+		expect(req.system_prompt).toContain("You are DQuant Lab");
 		expect(req.system_prompt).not.toContain("Model profile:");
 		expect(req.tools?.map((tool) => tool.function.name)).toEqual(["Visible"]);
 	});
 
-	it("resolves dynamic thinking before sending requests to Backboard", async () => {
+	it("resolves dynamic thinking before sending requests to DQuant Lab", async () => {
 		const client = new FakeClient(
 			[
 				{ kind: "thread", threadId: "thr_1" },
@@ -2119,7 +2119,7 @@ describe("AgentController loop (mocked Backboard)", () => {
 		// 5s budget under full-file load; give it headroom to avoid a flake.
 	}, 20_000);
 
-	it("transfers compaction ownership for locally stored threads, not Backboard ones", async () => {
+	it("transfers compaction ownership for locally stored threads, not DQuant Lab ones", async () => {
 		const replacements: Array<string | null> = [];
 		const backboard = new FakeClient([], []);
 		const first = controllerWith(
@@ -2279,7 +2279,7 @@ describe("AgentController loop (mocked Backboard)", () => {
 		expect(events.map((e) => e.type)).toContain("turn:cancelled");
 	});
 
-	it("keeps the Backboard thread while changing per-turn tool overrides", async () => {
+	it("keeps the DQuant Lab thread while changing per-turn tool overrides", async () => {
 		const client = new FakeClient(
 			[
 				{ kind: "thread", threadId: "thr_1" },

@@ -52,10 +52,10 @@ describe("AuthScreen resize handling", () => {
 		const lastFrame = duringResize.slice(
 			duringResize.lastIndexOf("\x1b[?2026h"),
 		);
-		expect(lastFrame).not.toContain("Login with Backboard");
+		expect(lastFrame).not.toContain("Login with DQuant Lab");
 		await sleep(RESIZE_SETTLE_DELAY_MS * 2);
 		const afterSettle = tty.written().slice(beforeResize);
 		instance.unmount();
-		expect(afterSettle).toContain("Login with Backboard");
+		expect(afterSettle).toContain("Login with DQuant Lab");
 	});
 });

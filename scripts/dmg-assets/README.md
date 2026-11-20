@@ -34,8 +34,8 @@ drives the real Finder over AppleScript precisely to avoid this.
 **The scratch volume name must match the shipping DMG's volume name.** Finder
 records the background as a volume-relative path, so if the names diverge the
 window opens with the right geometry and no artwork. Volume names come from
-`APP_DISPLAY_NAME` in `package_vscode_update_macos.sh`: `Backboard Studio` for
-stable, `Backboard Studio Sandbox` for sandbox. The placeholder bundle name has
+`APP_DISPLAY_NAME` in `package_vscode_update_macos.sh`: `DQuant Lab` for
+stable, `DQuant Lab Sandbox` for sandbox. The placeholder bundle name has
 to match the shipping app's for the same reason — icon positions are keyed by
 filename.
 

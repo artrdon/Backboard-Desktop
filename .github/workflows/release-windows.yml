@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: Backboard Studio semantic version (for example, 2.6.0)
+        description: DQuant Lab semantic version (for example, 2.6.0)
         required: true
         type: string
       channel:
@@ -97,7 +97,7 @@ jobs:
           lfs: true
 
       # The source ships without analytics keys; release builds stamp
-      # Backboard's from the BACKBOARD_POSTHOG_KEY secret (if set).
+      # DQuant Lab's from the BACKBOARD_POSTHOG_KEY secret (if set).
       - name: Stamp analytics key
         shell: bash
         env:
@@ -167,7 +167,7 @@ jobs:
           Add-Content -LiteralPath $env:GITHUB_PATH -Value $signTool.DirectoryName
           Write-Host "Using Windows SDK signing tools from $($signTool.DirectoryName)"
 
-      - name: Stamp Backboard release metadata
+      - name: Stamp DQuant Lab release metadata
         if: ${{ !inputs.reuse_signed_run }}
         shell: pwsh
         run: |
@@ -220,7 +220,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: npm ci
 
-      - name: Build Backboard Studio application
+      - name: Build DQuant Lab application
         if: ${{ !inputs.reuse_signed_run }}
         shell: pwsh
         working-directory: backboard
@@ -306,7 +306,7 @@ jobs:
           file-digest: SHA256
           timestamp-rfc3161: http://timestamp.acs.microsoft.com
           timestamp-digest: SHA256
-          description: Backboard Studio
+          description: DQuant Lab
           description-url: https://github.com/${{ github.repository }}
 
       - name: Verify signed application payload
@@ -380,7 +380,7 @@ jobs:
           file-digest: SHA256
           timestamp-rfc3161: http://timestamp.acs.microsoft.com
           timestamp-digest: SHA256
-          description: Backboard Studio Installer
+          description: DQuant Lab Installer
           description-url: https://github.com/${{ github.repository }}
 
       - name: Verify installers and create portable archive

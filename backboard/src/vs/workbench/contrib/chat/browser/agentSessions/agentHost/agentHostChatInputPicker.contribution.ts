@@ -11,7 +11,7 @@ import { IsSessionsWindowContext, WorkspaceFolderCountContext } from '../../../.
 import { ChatContextKeys, ChatContextKeyExprs } from '../../../common/actions/chatContextKeys.js';
 
 /**
- * Agent-host pickers live in `MenuId.ChatInput` so Backboard controls stay
+ * Agent-host pickers live in `MenuId.ChatInput` so DQuant Lab controls stay
  * inside the composer instead of occupying a secondary row below the input.
  *
  * Order layout in the primary toolbar:

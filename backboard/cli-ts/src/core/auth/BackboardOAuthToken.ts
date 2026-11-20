@@ -4,9 +4,9 @@ import type { BackboardOAuthTokenResponse } from "./BackboardOAuthTypes.ts";
 export function parseBackboardOAuthTokenResponse(
 	text: string,
 ): BackboardOAuthTokenResponse {
-	const value = parseJson(text, "Backboard OAuth token response");
+	const value = parseJson(text, "DQuant Lab OAuth token response");
 	if (typeof value !== "object" || value === null || Array.isArray(value)) {
-		throw new Error("Backboard OAuth token response was not an object.");
+		throw new Error("DQuant Lab OAuth token response was not an object.");
 	}
 	const token = value as JsonObject;
 	return {
@@ -28,7 +28,7 @@ export function formatBackboardOAuthTokenError(
 	text: string,
 ): string {
 	const detail = errorDescription(text);
-	return `Backboard OAuth token exchange failed: HTTP ${status}${
+	return `DQuant Lab OAuth token exchange failed: HTTP ${status}${
 		detail ? `: ${detail}` : ""
 	}`;
 }
@@ -59,7 +59,7 @@ function parseJson(text: string, label: string): JsonValue {
 function requiredString(raw: JsonObject, key: string): string {
 	const value = raw[key];
 	if (typeof value !== "string" || !value) {
-		throw new Error(`Backboard OAuth token response is missing ${key}.`);
+		throw new Error(`DQuant Lab OAuth token response is missing ${key}.`);
 	}
 	return value;
 }
@@ -68,7 +68,7 @@ function optionalString(raw: JsonObject, key: string): string | undefined {
 	const value = raw[key];
 	if (value === undefined) return undefined;
 	if (typeof value !== "string") {
-		throw new Error(`Backboard OAuth token response has invalid ${key}.`);
+		throw new Error(`DQuant Lab OAuth token response has invalid ${key}.`);
 	}
 	return value;
 }
@@ -77,7 +77,7 @@ function nullableString(raw: JsonObject, key: string): string | null {
 	const value = raw[key];
 	if (value === undefined || value === null) return null;
 	if (typeof value !== "string") {
-		throw new Error(`Backboard OAuth token response has invalid ${key}.`);
+		throw new Error(`DQuant Lab OAuth token response has invalid ${key}.`);
 	}
 	return value;
 }
@@ -85,7 +85,7 @@ function nullableString(raw: JsonObject, key: string): string | null {
 function requiredNumber(raw: JsonObject, key: string): number {
 	const value = raw[key];
 	if (typeof value !== "number" || !Number.isFinite(value)) {
-		throw new Error(`Backboard OAuth token response is missing ${key}.`);
+		throw new Error(`DQuant Lab OAuth token response is missing ${key}.`);
 	}
 	return value;
 }

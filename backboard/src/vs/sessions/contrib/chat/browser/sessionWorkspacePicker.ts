@@ -590,7 +590,7 @@ export class WorkspacePicker extends Disposable {
 	 * workspace (the picker's own recents first, then VS Code recents).
 	 * Returns `undefined` when nothing is available yet (e.g. VS Code recents
 	 * have not finished loading). Used to keep the composer's model and
-	 * Backboard-options controls functional before the user has picked a
+	 * DQuant Lab-options controls functional before the user has picked a
 	 * workspace, since those controls require an active session.
 	 */
 	getDefaultWorkspaceCandidate(): URI | undefined {

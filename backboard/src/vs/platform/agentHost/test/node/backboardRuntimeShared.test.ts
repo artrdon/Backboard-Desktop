@@ -7,7 +7,7 @@ import * as assert from 'assert';
 import { ensureNoDisposablesAreLeakedInTestSuite } from '../../../../base/test/common/utils.js';
 import { BACKBOARD_ACCESS_DEFAULT, BACKBOARD_ACCESS_FULL, BACKBOARD_MODE_MULTITASK, BUNDLED_CHATGPT_SUBSCRIPTION_MODELS, BUNDLED_CLAUDE_SUBSCRIPTION_MODELS, backboardAccessSystemContext, backboardModelInfos, backboardMultitaskSystemContext, createBackboardTurnSettings, resolveBackboardSessionConfig } from '../../node/cliTs/backboardRuntimeShared.js';
 
-suite('Backboard runtime configuration', () => {
+suite('DQuant Lab runtime configuration', () => {
 	ensureNoDisposablesAreLeakedInTestSuite();
 
 	test('marks only exact-$0, non-router OpenRouter models as free, like the server', () => {
@@ -61,7 +61,7 @@ suite('Backboard runtime configuration', () => {
 		);
 	});
 
-	test('lists key-billed models beside the Backboard rows under their own provider label', () => {
+	test('lists key-billed models beside the DQuant Lab rows under their own provider label', () => {
 		const models = backboardModelInfos([
 			{ provider: 'openai-key', name: 'gpt-5.5', model_type: 'llm' },
 			{ provider: 'openai', name: 'gpt-5.5', model_type: 'llm' },
@@ -76,7 +76,7 @@ suite('Backboard runtime configuration', () => {
 		]);
 	});
 
-	test('bundles ChatGPT subscription models as distinct Backboard harness routes', () => {
+	test('bundles ChatGPT subscription models as distinct DQuant Lab harness routes', () => {
 		const models = backboardModelInfos(BUNDLED_CHATGPT_SUBSCRIPTION_MODELS);
 		const subscriptionModels = models.filter(model => model.id.startsWith('openai-subscription/'));
 

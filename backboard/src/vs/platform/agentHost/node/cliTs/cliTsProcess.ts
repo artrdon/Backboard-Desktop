@@ -299,7 +299,7 @@ export interface CliTsServeProcessOptions {
 /**
  * Owns one `backboard-cli-ts --serve` subprocess: binary resolution, spawn,
  * NDJSON control writes, stdout record routing, and teardown. One instance
- * per Backboard session — the serve process holds the session's Backboard
+ * per DQuant Lab session — the serve process holds the session's DQuant Lab
  * thread binding and working directory for its whole lifetime.
  */
 export class CliTsServeProcess extends Disposable {
@@ -645,7 +645,7 @@ export class CliTsServeProcess extends Disposable {
 		const where = `${this.spawnedCommand} (code=${code ?? 'null'} signal=${signal ?? 'null'})`;
 		if (!this.sawOutput) {
 			const stderr = this.stderrTail.length ? ` Last stderr: ${this.stderrTail.join(' | ')}` : '';
-			return `The Backboard agent (cli-ts) failed to start and produced no output. This usually means the packaged binary's code signature is invalid (macOS kills it on first run). Rebuild it with: npm --prefix extensions/backboard run package-cli-ts. [${where}]${stderr}`;
+			return `The DQuant Lab agent (cli-ts) failed to start and produced no output. This usually means the packaged binary's code signature is invalid (macOS kills it on first run). Rebuild it with: npm --prefix extensions/backboard run package-cli-ts. [${where}]${stderr}`;
 		}
 		return `cli-ts serve process exited unexpectedly: ${where}`;
 	}
@@ -757,13 +757,13 @@ function resolveBundledCuaDriver(appRoot = dirname(FileAccess.asFileUri('').fsPa
 }
 
 /**
- * Maps the IDE's persisted Backboard credentials (same source the Rust bridge
+ * Maps the IDE's persisted DQuant Lab credentials (same source the Rust bridge
  * used: `~/.backboard_ide/config.json` overridden by `BACKBOARD_*` env vars)
  * onto the env vars cli-ts reads, so the serve process authenticates as the
  * IDE user without a separate `backboard login`.
  */
 /**
- * Identifies the credentials a serve process started with: the Backboard key
+ * Identifies the credentials a serve process started with: the DQuant Lab key
  * the host passes in, plus the subscription connections cli-ts reads from
  * `~/.backboard/config.json`. Not a secret: the key is hashed.
  */

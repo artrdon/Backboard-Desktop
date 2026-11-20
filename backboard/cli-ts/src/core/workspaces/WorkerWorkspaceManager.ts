@@ -518,7 +518,7 @@ export class WorkerWorkspaceManager {
 				};
 			} catch (error) {
 				throw new WorkerWorkspaceUnavailableError(
-					`Backboard could not initialize Git for isolated parallel writes: ${errorMessage(error)}`,
+					`DQuant Lab could not initialize Git for isolated parallel writes: ${errorMessage(error)}`,
 				);
 			}
 		})();

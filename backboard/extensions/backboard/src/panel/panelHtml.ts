@@ -79,7 +79,7 @@ export function panelHtml(webview: vscode.Webview, codiconsStylesheet: vscode.Ur
 			.authOverlay { position: absolute; inset: 0; z-index: 40; display: none; align-items: center; justify-content: center; padding: 22px; background: color-mix(in srgb, var(--bb-bg) 38%, transparent); }
 			.root.authRequired .authOverlay { display: flex; }
 			.authCard { width: min(280px, 100%); display: grid; justify-items: center; gap: 12px; padding: 22px 18px; border: 1px solid color-mix(in srgb, var(--bb-border) 82%, transparent); border-radius: 8px; background: color-mix(in srgb, var(--bb-card) 94%, var(--bb-bg)); box-shadow: 0 18px 48px color-mix(in srgb, var(--bb-shadow) 80%, transparent); text-align: center; }
-			.authLogo { width: 52px; height: 68px; display: block; color: color-mix(in srgb, var(--vscode-icon-foreground, var(--bb-text)) 62%, var(--bb-primary)); background: currentColor; -webkit-mask: url('${backboardLogo}') center / contain no-repeat; mask: url('${backboardLogo}') center / contain no-repeat; }
+			.authLogo { width: 52px; height: 52px; display: block; color: color-mix(in srgb, var(--vscode-icon-foreground, var(--bb-text)) 62%, var(--bb-primary)); background: currentColor; -webkit-mask: url('${backboardLogo}') center / contain no-repeat; mask: url('${backboardLogo}') center / contain no-repeat; }
 			.authTitle { color: var(--bb-text); font-size: 15px; font-weight: 650; line-height: 20px; }
 			.authText { max-width: 230px; color: var(--bb-muted); font-size: 12px; line-height: 17px; }
 			.authButton { min-height: 30px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 0 12px; border-radius: 5px; color: var(--vscode-button-foreground, #fff); background: var(--vscode-button-background, var(--bb-primary)); font-size: 12px; font-weight: 600; }
@@ -87,7 +87,7 @@ export function panelHtml(webview: vscode.Webview, codiconsStylesheet: vscode.Ur
 			.authButton .codicon { font-size: 14px; }
 		.panelHeader { min-height: 42px; box-sizing: border-box; display: flex; align-items: center; gap: 9px; padding: 6px 12px; border-bottom: 1px solid var(--bb-border); background: color-mix(in srgb, var(--bb-surface) 86%, var(--bb-bg)); }
 		.brandMark { width: 24px; height: 24px; flex: 0 0 auto; display: grid; place-items: center; border: 1px solid color-mix(in srgb, var(--bb-primary) 30%, var(--bb-border)); border-radius: 6px; color: var(--bb-primary); background: color-mix(in srgb, var(--bb-primary) 10%, transparent); }
-		.brandMark .codicon { font-size: 14px; }
+		.brandMark::before { content: ''; width: 16px; height: 16px; display: block; background: currentColor; -webkit-mask: url('${backboardLogo}') center / contain no-repeat; mask: url('${backboardLogo}') center / contain no-repeat; }
 		.brandTitle { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--bb-text); font-size: 12px; font-weight: 650; line-height: 16px; letter-spacing: .02em; text-transform: uppercase; }
 		.headerSpacer { flex: 1; min-width: 0; }
 		.headerBadge { max-width: 112px; flex: 0 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 3px 8px; border: 1px solid var(--bb-border); border-radius: 999px; color: var(--bb-muted); background: color-mix(in srgb, var(--bb-card) 72%, transparent); font-size: 10.5px; line-height: 14px; }
@@ -138,7 +138,7 @@ export function panelHtml(webview: vscode.Webview, codiconsStylesheet: vscode.Ur
 			.log { overflow-y: auto; overflow-x: hidden; min-width: 0; min-height: 0; padding: 14px 12px 18px; flex-direction: column; align-items: stretch; gap: 10px; background: var(--bb-bg); scrollbar-width: thin; overscroll-behavior: contain; }
 			.log > * { flex: 0 0 auto; }
 		.emptyState { margin: auto; display: grid; place-items: center; gap: 12px; transform: translateY(-8%); padding: 0 20px; }
-		.emptyIcon { width: 48px; height: 64px; display: block; color: color-mix(in srgb, var(--vscode-icon-foreground, var(--bb-text)) 62%, var(--bb-primary)); background: currentColor; opacity: .72; -webkit-mask: url('${backboardLogo}') center / contain no-repeat; mask: url('${backboardLogo}') center / contain no-repeat; transition: opacity .2s ease; }
+		.emptyIcon { width: 48px; height: 48px; display: block; color: color-mix(in srgb, var(--vscode-icon-foreground, var(--bb-text)) 62%, var(--bb-primary)); background: currentColor; opacity: .72; -webkit-mask: url('${backboardLogo}') center / contain no-repeat; mask: url('${backboardLogo}') center / contain no-repeat; transition: opacity .2s ease; }
 		.emptyState:hover .emptyIcon { opacity: .9; }
 		.emptyTagline { color: var(--bb-muted); font-size: 13px; line-height: 20px; text-align: center; max-width: 220px; }
 		.emptyHints { display: grid; gap: 4px; margin-top: 4px; }
@@ -430,7 +430,7 @@ export function panelHtml(webview: vscode.Webview, codiconsStylesheet: vscode.Ur
 					<div class="authCard">
 						<div class="authLogo" aria-hidden="true"></div>
 						<div class="authTitle">Connect Your AI</div>
-						<div class="authText">${process.platform === 'win32' ? 'Use Backboard or a provider API key.' : 'Use Backboard, an API key, or a subscription.'}</div>
+						<div class="authText">${process.platform === 'win32' ? 'Use DQuant Lab or a provider API key.' : 'Use DQuant Lab, an API key, or a subscription.'}</div>
 						<button id="authSignInBtn" class="authButton" type="button"><span class="codicon codicon-account"></span><span>Sign In with SSO</span></button>
 						<button id="authByokBtn" class="authButton" type="button">Set Up BYOK</button>
 						${process.platform !== 'win32' ? '<button id="authByosBtn" class="authButton" type="button">Set Up BYOS</button>' : ''}
@@ -601,7 +601,7 @@ export function panelHtml(webview: vscode.Webview, codiconsStylesheet: vscode.Ur
 		function renderUsagePopover() {
 			const refresh = '<div class="popoverActions">' + actionButton('refreshUsage', 'Refresh Usage', 'refresh') + '</div>';
 			if (!latestUsage && !accountUsage) {
-				return section('Usage', choice('disabled', '', 'No usage yet', 'Refresh billing usage or run a Backboard turn.', false, true, '', 'pulse')) + refresh;
+				return section('Usage', choice('disabled', '', 'No usage yet', 'Refresh billing usage or run a DQuant Lab turn.', false, true, '', 'pulse')) + refresh;
 			}
 			const account = accountUsage
 				? section('Account', choice('disabled', '', 'Billing usage', accountUsage.summary, false, true, '', 'pulse') + accountUsage.metrics.map(([label, value]) => choice('disabled', '', label, value, false, true, '', 'dashboard')).join(''))
@@ -667,7 +667,7 @@ export function panelHtml(webview: vscode.Webview, codiconsStylesheet: vscode.Ur
 			syncComposerButtons();
 		}
 		function requestUsageSnapshot() {
-			updateStatus('Loading Backboard usage.');
+			updateStatus('Loading DQuant Lab usage.');
 			vscode.postMessage({ type: 'refreshUsage' });
 		}
 		function chooseSelect(select, value, close) {
@@ -817,7 +817,7 @@ export function panelHtml(webview: vscode.Webview, codiconsStylesheet: vscode.Ur
 			}
 			stopRequested = true;
 			closePopover();
-			updateStatus('Stopping Backboard.');
+			updateStatus('Stopping DQuant Lab.');
 			vscode.postMessage({ type: 'cancel' });
 			syncComposerButtons();
 		});
@@ -936,7 +936,7 @@ export function panelHtml(webview: vscode.Webview, codiconsStylesheet: vscode.Ur
 				} else if (action === 'run') {
 					const item = promptQueue[index];
 					if (runInProgress) {
-						updateStatus('Wait for the current Backboard turn to finish, then run the queued prompt.');
+						updateStatus('Wait for the current DQuant Lab turn to finish, then run the queued prompt.');
 					} else if (item?.text?.trim()) {
 						pendingQueuedSendId = item.id;
 						item.pending = true;
@@ -964,7 +964,7 @@ export function panelHtml(webview: vscode.Webview, codiconsStylesheet: vscode.Ur
 			} else if (action === 'run') {
 				const item = promptQueue[index];
 				if (runInProgress) {
-					updateStatus('Wait for the current Backboard turn to finish, then run the queued prompt.');
+					updateStatus('Wait for the current DQuant Lab turn to finish, then run the queued prompt.');
 				} else if (item?.text?.trim()) {
 					pendingQueuedSendId = item.id;
 					item.pending = true;
@@ -1583,7 +1583,7 @@ export function panelHtml(webview: vscode.Webview, codiconsStylesheet: vscode.Ur
 			const name = item?.name || 'tool';
 			const key = item?.key || toolKey(item);
 			if (status === 'failed' || status === 'denied') {
-				console.error('[Backboard tool failure]', {
+				console.error('[DQuant Lab tool failure]', {
 					status,
 					name,
 					key,
@@ -2151,7 +2151,7 @@ export function panelHtml(webview: vscode.Webview, codiconsStylesheet: vscode.Ur
 				syncComposerButtons();
 				renderQueue();
 				saveActiveHistory();
-				updateStatus(message.text || 'Backboard is still finishing the previous turn. Try Run again.');
+				updateStatus(message.text || 'DQuant Lab is still finishing the previous turn. Try Run again.');
 			} else if (message.type === 'status') {
 				const statusText = message.text || '';
 				const doneStatus = statusText.trim().replace(/\.$/, '').toLowerCase() === 'done';
@@ -2247,7 +2247,7 @@ export function panelHtml(webview: vscode.Webview, codiconsStylesheet: vscode.Ur
 					}
 				}
 			} else if (message.type === 'sessionBinding') {
-				updateStatus('Connected to Backboard.');
+				updateStatus('Connected to DQuant Lab.');
 			} else if (message.type === 'toolRequested') {
 				const calls = message.payload || [];
 				for (const call of calls) {

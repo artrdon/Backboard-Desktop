@@ -23,7 +23,7 @@ suite('CodeBlockPart CSS', () => {
 		return css.slice(start + 1, end);
 	}
 
-	test('Backboard reserves a header rail and leaves long lines to the editor scroller', () => {
+	test('DQuant Lab reserves a header rail and leaves long lines to the editor scroller', () => {
 		const root = '.monaco-workbench .backboard-clean-chat .interactive-result-code-block:not(.compare)';
 		const block = ruleBody(`${root}:has(> .interactive-result-code-block-toolbar)`);
 		const editor = ruleBody(`${root} > .interactive-result-editor`);

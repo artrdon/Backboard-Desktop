@@ -24,7 +24,7 @@ export function ensureClaudeSdkSharedMemory(): void {
 		});
 	} catch {
 		throw new Error(
-			"The bundled agent runtime cannot initialize Claude's shared memory. Update or rebuild Backboard and retry; your Claude sign-in is still saved.",
+			"The bundled agent runtime cannot initialize Claude's shared memory. Update or rebuild DQuant Lab and retry; your Claude sign-in is still saved.",
 		);
 	}
 }

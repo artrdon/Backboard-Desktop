@@ -1136,7 +1136,7 @@ have to be updated for changes to the rules above, or to support more deeply nes
 	max-width: 100%;
 }
 
-/* Backboard image generations render as an intentional media card inside the
+/* DQuant Lab image generations render as an intentional media card inside the
  * response instead of an unbounded inline bitmap. */
 .interactive-item-container .value .rendered-markdown img[src^='https://backboard-prod.s3.ca-central-1.amazonaws.com/generated-images/'],
 .interactive-item-container .value .rendered-markdown img[src^='https://backboard-prod.s3.ca-central-1.amazonaws.com/generated-image/'] {
@@ -5269,7 +5269,7 @@ have to be updated for changes to the rules above, or to support more deeply nes
 }
 
 /* ===========================================================================
- * Backboard's shared chat composer look.
+ * DQuant Lab's shared chat composer look.
  *
  * The Simple window's composer is the reference design; these rules reproduce
  * it for the other products so a composer looks the same wherever it is
@@ -5624,7 +5624,7 @@ have to be updated for changes to the rules above, or to support more deeply nes
 	gap: 4px;
 }
 
-/* The clean Backboard composer uses a 26px send button. Matching that control
+/* The clean DQuant Lab composer uses a 26px send button. Matching that control
  * box keeps the context dial on the exact same right-hand alignment axis. */
 .monaco-workbench .backboard-clean-chat.backboard-composer .interactive-session .chat-input-container > .chat-context-usage-container .chat-context-usage-widget {
 	min-width: 26px;
@@ -5805,7 +5805,7 @@ have to be updated for changes to the rules above, or to support more deeply nes
  * pickers are the only way to reach a BYOS ("bring your own server") agent
  * provider there. Hiding them makes BYOS unselectable. */
 
-/* ---- Backboard clean chat flow -------------------------------------------
+/* ---- DQuant Lab clean chat flow -------------------------------------------
  *
  * A shared transcript treatment for the Simple session, Advanced pane, and
  * editor-side chat. The host class deliberately owns the presentation so the
@@ -5867,7 +5867,7 @@ have to be updated for changes to the rules above, or to support more deeply nes
 
 /* T3's UserTimelineRow: the prompt is a right-aligned `max-w-[80%]`
  * `rounded-2xl` surface with `p-3`. Keep only the subtle elevation requested
- * for Backboard; authorship still comes from order and shape. */
+ * for DQuant Lab; authorship still comes from order and shape. */
 .monaco-workbench .backboard-clean-chat .interactive-item-container.interactive-request {
 	align-items: flex-end;
 	padding-top: 8px;
@@ -5992,7 +5992,7 @@ have to be updated for changes to the rules above, or to support more deeply nes
 	font-size: 13px;
 }
 
-/* Backboard phase notifications can be the only event on screen while a
+/* DQuant Lab phase notifications can be the only event on screen while a
  * provider is waiting to produce its first token. Keep their elapsed counter
  * outside the shimmer so the row visibly ticks instead of looking frozen. */
 .monaco-workbench .backboard-clean-chat .progress-step.chat-progress-with-elapsed {
@@ -6750,7 +6750,7 @@ have to be updated for changes to the rules above, or to support more deeply nes
  *
  * These rules mirror the MIT-licensed T3 Code ChatView/MessagesTimeline
  * geometry instead of adapting the stock VS Code chat card stack. The native
- * Backboard parts keep their behavior, but their shell, row rhythm and footer
+ * DQuant Lab parts keep their behavior, but their shell, row rhythm and footer
  * placement follow T3's max-w-3xl timeline and composer exactly.
  */
 
@@ -7606,7 +7606,7 @@ have to be updated for changes to the rules above, or to support more deeply nes
 
 /* --- Cursor transcript ---------------------------------------------------
  * This hook lives on ChatListWidget itself. Everything below is confined to
- * the scrolling Backboard transcript, so tabs, composer, review controls and
+ * the scrolling DQuant Lab transcript, so tabs, composer, review controls and
  * every other ChatWidget host keep their existing layout and interaction. */
 .monaco-workbench .backboard-clean-chat .interactive-list.backboard-cursor-transcript {
 	--bb-backboard-viewport-inset: 0px;
@@ -7630,7 +7630,7 @@ have to be updated for changes to the rules above, or to support more deeply nes
 }
 
 /* The reference treatment uses a neutral editor-card surface rather than the
- * blue input surface of Backboard's dark theme. Keep light/high-contrast
+ * blue input surface of DQuant Lab's dark theme. Keep light/high-contrast
  * themes token-driven while matching the dark transcript precisely. */
 .monaco-workbench.vs-dark:not(.optimus-window) .backboard-clean-chat .interactive-list.backboard-cursor-transcript {
 	--bb-cursor-diff-surface: #181818;

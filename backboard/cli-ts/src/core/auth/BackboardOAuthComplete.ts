@@ -2,7 +2,7 @@ import { readBackboardConfig } from "../../config/backboardConfig.ts";
 import { DEFAULT_API_URL, normalizeApiUrl } from "../../config/env.ts";
 
 /**
- * The page every browser sign-in ends on: Backboard SSO's own completion page,
+ * The page every browser sign-in ends on: DQuant Lab SSO's own completion page,
  * on the configured backend. The ChatGPT callback redirects here and Claude's
  * login opens it, so all three sign-ins finish in the same place.
  */

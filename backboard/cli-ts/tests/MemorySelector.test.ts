@@ -11,7 +11,7 @@ describe("MemorySelector choices", () => {
 		]);
 	});
 
-	it("formats memory modes for Backboard", () => {
+	it("formats memory modes for DQuant Lab", () => {
 		expect(formatBackboardMemoryMode("off")).toBe("off");
 		expect(formatBackboardMemoryMode("auto")).toBe("Auto");
 		expect(formatBackboardMemoryMode("on")).toBe("Auto");

@@ -90,7 +90,7 @@ export interface IBuildOptionsInput {
  * from the session's {@link SessionClientToolsDiff}.
  *
  * `proxyHandle` is always `undefined` in practice: Claude sessions run
- * entirely on the user's own subscription, never the Backboard-managed
+ * entirely on the user's own subscription, never the DQuant Lab-managed
  * proxy, so no `ANTHROPIC_BASE_URL` / `ANTHROPIC_AUTH_TOKEN` is injected and
  * the SDK subprocess falls back to the user's own Claude Code login
  * (credential store under `~/.claude`, macOS Keychain, or

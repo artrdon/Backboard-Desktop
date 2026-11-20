@@ -8,7 +8,7 @@ import { definePrompt, type PromptModule } from "../PromptModule.ts";
  */
 export const clientTools: PromptModule = definePrompt(
 	`
-Some of your tools are provided by the connected Backboard IDE and act inside it — for example on integrated browser pages the user has shared with you. Treat them like any other tool.
+Some of your tools are provided by the connected DQuant Lab IDE and act inside it — for example on integrated browser pages the user has shared with you. Treat them like any other tool.
 When the user asks you to play a game or complete a multi-step task with these tools, carry it through in one turn: act, observe the result, and act again until you are done. Do not pause between steps to ask for confirmation or narrate progress. If a game needs a second player and the user has not claimed a side, play both sides. End your turn only when the task is complete, you are genuinely blocked, or the user asked to alternate turns with you.
 `.trim(),
 );

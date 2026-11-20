@@ -116,7 +116,7 @@ jobs:
           lfs: true
 
       # The source ships without analytics keys; release builds stamp
-      # Backboard's from the BACKBOARD_POSTHOG_KEY secret (if set).
+      # DQuant Lab's from the BACKBOARD_POSTHOG_KEY secret (if set).
       - name: Stamp analytics key
         shell: bash
         env:
@@ -212,7 +212,7 @@ jobs:
           lfs: true
 
       # The source ships without analytics keys; release builds stamp
-      # Backboard's from the BACKBOARD_POSTHOG_KEY secret (if set).
+      # DQuant Lab's from the BACKBOARD_POSTHOG_KEY secret (if set).
       - name: Stamp analytics key
         shell: bash
         env:

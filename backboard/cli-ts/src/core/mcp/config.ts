@@ -224,7 +224,7 @@ export async function saveProjectMcpServer(
 
 /**
  * Adds a server to the user file (`~/.backboard/mcp.json`), which every
- * Backboard window and worktree reads. An existing entry with the same name
+ * DQuant Lab window and worktree reads. An existing entry with the same name
  * is left untouched and reported as `created: false`.
  */
 export async function saveUserMcpServer(

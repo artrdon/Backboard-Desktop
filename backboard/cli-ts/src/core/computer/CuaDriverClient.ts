@@ -32,7 +32,7 @@ process.once("exit", () => {
 
 /**
  * `CUA_DRIVER_EMBEDDED=1` keeps the driver in the spawning app's macOS
- * responsibility chain, so Backboard Studio's Accessibility and Screen
+ * responsibility chain, so DQuant Lab Studio's Accessibility and Screen
  * Recording grants cover it and no second permission prompt appears.
  */
 function driverEnvironment(): Record<string, string> {
@@ -50,7 +50,7 @@ function driverEnvironment(): Record<string, string> {
  * Every call of a run shares this session, so the agent cursor it shows moves
  * with the run's actions; the cursor's badge shows the name to the user.
  */
-export const CUA_SESSION = "Backboard";
+export const CUA_SESSION = "DQuant Lab";
 
 /** Tools that take a session. The others reject arguments they do not know. */
 const SESSION_TOOLS = new Set([

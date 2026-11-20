@@ -262,7 +262,7 @@ export class ClaudeAgentSession extends Disposable {
 				agent: this._resolveAgentName(this._provisionalAgent),
 			},
 			// Always subscription-billed: the SDK subprocess uses the
-			// user's own Claude Code login, never the Backboard proxy.
+			// user's own Claude Code login, never the DQuant Lab proxy.
 			undefined,
 			data => this._logService.error(`[Claude SDK stderr] ${data}`),
 			msg => this._logService.info(`[Claude] declining elicitation from MCP server (Phase 7 stub): ${msg}`),

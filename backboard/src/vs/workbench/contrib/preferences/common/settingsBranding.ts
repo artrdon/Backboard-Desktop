@@ -9,7 +9,7 @@
  * mention VS Code by name or link to its documentation. Rather than chasing
  * every registration, the settings editor sanitizes what it renders:
  *
- *  - links to VS Code documentation are redirected to the Backboard docs;
+ *  - links to VS Code documentation are redirected to the DQuant Lab docs;
  *  - all other VS Code / Microsoft links are unlinked (label kept, URL dropped);
  *  - textual "VS Code" / "Visual Studio Code" references become the product name.
  */
@@ -24,7 +24,7 @@ const DOCS_LINK_PATTERN = /\(https?:\/\/code\.visualstudio\.com\/(?:docs|api|lea
 /** Markdown links to any other VS Code / Microsoft property: keep the label, drop the link. */
 const OTHER_LINK_PATTERN = /\[([^\]]*)\]\(https?:\/\/(?:[^)\s]*\.)?(?:visualstudio\.com|aka\.ms|go\.microsoft\.com|microsoft\.com)[^)]*\)/gi;
 
-/** Bare (non-markdown) URLs to VS Code documentation → Backboard docs. */
+/** Bare (non-markdown) URLs to VS Code documentation → DQuant Lab docs. */
 const BARE_DOCS_LINK_PATTERN = /https?:\/\/code\.visualstudio\.com\/(?:docs|api|learn|updates)[^\s)\]]*/gi;
 
 /** Bare URLs to any other VS Code property are removed outright. */

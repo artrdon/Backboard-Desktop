@@ -18,13 +18,13 @@ export interface StudioApiConfig {
 }
 
 export interface StudioSignInTrackingOptions {
-	/** The Backboard API the IDE is signed in to and its credential headers, or undefined when signed out. */
+	/** The DQuant Lab API the IDE is signed in to and its credential headers, or undefined when signed out. */
 	readonly apiConfig: () => StudioApiConfig | undefined;
 	readonly output: vscode.OutputChannel;
 }
 
 /**
- * Reports each Backboard credential the IDE holds, so the server can count every account's
+ * Reports each DQuant Lab credential the IDE holds, so the server can count every account's
  * first IDE sign-in. The server resolves the account from the credential and keeps one row per
  * account; the stored fingerprint only avoids repeating a report for the same credential.
  * The returned check can run on any trigger: the credential, not the trigger, decides whether

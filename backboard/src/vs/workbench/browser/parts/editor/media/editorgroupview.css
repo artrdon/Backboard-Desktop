@@ -156,7 +156,7 @@
 	width: 100%;
 }
 
-/* The upstream tips list is not rendered in Backboard; collapse it so the
+/* The upstream tips list is not rendered in DQuant Lab; collapse it so the
    `.watermark-container` gap does not reserve space for an empty element. */
 .monaco-workbench .part.editor > .content .editor-group-container > .editor-group-watermark-wrapper .editor-group-watermark .shortcuts:empty {
 	display: none;
@@ -338,7 +338,7 @@
 }
 
 /* Secondary groups and auxiliary windows show the compact watermark only, never
-   the tips list or the Backboard welcome. Note that short groups are NOT hidden
+   the tips list or the DQuant Lab welcome. Note that short groups are NOT hidden
    here: the welcome stays put when the panel is dragged up, it just gets
    tighter padding (see the `max-height-478px` rule below). */
 .monaco-workbench .part.editor > .content:not(.empty) .editor-group-container > .editor-group-watermark-wrapper .editor-group-watermark .shortcuts,

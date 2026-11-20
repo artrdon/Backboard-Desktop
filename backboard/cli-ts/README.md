@@ -1,6 +1,6 @@
-# Backboard R-CLI
+# DQuant Lab R-CLI
 
-Backboard R-CLI is an AI coding agent that runs in your terminal. Open it in a
+DQuant Lab R-CLI is an AI coding agent that runs in your terminal. Open it in a
 project and describe what you want to accomplish. It can inspect and edit files,
 run commands, search the web, use MCP servers and skills, and keep its work
 reviewable through permissions and checkpoints.
@@ -22,7 +22,7 @@ The maintained product guides contain the complete feature reference:
 - [Skills and discovery](https://docs.backboard.io/cli/skills)
 - [MCP servers and hooks](https://docs.backboard.io/cli/mcp)
 - [Attachments](https://docs.backboard.io/cli/attachments)
-- [Backboard API documentation](https://docs.backboard.io/)
+- [DQuant Lab API documentation](https://docs.backboard.io/)
 
 ## Install the CLI
 
@@ -77,9 +77,9 @@ backboard --help
 R-CLI checks for updates in the background. Run `/update` inside the CLI to
 check on demand and display the current upgrade command.
 
-## Sign in with Backboard
+## Sign in with DQuant Lab
 
-The normal setup uses Backboard SSO through the OAuth 2.0 device authorization
+The normal setup uses DQuant Lab SSO through the OAuth 2.0 device authorization
 flow:
 
 ```sh
@@ -90,7 +90,7 @@ The CLI prints a verification URL and short code. On an interactive desktop it
 also tries to open the browser automatically.
 
 1. Open the displayed URL, or scan the QR code.
-2. Sign in to or create your Backboard account.
+2. Sign in to or create your DQuant Lab account.
 3. Approve the device.
 4. Return to the terminal.
 
@@ -98,7 +98,7 @@ The URL and code always remain available, so login also works over SSH or from
 a terminal without a local browser. Open the URL on any device and enter the
 shown code.
 
-The CLI includes Backboard's first-party public OAuth client ID. Users do not
+The CLI includes DQuant Lab's first-party public OAuth client ID. Users do not
 need to create an OAuth application, configure a client secret, or edit an
 environment file.
 
@@ -126,12 +126,12 @@ Or use `/logout` inside R-CLI.
 
 For the complete first-session walkthrough, see the
 [R-CLI overview](https://docs.backboard.io/cli/overview). If you are building
-Backboard SSO into a separate application, see the
-[Backboard SSO integration guide](https://docs.backboard.io/concepts/sso).
+DQuant Lab SSO into a separate application, see the
+[DQuant Lab SSO integration guide](https://docs.backboard.io/concepts/sso).
 
 ## Use your own model-provider keys
 
-A Backboard login is not required when you want to call a supported provider
+A DQuant Lab login is not required when you want to call a supported provider
 directly. On the authentication screen choose **Bring your own key**, or run:
 
 ```text
@@ -150,14 +150,14 @@ Provider keys are validated before saving, encrypted at rest in
 through the interactive flow rather than placing provider secrets in project
 files.
 
-You can keep both a Backboard login and provider keys. When the same provider
+You can keep both a DQuant Lab login and provider keys. When the same provider
 is available through both, the enabled direct key takes precedence for that
 provider's models.
 
 ## Use a Claude subscription
 
 R-CLI can use an existing Claude.ai subscription through the official Claude
-Code transport while retaining Backboard's agent loop, permissions,
+Code transport while retaining DQuant Lab's agent loop, permissions,
 checkpoints, tools, and IDE UI. Install Claude Code, then connect it with:
 
 ```sh
@@ -165,19 +165,19 @@ backboard claude-subscription login
 ```
 
 The official Claude Code CLI opens Anthropic's sign-in flow and owns its OAuth
-credentials and refresh lifecycle. Backboard stores only an enable flag and
+credentials and refresh lifecycle. DQuant Lab stores only an enable flag and
 checks that the active login is a first-party `claude.ai` login before every
 turn. API-key, custom endpoint, Bedrock, Vertex, and Foundry overrides are not
 used by the `anthropic-subscription` route.
 
-Check the connection or disconnect it from Backboard with:
+Check the connection or disconnect it from DQuant Lab with:
 
 ```sh
 backboard claude-subscription status --json
 backboard claude-subscription logout
 ```
 
-Disconnecting does not sign Claude Code itself out. In Backboard Studio, the
+Disconnecting does not sign Claude Code itself out. In DQuant Lab Studio, the
 same flow is available from the **Claude Subscription** section of the model
 picker. Select a model such as `anthropic-subscription/sonnet`; if the login
 expires, use **Reconnect Claude** there.
@@ -287,7 +287,7 @@ Type `/help` inside R-CLI for the authoritative command list.
 | `/model`                    | Choose a model and thinking mode           |
 | `/settings`                 | Adjust session preferences                 |
 | `/keys`                     | Manage direct provider API keys            |
-| `/sessions`                 | Resume a Backboard or local BYOK session   |
+| `/sessions`                 | Resume a DQuant Lab or local BYOK session   |
 | `/context`                  | Inspect context-window usage               |
 | `/compress`                 | Compress the current conversation          |
 | `/undo`, `/redo`, `/rewind` | Restore checkpointed file changes          |
@@ -299,7 +299,7 @@ Type `/help` inside R-CLI for the authoritative command list.
 | `/lsp`                      | Toggle language-server diagnostics         |
 | `/new`                      | Start a new thread                         |
 | `/update`                   | Check for a newer CLI release              |
-| `/login`, `/logout`         | Change Backboard authentication            |
+| `/login`, `/logout`         | Change DQuant Lab authentication            |
 | `/quit`                     | Exit the CLI                               |
 
 See the [command reference](https://docs.backboard.io/cli/reference) for every
@@ -311,7 +311,7 @@ R-CLI keeps user credentials separate from project state.
 
 | Path                                   | Purpose                                           |
 | -------------------------------------- | ------------------------------------------------- |
-| `~/.backboard/config.json`             | Backboard credential and saved preferences        |
+| `~/.backboard/config.json`             | DQuant Lab credential and saved preferences        |
 | `~/.backboard/keys.json`               | Encrypted direct provider keys                    |
 | `~/.backboard/mcp.json`                | Personal MCP servers and secrets                  |
 | `~/.backboard/hooks.json`              | Personal command hooks                            |
@@ -342,7 +342,7 @@ Most users do not need environment variables.
 
 | Variable                             | Purpose                                                               |
 | ------------------------------------ | --------------------------------------------------------------------- |
-| `BACKBOARD_API_KEY`                  | Use a Backboard API key instead of the saved SSO login                |
+| `BACKBOARD_API_KEY`                  | Use a DQuant Lab API key instead of the saved SSO login                |
 | `BACKBOARD_API_URL`                  | Override the API base URL; defaults to `https://app.backboard.io/api` |
 | `BACKBOARD_OAUTH_CLIENT_ID`          | Override the first-party public OAuth client ID                       |
 | `BACKBOARD_ALLOW_INSECURE_API_URL=1` | Permit a non-HTTPS API URL for internal development                   |
@@ -350,7 +350,7 @@ Most users do not need environment variables.
 | `BROWSER_CDP_URL`                  | Connect the Browser tool to an existing CDP HTTP endpoint             |
 | `BROWSER_WS_URL`                   | Connect the Browser tool to an existing CDP WebSocket endpoint        |
 
-Environment variables override saved Backboard credentials where applicable.
+Environment variables override saved DQuant Lab credentials where applicable.
 Never commit real credentials to `.env`.
 
 ## Run from source
@@ -525,7 +525,7 @@ output, full response, and agent startup.
 ### SkillsBench canary
 
 The development harness can run an official SkillsBench task and verifier with
-Backboard R-CLI as the agent under test. It sparse-checks out the pinned
+DQuant Lab R-CLI as the agent under test. It sparse-checks out the pinned
 SkillsBench v1.1 task, removes skills from the task image to prevent leakage,
 cross-compiles the current CLI for Docker, and exposes the task's skills only
 in the `with-skill` condition. Docker Desktop or Colima must be running.
@@ -536,7 +536,7 @@ Prepare the task image without making a model request:
 bun run test:skillsbench -- --prepare-only
 ```
 
-Run the default canary through Backboard's model infrastructure:
+Run the default canary through DQuant Lab's model infrastructure:
 
 ```sh
 # Use an existing `backboard login`, or export BACKBOARD_API_KEY=...
@@ -554,7 +554,7 @@ bun run test:skillsbench -- \
 Each condition runs in a fresh disposable container with the task's CPU,
 memory, agent-timeout, and verifier-timeout settings. The upstream verifier is
 copied unchanged. Artifacts are written under
-`benchmark-results/skillsbench/<timestamp>/`, including Backboard's JSON event
+`benchmark-results/skillsbench/<timestamp>/`, including DQuant Lab's JSON event
 trace, session logs, verifier logs, reward, token/cost summary, and a run
 manifest. These are local canary scores; an official SkillsBench leaderboard
 submission still requires the canonical BenchFlow/AgentBeats execution path.
@@ -690,12 +690,12 @@ and untracked work.
   using an unfamiliar repository.
 - Keep the default permission mode until you understand a project's scripts.
 - Use `bypass` only in isolated, disposable environments.
-- Report suspected vulnerabilities privately to the Backboard maintainers
+- Report suspected vulnerabilities privately to the DQuant Lab maintainers
   rather than opening a public exploit report.
 
 ## License
 
-Backboard R-CLI is released under the [MIT License](./LICENSE).
+DQuant Lab R-CLI is released under the [MIT License](./LICENSE).
 
 Before accepting public contributions, add a `CONTRIBUTING.md`, code of
 conduct, and security-reporting policy and link them from this README.

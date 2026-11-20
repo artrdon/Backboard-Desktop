@@ -64,7 +64,7 @@ export function turnRetryPrompt(
 
 /**
  * Failures that no retry or fallback model can fix because the account itself
- * is blocked: Backboard pauses chat once the balance is used up, and nothing
+ * is blocked: DQuant Lab pauses chat once the balance is used up, and nothing
  * can bill a model once its route is signed out. Retrying them kept the user
  * waiting ~20 s across five attempts for the same answer.
  */
@@ -74,7 +74,7 @@ const ACCOUNT_BLOCKED_PATTERNS = [
 	"insufficient credits",
 	"credit balance",
 	"no backend can serve",
-	// A guest (signed-out) key may only run Backboard's free models.
+	// A guest (signed-out) key may only run DQuant Lab's free models.
 	"sign in to use this model",
 ];
 

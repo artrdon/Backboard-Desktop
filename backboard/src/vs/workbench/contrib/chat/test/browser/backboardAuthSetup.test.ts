@@ -13,7 +13,7 @@ import { CHATGPT_SUBSCRIPTION_SETUP_ID, CHECK_CLAUDE_CODE_VERSION_COMMAND_ID, CL
 import { EMPTY_BACKBOARD_CONNECT_STATE, renderBackboardConnect } from '../../browser/backboardConnect.js';
 import { ADD_PROVIDER_KEY_COMMAND_ID } from '../../browser/byokKeys/byokKeys.js';
 
-suite('Backboard auth setup', () => {
+suite('DQuant Lab auth setup', () => {
 	const disposables = ensureNoDisposablesAreLeakedInTestSuite();
 
 	function setup(executeCommand: (id: string, ...args: unknown[]) => Promise<unknown>) {

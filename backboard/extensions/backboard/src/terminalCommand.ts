@@ -12,7 +12,7 @@ const PROFILE_MARKER = '# Added by DQuant Lab';
 /**
  * Puts the app's launcher on the user's PATH without asking for
  * administrator rights: the launcher is linked into `~/.backboard/bin`, the
- * folder the Backboard CLI installer already adds to PATH, and that folder is
+ * folder the DQuant Lab CLI installer already adds to PATH, and that folder is
  * only added to the shell profile when it is not on PATH yet.
  *
  * Resolves false when there is nothing to link, as in a dev checkout, or when

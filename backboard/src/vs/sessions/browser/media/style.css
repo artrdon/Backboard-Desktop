@@ -754,7 +754,7 @@
 	order: 2;
 }
 
-/* Keep the 48px breadcrumb bar while preserving Backboard's compact,
+/* Keep the 48px breadcrumb bar while preserving DQuant Lab's compact,
  * icon-only session actions. The header should never mix injected text labels
  * into the environment, panel, done, pin, and close icon cluster. */
 .agent-sessions-workbench .part.sessionspart > .title {

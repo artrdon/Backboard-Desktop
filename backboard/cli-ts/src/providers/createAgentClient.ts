@@ -34,7 +34,7 @@ export function createAgentClient(
 	// Built unconditionally, even with no sign-in: it reads `config.env`, which
 	// `refreshAuth()` mutates in place, so a mid-session `/login` makes it live
 	// without rebuilding anything. Gating construction on the credential
-	// present at startup would have left Backboard models unreachable until a
+	// present at startup would have left DQuant Lab models unreachable until a
 	// restart for anyone who started keys-only.
 	const backboard = new BackboardClient(config.env, serverLog);
 	const byok = new ByokClient(

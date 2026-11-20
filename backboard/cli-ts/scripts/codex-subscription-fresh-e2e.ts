@@ -47,13 +47,13 @@ const fakeCodexHome = join(fakeHome, ".codex");
 const fakeAuthFile = join(fakeCodexHome, "auth.json");
 
 const firstContents = [
-	"Chat 1: created by the Backboard CLI using a ChatGPT subscription.",
-	"Harness: Backboard ToolScheduler.",
+	"Chat 1: created by the DQuant Lab CLI using a ChatGPT subscription.",
+	"Harness: DQuant Lab ToolScheduler.",
 	"",
 ].join("\n");
 const secondContents = [
 	"Chat 2: a separate fresh CLI process used the same isolated subscription login.",
-	"The model requested this edit; Backboard ApplyPatch performed it.",
+	"The model requested this edit; DQuant Lab ApplyPatch performed it.",
 	"",
 ].join("\n");
 
@@ -106,8 +106,8 @@ try {
 		model,
 		[
 			"Use ApplyPatch to create chat-one.txt with exactly these two lines and a trailing newline:",
-			"Chat 1: created by the Backboard CLI using a ChatGPT subscription.",
-			"Harness: Backboard ToolScheduler.",
+			"Chat 1: created by the DQuant Lab CLI using a ChatGPT subscription.",
+			"Harness: DQuant Lab ToolScheduler.",
 			"Then use Read to verify chat-one.txt. Do not use any other tool. Finish with one short sentence.",
 		].join("\n"),
 	);
@@ -121,7 +121,7 @@ try {
 			"This is a separate chat. First use Read on chat-one.txt.",
 			"Then use ApplyPatch to create nested/chat-two.txt with exactly these two lines and a trailing newline:",
 			"Chat 2: a separate fresh CLI process used the same isolated subscription login.",
-			"The model requested this edit; Backboard ApplyPatch performed it.",
+			"The model requested this edit; DQuant Lab ApplyPatch performed it.",
 			"Finally use Read on nested/chat-two.txt. Do not use any other tool. Finish with one short sentence.",
 		].join("\n"),
 	);
@@ -130,7 +130,7 @@ try {
 
 	console.log("[e2e] PASS        2 real CLI chats completed");
 	console.log(
-		"[e2e] PASS        all mutation/read calls ran through Backboard tools",
+		"[e2e] PASS        all mutation/read calls ran through DQuant Lab tools",
 	);
 	console.log("[e2e] PASS        both text files match exact expected bytes");
 	console.log(`[e2e] OUTPUT      ${workspace}`);
@@ -251,11 +251,11 @@ function assertToolEvidence(
 ): void {
 	const names = evidence.toolStarts.map((event) => event.name);
 	if (!names.includes("ApplyPatch")) {
-		throw new Error(`${label} did not execute Backboard ApplyPatch.`);
+		throw new Error(`${label} did not execute DQuant Lab ApplyPatch.`);
 	}
 	if (names.filter((name) => name === "Read").length < minimumReads) {
 		throw new Error(
-			`${label} did not execute the expected Backboard Read calls.`,
+			`${label} did not execute the expected DQuant Lab Read calls.`,
 		);
 	}
 	if (evidence.toolResults.length !== evidence.toolStarts.length) {

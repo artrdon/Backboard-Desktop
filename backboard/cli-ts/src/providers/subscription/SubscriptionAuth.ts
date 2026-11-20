@@ -538,8 +538,8 @@ async function startCallbackServer(state: string): Promise<{
 			);
 			return;
 		}
-		// Land on the same page Backboard SSO finishes on. The redirect target
-		// is a fixed Backboard URL, so the code never leaves this machine.
+		// Land on the same page DQuant Lab SSO finishes on. The redirect target
+		// is a fixed DQuant Lab URL, so the code never leaves this machine.
 		response.writeHead(302, {
 			Location: backboardOAuthCompleteUrl(),
 			"Cache-Control": "no-store",
@@ -572,7 +572,7 @@ async function startCallbackServer(state: string): Promise<{
 	return { server, port, code };
 }
 
-/** Shown only when the login failed; success redirects to Backboard. */
+/** Shown only when the login failed; success redirects to DQuant Lab. */
 function oauthCallbackHtml(message: string): string {
 	const escapedMessage = message
 		.replaceAll("&", "&amp;")
@@ -585,7 +585,7 @@ function oauthCallbackHtml(message: string): string {
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Backboard sign-in</title>
+		<title>DQuant Lab sign-in</title>
 		<style>
 			html { color-scheme: dark; font: 15px -apple-system, BlinkMacSystemFont, sans-serif; }
 			body { min-height: 100vh; margin: 0; display: grid; place-items: center; background: #111214; color: #f5f5f5; }

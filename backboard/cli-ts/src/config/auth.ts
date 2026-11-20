@@ -19,8 +19,8 @@ const PLACEHOLDER_API_KEYS = new Set([
 
 export const NO_CREDENTIALS_MESSAGE =
 	supportsSubscriptions()
-		? "No credentials found. Sign in with Backboard, connect a ChatGPT or Claude subscription, or add a provider API key."
-		: "No credentials found. Sign in with Backboard or add a provider API key.";
+		? "No credentials found. Sign in with DQuant Lab, connect a ChatGPT or Claude subscription, or add a provider API key."
+		: "No credentials found. Sign in with DQuant Lab or add a provider API key.";
 
 export const CHATGPT_SUBSCRIPTION_AUTH_FILE_ENV =
 	"BACKBOARD_CHATGPT_SUBSCRIPTION_AUTH_FILE";
@@ -50,13 +50,13 @@ export interface ClaudeSubscriptionAuth {
 /**
  * Everything the CLI can authenticate with, in one place.
  *
- * Any credential source is enough to run: a Backboard sign-in unlocks the
+ * Any credential source is enough to run: a DQuant Lab sign-in unlocks the
  * routed catalog, a ChatGPT subscription unlocks the explicit subscription
  * provider, and a saved provider key unlocks that vendor's models directly.
  * Only having none is fatal, which is what the startup auth screen catches.
  */
 export interface AuthState {
-	/** Present when a Backboard key is set in the env or saved config. */
+	/** Present when a DQuant Lab key is set in the env or saved config. */
 	backboard: BackboardEnv | null;
 	/** Explicit opt-in to a ChatGPT subscription credential file. */
 	chatgptSubscription: ChatGptSubscriptionAuth | null;

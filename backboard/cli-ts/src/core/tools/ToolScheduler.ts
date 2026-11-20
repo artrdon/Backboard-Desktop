@@ -86,7 +86,7 @@ interface EarlyExecution {
  *   - consecutive concurrency-safe calls run together in parallel
  *   - any non-safe (write/destructive) call runs alone, in order
  * All outputs are collected and returned together so the caller can submit the
- * full set in one Backboard call. Cancellation throws AbortError; partial
+ * full set in one DQuant Lab call. Cancellation throws AbortError; partial
  * outputs are discarded by the caller rather than submitted.
  *
  * createRound() returns a per-round object that additionally accepts streamed

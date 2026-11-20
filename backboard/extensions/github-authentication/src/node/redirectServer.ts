@@ -145,7 +145,7 @@ export async function ensureBackboardRedirectServer(logger: Log): Promise<string
 		server = http.createServer(handleRedirect);
 		server.once('error', error => {
 			if ((error as NodeJS.ErrnoException).code === 'EADDRINUSE') {
-				logger.warn(`Backboard GitHub OAuth redirect bridge port ${Config.gitHubRedirectPort} is already in use. Reusing configured redirect URI ${Config.gitHubRedirectUri}.`);
+				logger.warn(`DQuant Lab GitHub OAuth redirect bridge port ${Config.gitHubRedirectPort} is already in use. Reusing configured redirect URI ${Config.gitHubRedirectUri}.`);
 				resolve(Config.gitHubRedirectUri);
 				return;
 			}
@@ -154,7 +154,7 @@ export async function ensureBackboardRedirectServer(logger: Log): Promise<string
 			reject(error);
 		});
 		server.once('listening', () => {
-			logger.info(`Backboard GitHub OAuth redirect bridge listening on ${Config.gitHubRedirectUri}`);
+			logger.info(`DQuant Lab GitHub OAuth redirect bridge listening on ${Config.gitHubRedirectUri}`);
 			resolve(Config.gitHubRedirectUri);
 		});
 		server.listen(Config.gitHubRedirectPort, '127.0.0.1');

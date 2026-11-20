@@ -43,7 +43,7 @@ export class ChatPanelResilienceContribution extends Disposable implements IWork
 	private static readonly REPAIR_STORAGE_KEY = 'chat.panelResilience.repair.v1';
 
 	/**
-	 * Runtime id of a legacy Backboard extension container that a since-removed
+	 * Runtime id of a legacy DQuant Lab extension container that a since-removed
 	 * layout experiment could have stuck on the right. It is not a deliberate
 	 * user arrangement, so it never counts as "reserving" the right and is
 	 * evicted back to its default during the one-time repair.
@@ -120,7 +120,7 @@ export class ChatPanelResilienceContribution extends Disposable implements IWork
 				&& !isAgentPanelContainer(container.id));
 	}
 
-	/** Evicts the legacy Backboard extension container off the right, back to its default. */
+	/** Evicts the legacy DQuant Lab extension container off the right, back to its default. */
 	private evictLegacyBackboardFromRight(): void {
 		const legacy = this.viewDescriptorService.getViewContainerById(ChatPanelResilienceContribution.LEGACY_BACKBOARD_CONTAINER_ID);
 		if (legacy && this.viewDescriptorService.getViewContainerLocation(legacy) === ViewContainerLocation.AuxiliaryBar) {

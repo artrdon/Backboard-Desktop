@@ -1,16 +1,16 @@
-# Backboard Secondary Side Bar / Auxiliary Bar Walkthrough
+# DQuant Lab Secondary Side Bar / Auxiliary Bar Walkthrough
 
-This document walks through the current Backboard implementation of the right-side
+This document walks through the current DQuant Lab implementation of the right-side
 container that VS Code calls the **Auxiliary Bar** and exposes in UI as the
 **Secondary Side Bar**.
 
 The codebase has two related implementations:
 
 - The normal workbench auxiliary bar used by the standard editor workbench.
-- The Backboard Agents Window auxiliary bar under `src/vs/sessions`, which is
+- The DQuant Lab Agents Window auxiliary bar under `src/vs/sessions`, which is
   the right-side details pane for agent sessions.
 
-Most Backboard-specific behavior lives in the second implementation. The Agents
+Most DQuant Lab-specific behavior lives in the second implementation. The Agents
 Window keeps the same VS Code concepts, service contracts, and view-container
 registries, but replaces the layout shell, part service, default view containers,
 storage keys, sizing rules, and some title/action behavior.
@@ -27,7 +27,7 @@ In VS Code vocabulary:
 - **View**: the actual pane inside the container.
 - **Pane composite**: the runtime object for a contributed view container.
 
-In Backboard's Agents Window:
+In DQuant Lab's Agents Window:
 
 ```text
 root grid, vertical
@@ -47,7 +47,7 @@ Changes, Files, or Browser for the active agent session.
 
 ## Source Map
 
-Primary Backboard sessions files:
+Primary DQuant Lab sessions files:
 
 | Area | File |
 | --- | --- |
@@ -70,7 +70,7 @@ Primary Backboard sessions files:
 | Editor/right-panel coupling actions | `src/vs/sessions/contrib/editor/browser/editor.contribution.ts` |
 | Sessions entrypoint imports | `src/vs/sessions/sessions.common.main.ts` |
 
-Shared VS Code workbench files that Backboard reuses or mirrors:
+Shared VS Code workbench files that DQuant Lab reuses or mirrors:
 
 | Area | File |
 | --- | --- |
@@ -107,12 +107,12 @@ Important baseline behavior:
   `workbench.action.focusAuxiliaryBar`, previous/next auxiliary bar view, and
   maximize/restore.
 
-The shared part is generic. It does not know about Backboard sessions, Changes,
+The shared part is generic. It does not know about DQuant Lab sessions, Changes,
 Files, Browser, or per-session layout state.
 
-## Backboard Agents Window Difference
+## DQuant Lab Agents Window Difference
 
-The Backboard Agents Window does not reuse the normal workbench shell. It defines
+The DQuant Lab Agents Window does not reuse the normal workbench shell. It defines
 its own `Workbench` class in `src/vs/sessions/browser/workbench.ts`.
 
 That class implements `IAgentWorkbenchLayoutService`, which refines the normal
@@ -140,7 +140,7 @@ and `Parts.AUXILIARYBAR_PART`.
 
 ### Service Replacement
 
-Backboard replaces the normal pane composite part service with
+DQuant Lab replaces the normal pane composite part service with
 `AgenticPaneCompositePartService` in
 `src/vs/sessions/browser/paneCompositePartService.ts`.
 
@@ -190,7 +190,7 @@ the auxiliary bar part before the grid is built. This matters because
 `createWorkbenchLayout()` later asks `getPart(Parts.AUXILIARYBAR_PART)` for a
 registered part.
 
-## Backboard AuxiliaryBarPart
+## DQuant Lab AuxiliaryBarPart
 
 The sessions-specific `AuxiliaryBarPart` is in
 `src/vs/sessions/browser/parts/auxiliaryBarPart.ts`.
@@ -200,7 +200,7 @@ but it changes the configuration.
 
 ### Storage Keys
 
-Backboard uses sessions-scoped storage keys:
+DQuant Lab uses sessions-scoped storage keys:
 
 ```ts
 workbench.agentsession.auxiliarybar.activepanelid
@@ -229,14 +229,14 @@ The sessions `AuxiliaryBarPart` calls `super(...)` with:
 - registry `Extensions.Auxiliary`
 - title menu `Menus.AuxiliaryBarTitle`
 
-The title menu is not the shared `MenuId.AuxiliaryBarTitle`. Backboard defines
+The title menu is not the shared `MenuId.AuxiliaryBarTitle`. DQuant Lab defines
 its own sessions menu ID in `src/vs/sessions/browser/menus.ts`:
 
 ```ts
 AuxiliaryBarTitle: new MenuId('SessionsAuxiliaryBarTitle')
 ```
 
-That allows Backboard to contribute title actions without inheriting unrelated
+That allows DQuant Lab to contribute title actions without inheriting unrelated
 normal workbench title actions.
 
 ### Size Rules
@@ -275,7 +275,7 @@ role="complementary"
 aria-label="Session Details"
 ```
 
-This is Backboard-specific language. The normal workbench labels this area as
+This is DQuant Lab-specific language. The normal workbench labels this area as
 the secondary side bar, while the Agents Window frames it as session details.
 
 ### Styling
@@ -339,7 +339,7 @@ Its options differ from the shared workbench part:
 - `compositeSize: 0`
 - `iconSize: 16`
 - compact mode enabled
-- Backboard agent panel colors and badge colors
+- DQuant Lab agent panel colors and badge colors
 
 Unlike the normal workbench auxiliary bar, the sessions part does not expose a
 rich context menu for moving the bar or toggling labels. Its
@@ -616,7 +616,7 @@ When showing:
    `_restoreEditorOnAuxiliaryBarShow || layoutPolicy.getPartVisibilityDefaults().editor`.
 6. It saves global part visibility.
 
-This is stronger coupling than the standard workbench has. In Backboard's
+This is stronger coupling than the standard workbench has. In DQuant Lab's
 sessions layout, the auxiliary bar and attached editor are treated as a right
 work area. Hiding the secondary side bar can also remove the attached editor,
 and showing it can bring the editor back.
@@ -686,7 +686,7 @@ The gating conditions require:
 
 ## Context Keys
 
-Backboard reuses the normal workbench auxiliary context keys from
+DQuant Lab reuses the normal workbench auxiliary context keys from
 `src/vs/workbench/common/contextkeys.ts`:
 
 ```ts
@@ -704,7 +704,7 @@ The sessions auxiliary bar binds:
 Visibility context is managed through the broader workbench context-key handling,
 as with normal parts.
 
-Backboard-specific actions also use:
+DQuant Lab-specific actions also use:
 
 - `IsSessionsWindowContext`
 - `IsAuxiliaryWindowContext`
@@ -713,9 +713,9 @@ Backboard-specific actions also use:
 - `EditorMaximizedContext`
 - `IsTopRightEditorGroupContext`
 
-## View Containers in the Backboard Right Panel
+## View Containers in the DQuant Lab Right Panel
 
-Backboard sessions currently register three main auxiliary view containers.
+DQuant Lab sessions currently register three main auxiliary view containers.
 
 ### Changes
 
@@ -1025,7 +1025,7 @@ active.
 
 ## Normal Editor Workbench Chat in the Auxiliary Bar
 
-Backboard also modifies the standard workbench chat registration.
+DQuant Lab also modifies the standard workbench chat registration.
 
 In `src/vs/workbench/contrib/chat/browser/chatParticipant.contribution.ts`, the
 Chat view container is registered into:
@@ -1216,7 +1216,7 @@ workbench.agentsession.auxiliarybar.viewContainersWorkspaceState
 
 ## Current Implementation Notes
 
-- The sessions auxiliary bar is a Backboard-specific subclass, not the normal
+- The sessions auxiliary bar is a DQuant Lab-specific subclass, not the normal
   workbench auxiliary bar.
 - The sessions right panel is backed by the normal VS Code view-container and
   pane-composite infrastructure.

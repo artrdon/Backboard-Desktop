@@ -545,7 +545,7 @@ suite('ChatCoreToolProgressPart', () => {
 					success: true,
 					verification: 'passed',
 					observation: {
-						appName: 'Backboard',
+						appName: 'DQuant Lab',
 						windowTitle: 'Agent task',
 						imageSize: { width: 1_280, height: 720 },
 						elementCount: 17,
@@ -566,7 +566,7 @@ suite('ChatCoreToolProgressPart', () => {
 		})), [
 			{
 				title: 'Click',
-				detail: 'Element submit · left · Verified · Backboard · Agent task · 1280×720 · 17 elements · PNG image · /redacted/screenshot.png',
+				detail: 'Element submit · left · Verified · DQuant Lab · Agent task · 1280×720 · 17 elements · PNG image · /redacted/screenshot.png',
 				state: 'Completed',
 				markerHidden: 'true',
 			},

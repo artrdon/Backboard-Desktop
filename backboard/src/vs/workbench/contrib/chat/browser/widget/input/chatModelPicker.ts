@@ -143,7 +143,7 @@ function getProviderGroupForModel(
 	// Agent-host harnesses can expose several upstream backends through one
 	// session provider. Their model metadata carries the real backend label so
 	// the picker can keep subscription models visibly separate from API-billed
-	// OpenAI and other Backboard routes.
+	// OpenAI and other DQuant Lab routes.
 	const upstreamProvider = model.metadata.targetChatSessionType?.startsWith('agent-host-')
 		? model.metadata.detail?.trim()
 		: undefined;

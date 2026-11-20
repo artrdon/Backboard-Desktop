@@ -157,8 +157,8 @@ describe("runtime model recovery", () => {
 			),
 		}).toEqual({
 			guest:
-				"Backboard request failed: HTTP 403: Sign in to use this model. Free models work without an account.",
-			bare: "Backboard request failed: HTTP 500",
+				"DQuant Lab request failed: HTTP 403: Sign in to use this model. Free models work without an account.",
+			bare: "DQuant Lab request failed: HTTP 500",
 			blocked: true,
 			signIn: true,
 			credits: false,

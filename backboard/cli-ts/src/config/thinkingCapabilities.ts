@@ -56,7 +56,7 @@ function allowedThinkingFields(
 	const fields = metadata?.thinking_controls?.allowed_fields;
 	if (fields && fields.length > 0) {
 		const metadataFields = fields.filter(isThinkingRequestField);
-		// Backboard documents this as a provider-level OpenRouter/Cerebras
+		// DQuant Lab documents this as a provider-level OpenRouter/Cerebras
 		// control, but older model metadata may only advertise the token field.
 		if (
 			fallbackFields.includes("exclude_reasoning") &&

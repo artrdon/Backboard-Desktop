@@ -20,7 +20,7 @@ import { ILifecycleService } from '../../../lifecycle/common/lifecycle.js';
 import { IWorkbenchEnvironmentService } from '../../../environment/common/environmentService.js';
 import { BackboardAnalyticsService } from '../../browser/backboardAnalyticsService.js';
 
-suite('Backboard PostHog event delivery', () => {
+suite('DQuant Lab PostHog event delivery', () => {
 	const disposables = ensureNoDisposablesAreLeakedInTestSuite();
 	function setup(statuses = [200]) {
 		const previous = product.backboardAnalytics;

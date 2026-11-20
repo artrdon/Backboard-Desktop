@@ -65,7 +65,7 @@ interface IBackboardAccessPickerItem extends IConfigPickerItem {
 }
 
 /**
- * Backboard exposes approval behavior through its `mode` property. Its schema
+ * DQuant Lab exposes approval behavior through its `mode` property. Its schema
  * also contains collaboration modes, but the composer access chip intentionally
  * presents only the three approval choices users need at send time.
  */

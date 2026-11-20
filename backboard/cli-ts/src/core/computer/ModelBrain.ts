@@ -18,8 +18,8 @@ import {
 } from "./JevUseLoop.ts";
 
 /**
- * Fast, tool-calling, sees images, and on Backboard's catalog. Measured through
- * Backboard with thinking off and OpenRouter's latency routing: 0.7-1.0 s per
+ * Fast, tool-calling, sees images, and on DQuant Lab's catalog. Measured through
+ * DQuant Lab with thinking off and OpenRouter's latency routing: 0.7-1.0 s per
  * step on text alone and 1.1-1.5 s with a screenshot attached, where it put 7
  * of 7 clicks inside the intended control on the 0-1000 grid (raw pixel
  * coordinates missed 2 of 3 by ~40 px).
@@ -194,7 +194,7 @@ const HAND_OFF: OpenAITool["function"] = {
 			instruction: {
 				type: "string",
 				description:
-					'What the user should do, addressed to them, e.g. "Sign in to LinkedIn in the Backboard browser window."',
+					'What the user should do, addressed to them, e.g. "Sign in to LinkedIn in the DQuant Lab browser window."',
 			},
 		},
 		required: ["instruction"],

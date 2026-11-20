@@ -1,6 +1,6 @@
 # Live updates
 
-Ship Backboard's JavaScript to installed apps without a signed, notarized release. A
+Ship DQuant Lab's JavaScript to installed apps without a signed, notarized release. A
 full release is still needed for anything native; everything else can go live.
 
 | Component | What it carries | How users get it |
@@ -18,7 +18,7 @@ itself. `publish.mjs` refuses these.
 - `publish.mjs` writes a signed manifest plus content-addressed files. Apps check it
   every 5 minutes, on window focus, and as soon as the events server pushes a new
   sequence.
-- The Backboard extension verifies the Ed25519 signature against the keys in the
+- The DQuant Lab extension verifies the Ed25519 signature against the keys in the
   installed app's `product.json`. It then builds `<userData>/LiveUpdates/app/<id>/`:
   unchanged files are cloned from the installed app, changed files are downloaded and
   hash-checked, and native files are symlinked to the signed originals.

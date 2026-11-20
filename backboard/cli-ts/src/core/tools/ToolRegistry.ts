@@ -6,7 +6,7 @@ import type { Tool } from "./Tool.ts";
 
 /**
  * Holds the active tool set and produces the OpenAI-schema array sent to
- * Backboard on every turn. Lookups are by model-facing tool name.
+ * DQuant Lab on every turn. Lookups are by model-facing tool name.
  */
 export class ToolRegistry {
 	private readonly tools = new Map<string, Tool>();

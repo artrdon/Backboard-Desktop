@@ -5,7 +5,7 @@ import { canonicalToolName } from "../tools/names.ts";
 import type { Message } from "./Message.ts";
 
 /**
- * In-memory projection of a run. Holds the Backboard thread id, the message
+ * In-memory projection of a run. Holds the DQuant Lab thread id, the message
  * transcript, accumulated usage, todos, and the current turn status. This is
  * the authoritative runtime state; the on-disk logs are the durable record.
  */
@@ -146,7 +146,7 @@ export class Session {
 		this.contextLimitReported = limit && limit > 0 ? limit : null;
 	}
 
-	/** Window size the backend reported, when it reports one (Backboard does). */
+	/** Window size the backend reported, when it reports one (DQuant Lab does). */
 	get reportedContextLimit(): number | null {
 		return this.contextLimitReported;
 	}

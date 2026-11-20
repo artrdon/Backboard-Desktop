@@ -117,7 +117,7 @@ export class SetupAgent extends Disposable implements IChatAgentImplementation {
 
 			const disposables = new DisposableStore();
 
-			// Register Backboard agent
+			// Register DQuant Lab agent
 			const { disposable: vscodeDisposable } = SetupAgent.doRegisterAgent(instantiationService, chatAgentService, 'setup.backboard', 'backboard', false, localize2('vscodeAgentDescription', "Ask questions about DQuant Lab").value, ChatAgentLocation.Chat, ChatModeKind.Agent, context, controller);
 			disposables.add(vscodeDisposable);
 
@@ -323,7 +323,7 @@ export class SetupAgent extends Disposable implements IChatAgentImplementation {
 	private async doForwardRequestToChatWhenReady(requestModel: IChatRequestModel, progress: (part: IChatProgress) => void, chatService: IChatService, languageModelsService: ILanguageModelsService, chatAgentService: IChatAgentService, chatWidgetService: IChatWidgetService, languageModelToolsService: ILanguageModelToolsService): Promise<void> {
 
 			// Ensure any external auth provider is enabled before waiting for chat readiness.
-			// Backboard itself is integrated, so this is a no-op unless product metadata
+			// DQuant Lab itself is integrated, so this is a no-op unless product metadata
 			// points at a separate auth provider.
 		const authExtensionReEnabled = await maybeEnableAuthExtension(this.extensionsWorkbenchService, this.logService);
 		if (authExtensionReEnabled) {

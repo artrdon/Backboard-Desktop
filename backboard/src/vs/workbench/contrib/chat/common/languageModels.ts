@@ -190,7 +190,7 @@ export interface ILanguageModelConfigurationSchema extends IJSONSchema {
 	};
 }
 
-/** Who bills a request: the Backboard platform, the user's own provider key, or a connected subscription. */
+/** Who bills a request: the DQuant Lab platform, the user's own provider key, or a connected subscription. */
 export type LanguageModelBillingSource = 'backboard' | 'byok' | 'subscription';
 
 export interface ILanguageModelChatMetadata {
@@ -205,8 +205,8 @@ export interface ILanguageModelChatMetadata {
 	readonly multiplierNumeric?: number;
 	readonly isBYOK?: boolean;
 	/**
-	 * Billing route reported by the Backboard agent host. Undefined for models
-	 * that do not come from the Backboard catalog.
+	 * Billing route reported by the DQuant Lab agent host. Undefined for models
+	 * that do not come from the DQuant Lab catalog.
 	 */
 	readonly billingSource?: LanguageModelBillingSource;
 	readonly pricing?: string;

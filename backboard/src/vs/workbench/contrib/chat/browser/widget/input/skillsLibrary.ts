@@ -887,7 +887,7 @@ export function buildMcpMarketplaceItems(
 		.sort(compareMcpMarketplaceItems);
 }
 
-/** Maps a Backboard CLI (.backboard/mcp.json) server entry onto the workbench config shape. */
+/** Maps a DQuant Lab CLI (.backboard/mcp.json) server entry onto the workbench config shape. */
 export function cliServerToWorkbenchConfig(cliConfig: IMcpCliServerConfig | undefined): IMcpServerConfiguration | undefined {
 	if (cliConfig?.url) {
 		return { type: McpServerType.REMOTE, url: cliConfig.url, headers: cliConfig.headers ? { ...cliConfig.headers } : undefined };
@@ -2758,7 +2758,7 @@ export class SkillsLibraryController {
 	}
 
 	/**
-	 * Servers added from chat (the /mcp command) live only in the Backboard CLI
+	 * Servers added from chat (the /mcp command) live only in the DQuant Lab CLI
 	 * config. Import any the workbench does not know about yet so the
 	 * marketplace's Installed view reflects both worlds and remove works on
 	 * both configs.
@@ -2830,7 +2830,7 @@ export class SkillsLibraryController {
 						}
 						await this._mcpManagementService.installFromGallery(galleryServer, item.preferredPackageType ? { packageType: item.preferredPackageType } : undefined);
 					}
-					// Mirror into the Backboard CLI config so chat sessions can use the
+					// Mirror into the DQuant Lab CLI config so chat sessions can use the
 					// server too; workbench and cli-ts read different config files.
 					await this.addToBackboardCliConfig(item);
 				}

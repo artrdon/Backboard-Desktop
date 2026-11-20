@@ -9,10 +9,4 @@
 	<description>
 		<p>DQuant Lab is an AI-powered development environment designed for MQL4 and MQL5 developers. Build, edit, debug, and develop algorithmic trading systems with AI assistance.</p>
 	</description>
-	<screenshots>
-		<screenshot type="default">
-			<image>https://docs.backboard.io/assets/backboard-ide.png</image>
-			<caption>Editing MQL5 code with AI assistance</caption>
-		</screenshot>
-	</screenshots>
 </component>

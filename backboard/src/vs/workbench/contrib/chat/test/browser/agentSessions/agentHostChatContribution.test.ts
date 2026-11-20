@@ -2939,9 +2939,9 @@ suite('AgentHostChatContribution', () => {
 		});
 
 		test('response details name the billing route of every turn', async () => {
-			// Subscription and Backboard rows share display names, so the footer
+			// Subscription and DQuant Lab rows share display names, so the footer
 			// appends who bills the turn. A bare turn id (`claude-opus-5-5`) takes
-			// its route from the session's model; a credited turn is Backboard's.
+			// its route from the session's model; a credited turn is DQuant Lab's.
 			const sessionType = 'agent-host-copilot';
 			const model = (id: string, name: string) => [`${sessionType}:${id}`, upcastPartial<ILanguageModelChatMetadata>({ id, name, targetChatSessionType: sessionType })] as const;
 			const languageModels = new Map<string, ILanguageModelChatMetadata>([
@@ -2990,9 +2990,9 @@ suite('AgentHostChatContribution', () => {
 					'Claude Opus 5.5 · Claude subscription',
 					'GPT-5.5 · ChatGPT subscription',
 					'Claude Opus 5.5 · your API key',
-					'Claude Opus 5.5 · Backboard credits',
+					'Claude Opus 5.5 · DQuant Lab credits',
 					'Claude Opus 5.5 • 2 credits',
-					'Claude Opus 5.5 · Backboard credits',
+					'Claude Opus 5.5 · DQuant Lab credits',
 				],
 			);
 		});

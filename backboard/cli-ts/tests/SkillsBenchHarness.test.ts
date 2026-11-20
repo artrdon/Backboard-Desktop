@@ -13,7 +13,7 @@ import {
 } from "../scripts/skillsbench-eval.ts";
 
 describe("SkillsBench harness", () => {
-	it("parses a reproducible Backboard run", () => {
+	it("parses a reproducible DQuant Lab run", () => {
 		const options = parseSkillsBenchArgs(
 			[
 				"--model",

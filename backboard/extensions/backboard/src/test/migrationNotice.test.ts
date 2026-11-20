@@ -26,8 +26,8 @@ describe('deprecated bridge notice', () => {
 			detail: deprecatedBridgeDetail,
 			action: deprecatedBridgeDownloadAction
 		}, {
-			title: 'Backboard Studio Alpha is deprecated.',
-			detail: 'Download Backboard Studio Beta to continue. Your settings and projects will remain available.',
+			title: 'DQuant Lab Alpha is deprecated.',
+			detail: 'Download DQuant Lab Beta to continue. Your settings and projects will remain available.',
 			action: 'Download Beta'
 		});
 	});

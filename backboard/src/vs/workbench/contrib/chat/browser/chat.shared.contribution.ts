@@ -454,7 +454,7 @@ configurationRegistry.registerConfiguration({
 				nls.localize('chat.notifyWindowOnConfirmation.always', "Always show OS notifications for confirmations, even when the window is focused."),
 			],
 			description: nls.localize('chat.notifyWindowOnConfirmation', "Controls whether a chat session should present the user with an OS notification when a confirmation or question needs input. This includes a window badge as well as notification toast."),
-			// Backboard: off by default. The first OS notification makes macOS ask
+			// DQuant Lab: off by default. The first OS notification makes macOS ask
 			// for notification permission, a system popup nobody opted into.
 			default: 'off',
 		},
@@ -740,7 +740,7 @@ configurationRegistry.registerConfiguration({
 				nls.localize('chat.notifyWindowOnResponseReceived.windowNotFocused', "Show OS notifications for responses when the window is not focused."),
 				nls.localize('chat.notifyWindowOnResponseReceived.always', "Always show OS notifications for responses, even when the window is focused."),
 			],
-			// Backboard: off by default, see chat.notifyWindowOnConfirmation.
+			// DQuant Lab: off by default, see chat.notifyWindowOnConfirmation.
 			default: 'off',
 			description: nls.localize('chat.notifyWindowOnResponseReceived', "Controls whether a chat session should present the user with an OS notification when a response is received. This includes a window badge as well as notification toast."),
 		},

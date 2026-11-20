@@ -5,7 +5,7 @@
 
 const copilotSpec: Fig.Spec = {
 	name: 'copilot',
-	description: 'Backboard agent CLI',
+	description: 'DQuant Lab agent CLI',
 	options: [
 		{
 			name: '--add-dir',

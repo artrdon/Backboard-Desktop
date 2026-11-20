@@ -298,7 +298,7 @@ export class FindMcpTool extends Tool<Input, Output> {
 			case "needs_authentication":
 				return ok(
 					{ ...data, toolNames: [] },
-					`${saved}, but it needs authentication before its tools can be used. Ask the user to sign in to it (the MCP servers panel in Backboard, or /mcp in the terminal).${warnings}`,
+					`${saved}, but it needs authentication before its tools can be used. Ask the user to sign in to it (the MCP servers panel in DQuant Lab, or /mcp in the terminal).${warnings}`,
 					`Added ${item.title} (needs auth)`,
 				);
 			case "connecting":
@@ -336,7 +336,7 @@ function describeInstalled(
 		case "needs_authentication":
 			return ok(
 				data,
-				`"${title}" is installed but needs authentication; its tools are unavailable until the user signs in (the MCP servers panel in Backboard, or /mcp in the terminal).`,
+				`"${title}" is installed but needs authentication; its tools are unavailable until the user signs in (the MCP servers panel in DQuant Lab, or /mcp in the terminal).`,
 				"Needs authentication",
 			);
 		case "connecting":

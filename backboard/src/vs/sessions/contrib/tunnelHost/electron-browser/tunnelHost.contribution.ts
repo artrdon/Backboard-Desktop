@@ -77,7 +77,7 @@ registerAction2(class ToggleRemoteConnectionsAction extends Action2 {
 				id: MenuId.ChatInputSecondary,
 				order: 10,
 				group: 'navigation',
-				// Backboard does not expose remote session access from the composer.
+				// DQuant Lab does not expose remote session access from the composer.
 				when: ContextKeyExpr.false(),
 			}
 		});

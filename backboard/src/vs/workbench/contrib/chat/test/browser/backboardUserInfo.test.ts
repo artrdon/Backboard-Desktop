@@ -16,7 +16,7 @@ import { IRequestService } from '../../../../../platform/request/common/request.
 import { IPathService } from '../../../../services/path/common/pathService.js';
 import { resolveBackboardUserInfo } from '../../browser/backboardUserInfo.js';
 
-suite('Backboard user info', () => {
+suite('DQuant Lab user info', () => {
 	const disposables = ensureNoDisposablesAreLeakedInTestSuite();
 
 	test('does not refresh stale OAuth tokens when a cached identity is available', async () => {

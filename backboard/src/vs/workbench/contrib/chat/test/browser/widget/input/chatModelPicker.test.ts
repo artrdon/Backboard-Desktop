@@ -88,7 +88,7 @@ suite('combined model provider sections', () => {
 		assert.strictEqual(providerIconKeyForCombinedModelSection('byok:anthropic-key'), 'anthropic');
 	});
 
-	test('groups the rail by billing source: Backboard, then Subscriptions, then BYOK', () => {
+	test('groups the rail by billing source: DQuant Lab, then Subscriptions, then BYOK', () => {
 		const models = [
 			createBackboardModel('openrouter/z-ai/glm-4.7', 'z-ai/glm-4.7', { detail: 'OpenRouter · Z.ai', billingSource: 'backboard' }),
 			createBackboardModel('openai/gpt-5.5', 'GPT-5.5', { detail: 'OpenAI', billingSource: 'byok' }),
@@ -125,7 +125,7 @@ suite('combined model provider sections', () => {
 		assert.strictEqual(formatModelProviderDetail(models[6]), 'OpenAI');
 	});
 
-	test('lists free Backboard models in their own section after Recommended', () => {
+	test('lists free DQuant Lab models in their own section after Recommended', () => {
 		const models = [
 			createBackboardModel('openrouter/cohere/north-mini-code:free', 'cohere/north-mini-code:free', { billingSource: 'backboard', priceCategory: 'free' }),
 			createBackboardModel('openrouter/deepseek/deepseek-v4-flash', 'deepseek/deepseek-v4-flash', { billingSource: 'backboard' }),
@@ -143,7 +143,7 @@ suite('combined model provider sections', () => {
 		assert.strictEqual(buildCombinedModelSections(models.slice(1)).some(section => section.id === COMBINED_MODEL_SECTION_FREE), false);
 	});
 
-	test('keeps subscriptions between Backboard and BYOK in the shipped catalog', () => {
+	test('keeps subscriptions between DQuant Lab and BYOK in the shipped catalog', () => {
 		const models = [
 			createBackboardModel('anthropic-subscription/sonnet', 'Claude Sonnet', { billingSource: 'subscription' }),
 			createBackboardModel('openai/gpt-5.5', 'GPT-5.5', { detail: 'OpenAI', billingSource: 'byok' }),
@@ -156,7 +156,7 @@ suite('combined model provider sections', () => {
 	});
 
 	test('labels rail groups by billing source', () => {
-		assert.strictEqual(combinedModelSectionGroupLabel('backboard'), 'Backboard');
+		assert.strictEqual(combinedModelSectionGroupLabel('backboard'), 'DQuant Lab');
 		assert.strictEqual(combinedModelSectionGroupLabel('subscriptions'), 'Subscriptions');
 		assert.strictEqual(combinedModelSectionGroupLabel('byok'), 'BYOK');
 		assert.strictEqual(combinedModelSectionGroupLabel('models'), 'Models');
@@ -1452,7 +1452,7 @@ suite('buildModelPickerItems', () => {
 		assert.strictEqual(favoritesSep, undefined, 'No Favorites separator when there are no favorite models');
 	});
 
-	test('Backboard model rows show explicit pricing labels', () => {
+	test('DQuant Lab model rows show explicit pricing labels', () => {
 		const model = createModel('aws-bedrock/anthropic.claude-sonnet-4-6', 'Claude Sonnet 4.6', 'agent-host-backboard');
 		model.metadata = {
 			...model.metadata,

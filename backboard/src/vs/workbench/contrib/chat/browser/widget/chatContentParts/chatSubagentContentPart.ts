@@ -225,7 +225,7 @@ export class ChatSubagentContentPart extends ChatCollapsibleContentPart implemen
 		const { description, isDefaultDescription, agentName, prompt, modelName } = ChatSubagentContentPart.extractSubagentInfo(toolInvocation);
 
 		// T3 presents a subagent as an anchored workflow row instead of another
-		// thinking fold. Keep Backboard's expandable details, while using the same
+		// thinking fold. Keep DQuant Lab's expandable details, while using the same
 		// lifecycle lead and keeping both agent and model visible in the row.
 		const rawPrefix = agentName || localize('chat.subagent.prefix', 'Subagent');
 		const prefix = rawPrefix.charAt(0).toUpperCase() + rawPrefix.slice(1);

@@ -81,7 +81,7 @@ export function capacityFallbackCandidates(
 }
 
 /**
- * Models Backboard runs with no credit, for a turn the account can't pay for.
+ * Models DQuant Lab runs with no credit, for a turn the account can't pay for.
  * Only models that can call tools qualify (the agent needs them); larger
  * context windows first.
  */

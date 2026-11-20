@@ -1,4 +1,4 @@
-"""Terminal-Bench 2.1 integration for Backboard."""
+"""Terminal-Bench 2.1 integration for DQuant Lab."""
 
 from .backboard_agent import BackboardAgent
 

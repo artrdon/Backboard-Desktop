@@ -8,7 +8,7 @@ One script drives the whole loop: [scripts/dev.sh](scripts/dev.sh).
 ```
 
 `./scripts/dev.sh` with no arguments installs anything missing, starts the incremental
-watcher, waits for the first build to actually finish, launches Backboard Studio, and then
+watcher, waits for the first build to actually finish, launches DQuant Lab Studio, and then
 keeps supervising. Ctrl-C stops the watcher and the app together.
 
 ## You should not be rebuilding by hand
@@ -75,11 +75,11 @@ Logs live in `.build/dev/` (`watch.log`, `app.log`), which is gitignored.
   The alternative is building the real binary once:
   `npm --prefix extensions/backboard run package-cli-ts`.
 
-## Launching from inside a running Backboard/VS Code window
+## Launching from inside a running DQuant Lab/VS Code window
 
 `dev.sh` scrubs `ELECTRON_RUN_AS_NODE` and the host's `VSCODE_*` variables before starting
 the app. If you launch `run-backboard-ide.sh` by hand from a terminal *inside* a running
-Backboard Studio, those get inherited and the Electron binary starts as plain Node, which
+DQuant Lab Studio, those get inherited and the Electron binary starts as plain Node, which
 dies immediately with:
 
 ```

@@ -69,7 +69,7 @@ interface GitExtension {
 }
 
 export function activate(context: vscode.ExtensionContext): void {
-	backboardToolOutput = vscode.window.createOutputChannel('Backboard Tools');
+	backboardToolOutput = vscode.window.createOutputChannel('DQuant Lab Tools');
 	const bridge = new BackboardBridge(context);
 	const panelProvider = new BackboardPanelProvider(bridge, context);
 	const usagePanel = new BackboardUsagePanel(() => fetchUsageSnapshot(bridge), backboardToolOutput);
@@ -190,7 +190,7 @@ async function openBackboardView(): Promise<void> {
 
 async function generateBackboardCommitMessage(bridge: BackboardBridge, rootUri: vscode.Uri | undefined, cancellationToken: vscode.CancellationToken | undefined): Promise<void> {
 	if (!configuredBackboardApiKey()) {
-		const signIn = 'Sign In to Backboard';
+		const signIn = 'Sign In to DQuant Lab';
 		const selection = await vscode.window.showInformationMessage('Sign in to DQuant Lab before generating a commit message.', signIn);
 		if (selection === signIn) {
 			await promptBackboardSso(bridge);
@@ -250,7 +250,7 @@ async function generateBackboardCommitMessage(bridge: BackboardBridge, rootUri: 
 					if (event.type === 'assistantTextDelta' && event.text) {
 						responseText += event.text;
 					} else if (event.type === 'error') {
-						responseError = event.message ?? 'Backboard failed to generate a commit message.';
+						responseError = event.message ?? 'DQuant Lab failed to generate a commit message.';
 					}
 				}, token);
 			} finally {
@@ -324,7 +324,7 @@ function cleanCommitMessage(value: string): string | undefined {
 
 async function setApiKey(): Promise<boolean> {
 	const value = await vscode.window.showInputBox({
-		title: 'Backboard API Key',
+		title: 'DQuant Lab API Key',
 		password: true,
 		ignoreFocusOut: true,
 		prompt: 'Stored in ~/.backboard_ide/config.json.'
@@ -347,7 +347,7 @@ async function promptBackboardSso(bridge: BackboardBridge): Promise<boolean> {
 
 /**
  * Signs in with the OAuth device authorization grant (RFC 8628), mirroring the
- * Backboard CLI: request a device code, open the verification page in the
+ * DQuant Lab CLI: request a device code, open the verification page in the
  * browser, then poll the token endpoint until the user approves. No localhost
  * redirect or callback server is involved.
  */
@@ -397,10 +397,10 @@ async function requestBackboardDeviceCode(): Promise<BackboardDeviceCodeResponse
 		client_id: backboardOAuthClientId,
 		scope: backboardOAuthScope
 	});
-	const responseText = await postForm(backboardOAuthDeviceCodeUrl, body, 'Backboard device-code request');
+	const responseText = await postForm(backboardOAuthDeviceCodeUrl, body, 'DQuant Lab device-code request');
 	const value: unknown = JSON.parse(responseText);
 	if (!isObjectRecord(value)) {
-		throw new Error('Backboard device-code response was not an object.');
+		throw new Error('DQuant Lab device-code response was not an object.');
 	}
 	const deviceCode = stringValueFromRecord(value.device_code);
 	const userCode = stringValueFromRecord(value.user_code);
@@ -409,7 +409,7 @@ async function requestBackboardDeviceCode(): Promise<BackboardDeviceCodeResponse
 	const expiresIn = value.expires_in;
 	const interval = value.interval;
 	if (!deviceCode || !userCode || !verificationUri || !verificationUriComplete || typeof expiresIn !== 'number' || typeof interval !== 'number') {
-		throw new Error('Backboard device-code response was missing required fields.');
+		throw new Error('DQuant Lab device-code response was missing required fields.');
 	}
 	return {
 		device_code: deviceCode,
@@ -441,10 +441,10 @@ async function pollBackboardDeviceToken(device: BackboardDeviceCodeResponse): Pr
 		if (statusCode >= 200 && statusCode < 300) {
 			const tokens: unknown = JSON.parse(responseText);
 			if (!isObjectRecord(tokens)) {
-				throw new Error('Backboard token response was not an object.');
+				throw new Error('DQuant Lab token response was not an object.');
 			}
 			if (!stringValueFromRecord(tokens.access_token)) {
-				throw new Error('Backboard token response did not include an access token.');
+				throw new Error('DQuant Lab token response did not include an access token.');
 			}
 			return tokens;
 		}
@@ -457,15 +457,15 @@ async function pollBackboardDeviceToken(device: BackboardDeviceCodeResponse): Pr
 			continue;
 		}
 		if (errorCode === 'access_denied') {
-			throw new Error('Backboard device login was denied.');
+			throw new Error('DQuant Lab device login was denied.');
 		}
 		if (errorCode === 'expired_token') {
-			throw new Error('Backboard device login code expired.');
+			throw new Error('DQuant Lab device login code expired.');
 		}
-		throw new Error(`Backboard token request returned HTTP ${statusCode}: ${responseText}`);
+		throw new Error(`DQuant Lab token request returned HTTP ${statusCode}: ${responseText}`);
 	}
 
-	throw new Error('Timed out waiting for Backboard device login.');
+	throw new Error('Timed out waiting for DQuant Lab device login.');
 }
 
 function parseBackboardOAuthErrorCode(responseText: string): string | undefined {
@@ -488,7 +488,7 @@ async function cacheBackboardUserName(accessToken: string | undefined): Promise<
 		return;
 	}
 	try {
-		const payload: unknown = JSON.parse(await getJson(backboardOAuthUserInfoUrl, accessToken, 'Backboard userinfo request'));
+		const payload: unknown = JSON.parse(await getJson(backboardOAuthUserInfoUrl, accessToken, 'DQuant Lab userinfo request'));
 		if (!isObjectRecord(payload)) {
 			return;
 		}
@@ -561,7 +561,7 @@ function postFormRaw(urlString: string, body: URLSearchParams): Promise<{ status
 
 async function handleBackboardError(webview: vscode.Webview, error: unknown, bridge?: BackboardBridge): Promise<void> {
 	if (isBackboardAuthError(error)) {
-		await webview.postMessage({ type: 'status', text: 'Backboard authentication required.' });
+		await webview.postMessage({ type: 'status', text: 'DQuant Lab authentication required.' });
 		if (bridge) {
 			await promptBackboardSso(bridge);
 		}
@@ -577,7 +577,7 @@ function isBackboardAuthError(error: unknown): boolean {
 
 function unsupportedVoiceModeMessage(voiceMode: string): string | undefined {
 	if (voiceMode === 'tts') {
-		return 'Speech synthesis is not available in the public Backboard R-CLI runtime.';
+		return 'Speech synthesis is not available in the public DQuant Lab CLI runtime.';
 	}
 	if (voiceMode === 'stt' || voiceMode === 'conversation') {
 		return 'This voice mode needs microphone audio. Click the mic, record, then click it again to send.';
@@ -932,7 +932,7 @@ function renderPanelThreadHtml(messages: readonly { role: string; content: strin
 		}
 		const status = typeof output.status === 'string' && output.status ? output.status : 'finished';
 		const id = typeof output.id === 'string' && output.id ? output.id : `tool-${parts.length}`;
-		const label = typeof output.label === 'string' && output.label ? output.label : 'Backboard tool';
+		const label = typeof output.label === 'string' && output.label ? output.label : 'DQuant Lab tool';
 		const text = typeof output.text === 'string' && output.text ? output.text : 'No details reported.';
 		parts.push(
 			`<div class="toolCard ${escapePanelAttribute(status)}" data-tool-key="${escapePanelAttribute(id)}">` +
@@ -1465,7 +1465,7 @@ async function saveBackboardConfigApiKey(apiKey: string): Promise<void> {
 async function saveBackboardOAuthTokens(tokens: BackboardOAuthTokens): Promise<BackboardOAuthSaveResult> {
 	const accessToken = stringValueFromRecord(tokens.access_token);
 	if (!accessToken) {
-		throw new Error('Backboard token response did not include an access token.');
+		throw new Error('DQuant Lab token response did not include an access token.');
 	}
 	const directApiKey = stringValueFromRecord(tokens.api_key) ?? stringValueFromRecord(tokens.apiKey);
 	const backboardApiKey = stringValueFromRecord(tokens.backboard_api_key);
@@ -1558,7 +1558,7 @@ function renderBridgeEvent(event: BridgeEvent, response: ResponseSink, currentTo
 				response.progress(event.message ?? 'Tool output was already handled.');
 				return currentToolRequest;
 			}
-			response.markdown(`\n\nBackboard error: ${event.message ?? 'request failed'}\n\n`);
+			response.markdown(`\n\nDQuant Lab error: ${event.message ?? 'request failed'}\n\n`);
 			return currentToolRequest;
 		default:
 			return currentToolRequest;
@@ -1760,7 +1760,7 @@ class BackboardPanelProvider implements vscode.WebviewViewProvider {
 
 	private runPrompt(prompt: string, options: PanelOptions, chatId: string | undefined, audio?: VoiceAttachment, workspaceOverride?: string, image?: ImageAttachment, files: readonly FileAttachment[] = []): void {
 		if (this.activePromptRun) {
-			void this.view?.webview.postMessage({ type: 'sendRejected', text: 'Backboard is still finishing the previous turn. Try Run again in a moment.' });
+			void this.view?.webview.postMessage({ type: 'sendRejected', text: 'DQuant Lab is still finishing the previous turn. Try Run again in a moment.' });
 			return;
 		}
 		const serial = ++this.promptRunSerial;
@@ -1836,7 +1836,7 @@ class BackboardPanelProvider implements vscode.WebviewViewProvider {
 			}
 		};
 		await view.webview.postMessage({ type: 'runStarted', prompt: content, chatId: liveChatId });
-		await view.webview.postMessage({ type: 'status', text: 'Sending to Backboard.' });
+		await view.webview.postMessage({ type: 'status', text: 'Sending to DQuant Lab.' });
 		const saveHistory = async (status: string) => {
 			const now = Date.now();
 			const latestState = readSharedPanelState(effectiveWorkspace);
@@ -1919,7 +1919,7 @@ class BackboardPanelProvider implements vscode.WebviewViewProvider {
 						appendLiveReasoningText(text);
 					}
 				} else if (event.type === 'error') {
-					const message = event.message ?? 'Backboard request failed.';
+					const message = event.message ?? 'DQuant Lab request failed.';
 					liveMessages.push({ role: 'error', content: message });
 				}
 				const toolRequest = renderBridgeEvent(event, sink, currentToolRequest);
@@ -1963,7 +1963,7 @@ class BackboardPanelProvider implements vscode.WebviewViewProvider {
 							appendLiveReasoningText(text);
 						}
 					} else if (event.type === 'error') {
-						const message = event.message ?? 'Backboard request failed.';
+						const message = event.message ?? 'DQuant Lab request failed.';
 						liveMessages.push({ role: 'error', content: message });
 					}
 					const followupToolRequest = renderBridgeEvent(event, sink, currentContinuationToolRequest);
@@ -2014,7 +2014,7 @@ class BackboardBridge implements vscode.Disposable {
 	private readonly cacheIdeVersion = readCurrentAppVersion();
 	private child: cp.ChildProcessWithoutNullStreams | undefined;
 	private readonly pending = new Map<string, PendingRequest>();
-	private readonly output = vscode.window.createOutputChannel('Backboard Bridge');
+	private readonly output = vscode.window.createOutputChannel('DQuant Lab Bridge');
 	private pendingModelRefresh: Promise<BridgeModel[]> | undefined;
 	private readonly pendingToolRefreshes = new Map<string, Promise<unknown[]>>();
 
@@ -2023,7 +2023,7 @@ class BackboardBridge implements vscode.Disposable {
 
 	dispose(): void {
 		for (const pending of this.pending.values()) {
-			pending.reject(new Error('Backboard bridge disposed.'));
+			pending.reject(new Error('DQuant Lab bridge disposed.'));
 		}
 		this.pending.clear();
 		this.child?.kill();
@@ -2039,9 +2039,9 @@ class BackboardBridge implements vscode.Disposable {
 			this.pending.clear();
 			return;
 		}
-		this.output.appendLine(`[${new Date().toISOString()}] Restarting Backboard bridge after credential change`);
+		this.output.appendLine(`[${new Date().toISOString()}] Restarting DQuant Lab bridge after credential change`);
 		for (const pending of this.pending.values()) {
-			pending.reject(new Error('Backboard bridge restarted after credential change.'));
+			pending.reject(new Error('DQuant Lab bridge restarted after credential change.'));
 		}
 		this.pending.clear();
 		child.kill();
@@ -2060,7 +2060,7 @@ class BackboardBridge implements vscode.Disposable {
 	/**
 	 * Best-effort warm-up during user think-time: spawns the serve process (so
 	 * CLI boot and session/MCP/LSP init happen before the first send) and asks
-	 * it to pre-resolve the Backboard assistant. The `warmup` op is sent
+	 * it to pre-resolve the DQuant Lab assistant. The `warmup` op is sent
 	 * without a requestId, so it needs no response bookkeeping and cannot trip
 	 * the inactivity timeout; any failure simply surfaces on the real first
 	 * send.
@@ -2073,7 +2073,7 @@ class BackboardBridge implements vscode.Disposable {
 			const child = this.ensureProcess();
 			child.stdin.write(`${JSON.stringify({ op: 'warmup' })}\n`);
 		} catch (error) {
-			this.output.appendLine(`[${new Date().toISOString()}] Backboard warm-up skipped: ${error instanceof Error ? error.message : String(error)}`);
+			this.output.appendLine(`[${new Date().toISOString()}] DQuant Lab warm-up skipped: ${error instanceof Error ? error.message : String(error)}`);
 		}
 	}
 
@@ -2279,7 +2279,7 @@ class BackboardBridge implements vscode.Disposable {
 				if (!pending) {
 					return;
 				}
-				const message = `Backboard bridge did not respond to ${command} for ${Math.round(timeoutMs / 1000)}s.`;
+				const message = `DQuant Lab bridge did not respond to ${command} for ${Math.round(timeoutMs / 1000)}s.`;
 				this.output.appendLine(`[${new Date().toISOString()}] ${message}`);
 				this.pending.delete(requestId);
 				pending.reject(new Error(message));
@@ -2340,15 +2340,15 @@ class BackboardBridge implements vscode.Disposable {
 		if (this.child && !this.child.killed) {
 			// The serve process binds its working directory at spawn; a
 			// workspace change needs a fresh process.
-			this.output.appendLine(`[${new Date().toISOString()}] Restarting Backboard agent for new workspace ${cwd}`);
+			this.output.appendLine(`[${new Date().toISOString()}] Restarting DQuant Lab agent for new workspace ${cwd}`);
 			this.child.kill();
 			this.child = undefined;
 		}
 		const cliPath = this.resolveCliPath();
 		if (!fs.existsSync(cliPath)) {
-			throw new Error(`Backboard agent binary not found at ${cliPath}. Build it with: npm --prefix extensions/backboard run package-cli-ts. Or set backboard.cliPath to a prebuilt backboard-cli-ts binary.`);
+			throw new Error(`DQuant Lab agent binary not found at ${cliPath}. Build it with: npm --prefix extensions/backboard run package-cli-ts. Or set backboard.cliPath to a prebuilt backboard-cli-ts binary.`);
 		}
-		this.output.appendLine(`[${new Date().toISOString()}] Starting Backboard agent (cli-ts serve)`);
+		this.output.appendLine(`[${new Date().toISOString()}] Starting DQuant Lab agent (cli-ts serve)`);
 		this.output.appendLine(`  cliPath: ${cliPath}`);
 		this.output.appendLine(`  cwd: ${cwd}`);
 		this.output.appendLine(`  workspaceRoot: ${workspacePath() ?? '<none>'}`);
@@ -2376,7 +2376,7 @@ class BackboardBridge implements vscode.Disposable {
 		child.on('exit', (code, signal) => {
 			this.output.appendLine(`Bridge exited code=${code ?? 'null'} signal=${signal ?? 'null'}`);
 			for (const pending of this.pending.values()) {
-				pending.reject(new Error('Backboard bridge exited.'));
+				pending.reject(new Error('DQuant Lab bridge exited.'));
 			}
 			this.pending.clear();
 			if (this.child === child) {
@@ -2388,9 +2388,9 @@ class BackboardBridge implements vscode.Disposable {
 
 	/**
 	 * Signs out of everything the chat can bill to, so the sign-in gate shows:
-	 * the IDE's Backboard key, the CLI's saved key, and both subscription
+	 * the IDE's DQuant Lab key, the CLI's saved key, and both subscription
 	 * connections. Claude Code and ChatGPT themselves stay signed in; only
-	 * Backboard's link to them is removed.
+	 * DQuant Lab's link to them is removed.
 	 */
 	async signOut(): Promise<void> {
 		await clearBackboardConfigApiKey();
@@ -2407,7 +2407,7 @@ class BackboardBridge implements vscode.Disposable {
 		this.restart();
 		await updateBackboardAuthContext();
 		if (failures.length) {
-			throw new Error(vscode.l10n.t('Signed out of Backboard, but could not finish: {0}.', failures.join(', ')));
+			throw new Error(vscode.l10n.t('Signed out of DQuant Lab, but could not finish: {0}.', failures.join(', ')));
 		}
 	}
 
@@ -2485,7 +2485,7 @@ class BackboardBridge implements vscode.Disposable {
 			processCwd: process.cwd(),
 			params: redactSensitiveValues(params)
 		};
-		this.output.appendLine(`[${new Date().toISOString()}] DQuant Lab -> Backboard bridge`);
+		this.output.appendLine(`[${new Date().toISOString()}] DQuant Lab -> agent bridge`);
 		if (backboardVerboseBridgeLogging()) {
 			this.output.appendLine(JSON.stringify(payload, undefined, '\t'));
 		} else {
@@ -2545,7 +2545,7 @@ class BackboardBridge implements vscode.Disposable {
 				this.deliver({ type: 'done', requestId, stopReason: 'end_turn' });
 				return;
 			case 'serve:error':
-				this.deliver({ type: 'error', requestId, message: typeof payload.error === 'string' ? payload.error : 'Backboard agent request failed.' });
+				this.deliver({ type: 'error', requestId, message: typeof payload.error === 'string' ? payload.error : 'DQuant Lab agent request failed.' });
 				this.deliver({ type: 'done', requestId, stopReason: 'error' });
 				return;
 			default:
@@ -2594,7 +2594,7 @@ class BackboardBridge implements vscode.Disposable {
 				}
 				return;
 			case 'run:error':
-				this.deliver({ type: 'error', requestId, message: event.error ?? 'Backboard request failed.' });
+				this.deliver({ type: 'error', requestId, message: event.error ?? 'DQuant Lab request failed.' });
 				return;
 			case 'tool:pending':
 				this.deliver({ type: 'progress', requestId, message: `Starting ${event.name ?? 'tool'}.` });
@@ -3412,7 +3412,7 @@ async function sleepTool(args: Record<string, unknown>, token: vscode.Cancellati
 
 async function taskTool(args: Record<string, unknown>): Promise<string> {
 	const prompt = stringArg(args, 'prompt', 'description');
-	return `Sub-task requested: ${prompt}\n\nBackboard bridge recorded the task request. Parallel sub-agent execution is not available in this host yet.`;
+	return `Sub-task requested: ${prompt}\n\nDQuant Lab bridge recorded the task request. Parallel sub-agent execution is not available in this host yet.`;
 }
 
 async function tryStat(uri: vscode.Uri): Promise<vscode.FileStat | undefined> {
@@ -3580,7 +3580,7 @@ function multimodalToolOutputContent(content: unknown): unknown | undefined {
 		throw new Error(`Unsupported image media type in tool output: ${mediaType}`);
 	}
 	if (estimatedBase64DecodedBytes(imageBase64) > maxBackboardToolImageBytes) {
-		throw new Error('Image tool output exceeds the 5 MB Backboard limit.');
+		throw new Error('Image tool output exceeds the 5 MB DQuant Lab limit.');
 	}
 	return parsed;
 }
@@ -3743,7 +3743,7 @@ async function postPanelState(bridge: BackboardBridge, webview: vscode.Webview, 
 		return;
 	}
 	try {
-		await webview.postMessage({ type: 'status', text: cachedModels && !forceModelRefresh ? 'Checking Backboard models.' : 'Loading Backboard models.' });
+		await webview.postMessage({ type: 'status', text: cachedModels && !forceModelRefresh ? 'Checking DQuant Lab models.' : 'Loading DQuant Lab models.' });
 		const models = await bridge.listModels(new vscode.CancellationTokenSource().token, forceModelRefresh);
 		await webview.postMessage({ type: 'models', models });
 		await webview.postMessage({ type: 'status', text: 'Ready.' });
@@ -3751,7 +3751,7 @@ async function postPanelState(bridge: BackboardBridge, webview: vscode.Webview, 
 		const cachedModels = await bridge.cachedModels();
 		if (cachedModels) {
 			await webview.postMessage({ type: 'models', models: cachedModels });
-			await webview.postMessage({ type: 'status', text: 'Using cached Backboard models.' });
+			await webview.postMessage({ type: 'status', text: 'Using cached DQuant Lab models.' });
 		} else {
 				await webview.postMessage({ type: 'append', role: 'error', text: error instanceof Error ? error.message : String(error) });
 				if (isBackboardAuthError(error)) {
@@ -3864,7 +3864,7 @@ function getBackboardUsageJson(api: BackboardUsageApiConfig, requestPath: string
 				const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
 				length += buffer.length;
 				if (length > 20 * 1024 * 1024) {
-					request.destroy(new Error('Backboard usage response was larger than 20 MB.'));
+					request.destroy(new Error('DQuant Lab usage response was larger than 20 MB.'));
 					return;
 				}
 				chunks.push(buffer);
@@ -3873,13 +3873,13 @@ function getBackboardUsageJson(api: BackboardUsageApiConfig, requestPath: string
 				cancellation.dispose();
 				const text = Buffer.concat(chunks).toString('utf8');
 				if (!response.statusCode || response.statusCode < 200 || response.statusCode >= 300) {
-					reject(new Error(`Backboard usage request returned HTTP ${response.statusCode}: ${text.slice(0, 1000)}`));
+					reject(new Error(`DQuant Lab usage request returned HTTP ${response.statusCode}: ${text.slice(0, 1000)}`));
 					return;
 				}
 				try {
 					resolve(text.trim() ? JSON.parse(text) : {});
 				} catch {
-					reject(new Error('Backboard usage request returned invalid JSON.'));
+					reject(new Error('DQuant Lab usage request returned invalid JSON.'));
 				}
 			});
 		});
@@ -3887,9 +3887,9 @@ function getBackboardUsageJson(api: BackboardUsageApiConfig, requestPath: string
 			cancellation.dispose();
 			reject(error);
 		});
-		const cancellation = token.onCancellationRequested(() => request.destroy(new Error('Backboard usage request was cancelled.')));
+		const cancellation = token.onCancellationRequested(() => request.destroy(new Error('DQuant Lab usage request was cancelled.')));
 		if (token.isCancellationRequested) {
-			request.destroy(new Error('Backboard usage request was cancelled.'));
+			request.destroy(new Error('DQuant Lab usage request was cancelled.'));
 			return;
 		}
 		request.end();

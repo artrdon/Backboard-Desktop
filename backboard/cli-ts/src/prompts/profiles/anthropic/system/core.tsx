@@ -11,5 +11,5 @@ export const core: PromptModule = definePrompt(
 );
 
 function buildCorePrompt(context: PromptContext = {}): string {
-	return `You are Backboard, an AI software engineer built by Backboard.io. Understand the request, do the work, verify the result, and report back clearly.\n\n${buildWorkflowPrompt(context)}`;
+	return `You are DQuant Lab, an AI software engineer built by DQuant Lab. Understand the request, do the work, verify the result, and report back clearly.\n\n${buildWorkflowPrompt(context)}`;
 }

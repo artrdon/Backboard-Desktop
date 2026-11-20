@@ -69,7 +69,7 @@ export interface CompactorDeps {
  * Backend-agnostic on purpose. The summarization request goes through the same
  * `AgentClient` as everything else, with no thread id, so it lands on a
  * throwaway conversation rather than polluting the one being compressed - which
- * works identically whether that means a fresh Backboard thread or a fresh
+ * works identically whether that means a fresh DQuant Lab thread or a fresh
  * local BYOK one. The result is delivered as context on the next turn, so
  * neither backend needs a server-side compaction endpoint.
  */

@@ -13,7 +13,7 @@ export interface BrowserEnv {
 	browserCdpUrl?: string;
 	browserWsUrl?: string;
 	/**
-	 * CDP WebSocket endpoint of the Backboard IDE's integrated browser
+	 * CDP WebSocket endpoint of the DQuant Lab IDE's integrated browser
 	 * (loopback, token-authenticated). Set by the IDE when it spawns cli-ts.
 	 * Preferred when it exposes a shared page, but never fatal: when no page
 	 * is shared, resolution falls through to the normal browser discovery.
@@ -87,7 +87,7 @@ export function resolveApiUrl(fileApiUrl?: string): string {
 }
 
 /**
- * The product reported in `X-Backboard-Client`, e.g. `studio/3.1.26`. Backboard
+ * The product reported in `X-Backboard-Client`, e.g. `studio/3.1.26`. DQuant Lab
  * Studio sets BACKBOARD_CLIENT when it spawns cli-ts, so the backend counts its
  * runs as Studio activity; standalone runs send no header.
  */
@@ -96,7 +96,7 @@ export function resolveClientHeader(): string | undefined {
 }
 
 /**
- * Reads Backboard credentials from env first, then ~/.backboard/config.json.
+ * Reads DQuant Lab credentials from env first, then ~/.backboard/config.json.
  * Bun auto-loads `.env`, so no dotenv dependency is needed.
  */
 export function loadEnv(options: LoadEnvOptions = {}): BackboardEnv {

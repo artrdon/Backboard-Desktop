@@ -1,4 +1,4 @@
-# Backboard Workspace Layout Notes
+# DQuant Lab Workspace Layout Notes
 
 This note maps the current Advanced / Workspace page implementation by the three surfaces that keep coming up in UI work: tiles, header, and right panel. It is based on the current TypeScript and CSS in this folder.
 
@@ -264,7 +264,7 @@ Important options passed to `ChatWidget`:
 - `supportsChangingModes: true`
 - `dndContainer: detailElement`
 
-That means the right panel is no longer a custom fake chat panel. It is a scoped, real Backboard/Copilot-style chat widget.
+That means the right panel is no longer a custom fake chat panel. It is a scoped, real DQuant Lab/Copilot-style chat widget.
 
 ### Right Panel Behavior
 
@@ -408,4 +408,4 @@ Use `backboardWorkspace.css`:
 
 ## Current Design Boundary
 
-The Advanced / Workspace page currently has one custom page header and one real chat right panel. The old segmented page switch should not be reintroduced unless the product direction changes. The old custom right-panel mock should also stay out; the right panel is now meant to be backed by `ChatWidget` so model selection, context chips, session history, and composer behavior stay consistent with the rest of Backboard.
+The Advanced / Workspace page currently has one custom page header and one real chat right panel. The old segmented page switch should not be reintroduced unless the product direction changes. The old custom right-panel mock should also stay out; the right panel is now meant to be backed by `ChatWidget` so model selection, context chips, session history, and composer behavior stay consistent with the rest of DQuant Lab.

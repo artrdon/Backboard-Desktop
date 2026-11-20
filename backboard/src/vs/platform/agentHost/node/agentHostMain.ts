@@ -205,13 +205,13 @@ async function startAgentHost(): Promise<void> {
 		diServices.set(IAgentHostTerminalManager, agentService.terminalManager);
 		diServices.set(IAgentConfigurationService, agentService.configurationService);
 		diServices.set(IAgentHostCompletions, agentService.completionsService);
-		// The Backboard provider is backed by the cli-ts serve process
+		// The DQuant Lab provider is backed by the cli-ts serve process
 		// (`backboard-cli-ts --serve`), which owns the agent loop and executes
 		// its own tools. It replaced the legacy Rust `backboard-bridge` agent.
 		agentService.registerProvider(instantiationService.createInstance(CliTsAgent));
 
 		// The renderer connects as soon as the utility process starts. Register the
-		// channel once the always-available Backboard provider is ready, before the
+		// channel once the always-available DQuant Lab provider is ready, before the
 		// optional provider login probes below. Those probes may import SDKs or touch
 		// the keychain and previously caused cold-start requests to time out.
 		const agentChannel = ProxyChannel.fromService(agentService, disposables);

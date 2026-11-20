@@ -149,7 +149,7 @@ export function resolveThinking(
 }
 
 /**
- * Reasoning traces are always user-visible. Backboard exposes this through
+ * Reasoning traces are always user-visible. DQuant Lab exposes this through
  * `exclude_reasoning` for providers that support the field; Studio never
  * offers a setting that can change this invariant.
  */

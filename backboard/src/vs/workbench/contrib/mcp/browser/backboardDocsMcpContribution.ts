@@ -35,8 +35,8 @@ const BACKBOARD_CLI_MCP_CONFIG_REFRESH_DELAY = 150;
 
 const BACKBOARD_MCP_SERVER: IGalleryMcpServer = {
 	name: BACKBOARD_MCP_NAME,
-	displayName: 'Backboard',
-	description: 'Backboard product documentation and workspace context.',
+	displayName: 'DQuant Lab',
+	description: 'DQuant Lab product documentation and workspace context.',
 	version: '1.0.0',
 	isLatest: true,
 	status: GalleryMcpServerStatus.Active,
@@ -51,17 +51,17 @@ const BACKBOARD_MCP_SERVER: IGalleryMcpServer = {
 		}]
 	},
 	publisher: 'backboard',
-	publisherDisplayName: 'Backboard',
+	publisherDisplayName: 'DQuant Lab',
 };
 
-/** The `mcpServers` entry the Backboard CLI needs for the product docs server. */
+/** The `mcpServers` entry the DQuant Lab CLI needs for the product docs server. */
 const BACKBOARD_CLI_SERVER_CONFIG: IBackboardCliMcpServerConfig = {
 	type: 'streamable-http',
 	url: 'https://backboard-docs.docsalot.dev/api/mcp',
 };
 
 /**
- * Keeps the IDE's MCP surfaces aligned with the Backboard CLI.
+ * Keeps the IDE's MCP surfaces aligned with the DQuant Lab CLI.
  *
  * The agent runtime is driven with the server set of the workbench's user
  * profile store, so that store has to be the complete, current truth. Servers
@@ -69,7 +69,7 @@ const BACKBOARD_CLI_SERVER_CONFIG: IBackboardCliMcpServerConfig = {
  * the CLI's `/mcp`, hand edits) and to `<folder>/.backboard/mcp.json`. This
  * contribution:
  *
- *  1. seeds the Backboard docs server into both stores exactly once, so a user
+ *  1. seeds the DQuant Lab docs server into both stores exactly once, so a user
  *     who later removes or disables it keeps it that way,
  *  2. imports every CLI-configured server into the profile store at startup
  *     and whenever one of the CLI files changes, so a server the agent adds
@@ -146,7 +146,7 @@ export class BackboardMcpContribution extends Disposable implements IWorkbenchCo
 			try {
 				await task();
 			} catch (error) {
-				this.logService.warn(`[Backboard MCP] ${label} failed:`, error);
+				this.logService.warn(`[DQuant Lab MCP] ${label} failed:`, error);
 			}
 		});
 	}
@@ -170,7 +170,7 @@ export class BackboardMcpContribution extends Disposable implements IWorkbenchCo
 	// #region Seeding
 
 	/**
-	 * Installs the Backboard docs server into the profile store and the CLI
+	 * Installs the DQuant Lab docs server into the profile store and the CLI
 	 * user config the first time only. Once seeded it is never re-added or
 	 * re-enabled: removing or disabling it is a user decision.
 	 */
@@ -199,7 +199,7 @@ export class BackboardMcpContribution extends Disposable implements IWorkbenchCo
 	}
 
 	/**
-	 * Adds the Backboard docs server to `~/.backboard/mcp.json` so the CLI
+	 * Adds the DQuant Lab docs server to `~/.backboard/mcp.json` so the CLI
 	 * runtime (and any CLI run outside the IDE) can connect to it. Leaves an
 	 * existing entry alone, including a disabled one.
 	 */
@@ -208,7 +208,7 @@ export class BackboardMcpContribution extends Disposable implements IWorkbenchCo
 		try {
 			const root = await this.readCliConfigRoot(resource);
 			if (!root) {
-				this.logService.warn(`[Backboard MCP] Not seeding ${resource.toString()}: the file is not valid JSON.`);
+				this.logService.warn(`[DQuant Lab MCP] Not seeding ${resource.toString()}: the file is not valid JSON.`);
 				return;
 			}
 			const servers = rawServers(root);
@@ -217,7 +217,7 @@ export class BackboardMcpContribution extends Disposable implements IWorkbenchCo
 			}
 			await this.writeCliConfig(resource, { ...root, mcpServers: { ...servers, [BACKBOARD_MCP_NAME]: BACKBOARD_CLI_SERVER_CONFIG } });
 		} catch (error) {
-			this.logService.warn('[Backboard MCP] Failed to seed the CLI MCP config:', error);
+			this.logService.warn('[DQuant Lab MCP] Failed to seed the CLI MCP config:', error);
 		}
 	}
 
@@ -248,7 +248,7 @@ export class BackboardMcpContribution extends Disposable implements IWorkbenchCo
 		if (!root) {
 			// Unparseable, most likely a writer that is not atomic caught mid-write.
 			// Keep the last good snapshot; the write's final event re-reads it.
-			this.logService.trace(`[Backboard MCP] Skipped unreadable CLI config ${resource.toString()}`);
+			this.logService.trace(`[DQuant Lab MCP] Skipped unreadable CLI config ${resource.toString()}`);
 			return;
 		}
 		const key = resource.toString();
@@ -265,7 +265,7 @@ export class BackboardMcpContribution extends Disposable implements IWorkbenchCo
 			try {
 				await this.importCliServer(name, next[name], previous[name], installed);
 			} catch (error) {
-				this.logService.warn(`[Backboard MCP] Failed to import CLI MCP server '${name}':`, error);
+				this.logService.warn(`[DQuant Lab MCP] Failed to import CLI MCP server '${name}':`, error);
 			}
 		}
 	}
@@ -292,7 +292,7 @@ export class BackboardMcpContribution extends Disposable implements IWorkbenchCo
 			// `displayName ?? name`, and an import carries no display name.
 			const installable: IInstallableMcpServer = { name, config };
 			installed.push(await this.mcpManagementService.install(installable));
-			this.logService.info(`[Backboard MCP] Imported CLI MCP server '${name}'.`);
+			this.logService.info(`[DQuant Lab MCP] Imported CLI MCP server '${name}'.`);
 			return;
 		}
 
@@ -312,7 +312,7 @@ export class BackboardMcpContribution extends Disposable implements IWorkbenchCo
 		}
 		const index = installed.indexOf(existing);
 		installed[index] = await this.mcpManagementService.install({ name: existing.name, config: updated });
-		this.logService.info(`[Backboard MCP] Updated CLI MCP server '${existing.name}'.`);
+		this.logService.info(`[DQuant Lab MCP] Updated CLI MCP server '${existing.name}'.`);
 	}
 
 	/**
@@ -352,7 +352,7 @@ export class BackboardMcpContribution extends Disposable implements IWorkbenchCo
 			return;
 		}
 		await this.writeCliConfig(resource, { ...root, mcpServers: remaining });
-		this.logService.info(`[Backboard MCP] Removed uninstalled MCP server '${name}' from ${resource.toString()}.`);
+		this.logService.info(`[DQuant Lab MCP] Removed uninstalled MCP server '${name}' from ${resource.toString()}.`);
 	}
 
 	// #endregion

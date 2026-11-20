@@ -35,7 +35,7 @@ suite('ChatViewPane CSS', () => {
 		assert.fail(`Unclosed body for selector ${selector}`);
 	}
 
-	test('uses the theme sidebar surface for the Backboard side-chat drawer', () => {
+	test('uses the theme sidebar surface for the DQuant Lab side-chat drawer', () => {
 		const sideChat = ruleBody(css, '.chat-viewpane.has-sessions-control .agent-sessions-container.backboard-side-chat-sessions');
 
 		assert.match(sessionsCss, /--sessions-sidebar-region-background:\s*var\(--vscode-sideBar-background,\s*var\(--vscode-editor-background\)\)/);
@@ -296,7 +296,7 @@ suite('ChatViewPane CSS', () => {
 		assert.match(collapsedExploration, /display:\s*none/);
 	});
 
-	test('aligns transcript rows and spaces adjacent Backboard diff cards without spacer nodes', () => {
+	test('aligns transcript rows and spaces adjacent DQuant Lab diff cards without spacer nodes', () => {
 		const transcriptRoot = '.monaco-workbench .backboard-clean-chat .interactive-list.backboard-cursor-transcript';
 		const transcript = ruleBody(chatCss, `${transcriptRoot} {`);
 		const alignedRows = ruleBody(chatCss, `${transcriptRoot} .interactive-item-container.interactive-response > .value > .rendered-markdown,`);

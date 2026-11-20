@@ -16,10 +16,10 @@ fix.
 
 ## Azure resources
 
-Create these resources in the Azure subscription used for Backboard releases:
+Create these resources in the Azure subscription used for DQuant Lab releases:
 
 1. An Artifact Signing account using the Basic SKU.
-2. A Public Trust identity validation for the Backboard publisher.
+2. A Public Trust identity validation for the release publisher.
 3. A Public Trust certificate profile linked to that identity validation.
 4. A Microsoft Entra application and service principal for GitHub Actions.
 5. A federated identity credential matching the repository that runs signing,
@@ -64,7 +64,7 @@ Configure these environment variables:
 Run the **Windows Release** workflow manually with a semantic version and a
 release channel. It performs the release in this order:
 
-1. Stamp Backboard branding and release metadata.
+1. Stamp DQuant Lab branding and release metadata.
 2. Build the unpacked Windows application and updater.
 3. Sign every shipped `.exe`, `.dll`, and `.node` recursively.
 4. Verify publisher identity, certificate trust, and RFC 3161 timestamps.
@@ -78,8 +78,8 @@ payloads and installer candidates are retained briefly for build recovery.
 
 ## Windows differences
 
-Windows disables Backboard's BYOS subscription setup and provider routing;
-Backboard sign-in and provider API keys remain available. Saved subscription
+Windows disables DQuant Lab's BYOS subscription setup and provider routing;
+DQuant Lab sign-in and provider API keys remain available. Saved subscription
 credentials are left on disk but ignored on Windows. Mac subscription behavior
 is unchanged. `cli-ts/tests/ReleaseFeatures.test.ts` runs in the Windows workflow,
 including Windows-only checks that subscription login/enable commands reject
@@ -109,14 +109,14 @@ and the portable ZIP still get the download link, because the manifest only
 carries the user installer.
 
 To test on any packaged build (macOS or a per-user Windows install), open the
-Command Palette and run **Backboard: Test Update (Reinstall Latest Release)**.
+Command Palette and run **DQuant Lab: Test Update (Reinstall Latest Release)**.
 It offers the latest published release on the build's channel even when that
 version is already installed. It never offers an older release, so publish the
 build under test before testing. You get the real popup and the Update button, and **Install and
 Restart** runs the full download, verify, install and relaunch. Test mode ends
 when the app restarts, so a successful update comes back with no Update button.
-If something fails, run **Backboard: Show Update Log**: it opens the installer log
-and the `Backboard Tools` output, which has the `[updates]` lines.
+If something fails, run **DQuant Lab: Show Update Log**: it opens the installer log
+and the `DQuant Lab Tools` output, which has the `[updates]` lines.
 
 ## Releasing the current stable app on Windows
 

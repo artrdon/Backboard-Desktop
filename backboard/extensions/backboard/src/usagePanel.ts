@@ -525,7 +525,7 @@ function usageHtml(webview: vscode.Webview): string {
 		const compact = value => value === undefined ? '—' : new Intl.NumberFormat(undefined, { notation: Math.abs(value) >= 100000 ? 'compact' : 'standard', maximumFractionDigits: Math.abs(value) < 100 ? 1 : 0 }).format(value);
 		const money = value => value === undefined ? '—' : new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: Math.abs(value) < .01 ? 6 : Math.abs(value) < 1 ? 4 : Math.abs(value) < 100 ? 2 : 0 }).format(value);
 		const percent = value => new Intl.NumberFormat(undefined, { style: 'percent', maximumFractionDigits: 1 }).format(value || 0);
-		const titleCase = value => String(value || 'Backboard').replace(/[_-]+/g, ' ').replace(/\\b\\w/g, char => char.toUpperCase());
+		const titleCase = value => String(value || 'DQuant Lab').replace(/[_-]+/g, ' ').replace(/\\b\\w/g, char => char.toUpperCase());
 		const localDayKey = date => [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'), String(date.getDate()).padStart(2, '0')].join('-');
 		const unwrapped = value => { const item = record(value); return Object.keys(record(item.data)).length ? record(item.data) : item; };
 		function recentItems(value) {
@@ -547,7 +547,7 @@ function usageHtml(webview: vscode.Webview): string {
 			return {
 				index,
 				date: date && !Number.isNaN(date.getTime()) ? date : undefined,
-				provider: firstString(source, ['provider', 'provider_name', 'providerName', 'model_provider', 'modelProvider']) || 'Backboard',
+				provider: firstString(source, ['provider', 'provider_name', 'providerName', 'model_provider', 'modelProvider']) || 'DQuant Lab',
 				model: firstString(source, ['model', 'model_name', 'modelName']) || 'Unknown model',
 				cost: firstNumber(source, ['cost_usd', 'costUsd', 'total_cost', 'totalCost', 'cost', 'spendage', 'spend', 'amount_usd', 'amountUsd', 'amount_deducted_usd', 'amountDeductedUsd', 'token_usage_usd']) || 0,
 				input: input || 0,
@@ -595,7 +595,7 @@ function usageHtml(webview: vscode.Webview): string {
 		}
 		function renderProviders(data) {
 			const providers = aggregate(data.events, 'provider');
-			if (!providers.length && data.cost !== undefined) providers.push({ label: 'Backboard', cost: data.cost, tokens: data.input + data.output, count: data.recentCount });
+			if (!providers.length && data.cost !== undefined) providers.push({ label: 'DQuant Lab', cost: data.cost, tokens: data.input + data.output, count: data.recentCount });
 			const total = providers.reduce((sum, row) => sum + row.cost, 0) || data.cost || 0;
 			$('providers').innerHTML = providers.slice(0, 5).map(row => {
 				const share = total ? row.cost / total : 0;

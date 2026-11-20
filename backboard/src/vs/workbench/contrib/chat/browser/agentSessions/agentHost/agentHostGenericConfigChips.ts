@@ -175,7 +175,7 @@ export class AgentHostGenericConfigChips extends Disposable {
 				this._onDidChangeOptions.fire();
 			}
 		}));
-		// The selected model decides which chips apply: Backboard-only
+		// The selected model decides which chips apply: DQuant Lab-only
 		// services are hidden while a key or subscription model is selected.
 		this._register(autorun(reader => {
 			this._widget.input.selectedLanguageModel.read(reader);
@@ -341,7 +341,7 @@ export class AgentHostGenericConfigChips extends Disposable {
 					continue;
 				}
 				if (!isConfigPropertyAvailableForModel(property, modelId)) {
-					// Backboard's media (and, for keys, memory) never reaches a
+					// DQuant Lab's media (and, for keys, memory) never reaches a
 					// request billed to the user's own key or subscription.
 					continue;
 				}

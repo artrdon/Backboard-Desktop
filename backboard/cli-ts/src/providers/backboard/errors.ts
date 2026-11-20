@@ -22,7 +22,7 @@ export class BackboardTransportError extends Error {
 }
 
 /**
- * "Backboard request failed: HTTP 403: <detail>". The server's `detail` is
+ * "DQuant Lab request failed: HTTP 403: <detail>". The server's `detail` is
  * what tells a refused turn apart (out of credits, sign-in required), so it
  * belongs in the message the agent loop classifies and the user sees.
  */
@@ -44,6 +44,6 @@ export function backboardHttpErrorMessage(
 				? (detail as { message: string }).message.trim()
 				: "";
 	return text
-		? `Backboard request failed: HTTP ${status}: ${text}`
-		: `Backboard request failed: HTTP ${status}`;
+		? `DQuant Lab request failed: HTTP ${status}: ${text}`
+		: `DQuant Lab request failed: HTTP ${status}`;
 }

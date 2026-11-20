@@ -9,8 +9,8 @@ export const deprecatedStableBridgeAppName = 'Backboard Studio.app';
 export const replacementManifestMinimumVersion = '2.5.10';
 export const replacementReleaseVersion = '3.0.0';
 export const replacementManifestBaseUrl = 'https://backboard-studio-releases.s3.ca-central-1.amazonaws.com/ide-releases';
-export const deprecatedBridgeTitle = 'Backboard Studio Alpha is deprecated.';
-export const deprecatedBridgeDetail = 'Download Backboard Studio Beta to continue. Your settings and projects will remain available.';
+export const deprecatedBridgeTitle = 'DQuant Lab Alpha is deprecated.';
+export const deprecatedBridgeDetail = 'Download DQuant Lab Beta to continue. Your settings and projects will remain available.';
 export const deprecatedBridgeDownloadAction = 'Download Beta';
 
 export function getReplacementDownloadUrl(architecture: string): string | undefined {

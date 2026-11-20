@@ -17,11 +17,11 @@ import * as path from '../../../util/vs/base/common/path';
 // ⚠️⚠️⚠️
 
 /*
- * Universal Backboard CLI bootstrapper
+ * Universal DQuant Lab CLI bootstrapper
  *
  * Works from any interactive shell (bash, zsh, sh, PowerShell Core (pwsh), Nushell, csh/tcsh) via shebang.
  * Responsibilities:
- *   1. Locate the real Backboard CLI binary (avoid recursion if this file shadows it).
+ *   1. Locate the real DQuant Lab CLI binary (avoid recursion if this file shadows it).
  *   2. Offer to install if missing.
  *   3. Enforce minimum version (>= REQUIRED_VERSION) with interactive update.
  *   4. Execute the real binary with original arguments and exit with its status.
@@ -64,7 +64,7 @@ function versionGte(versionA: string, versionB: string) {
 }
 
 /**
- * Returns the version of Backboard CLI installed.
+ * Returns the version of DQuant Lab CLI installed.
  * If not installed, then returns `undefined`, else returns an object with the version.
  * Version can be undefined if it cannot be determined.
  */
@@ -125,8 +125,8 @@ function installBackboardCLI(label: string): boolean {
 async function ensureInstalled() {
 	const version = getBackboardInfo();
 	if (!version) {
-		warn('Cannot find Backboard CLI (https://backboard.io/)');
-		if (await promptYes('Install Backboard CLI?')) {
+		warn('Cannot find DQuant Lab CLI (https://backboard.io/)');
+		if (await promptYes('Install DQuant Lab CLI?')) {
 			if (installBackboardCLI('Installing')) {
 				return ensureInstalled();
 			}
@@ -140,9 +140,9 @@ async function ensureInstalled() {
 
 async function validateVersion(version: string) {
 	if (!versionGte(version, REQUIRED_VERSION)) {
-		warn(`Backboard CLI version ${version} is not compatible.`);
+		warn(`DQuant Lab CLI version ${version} is not compatible.`);
 		log(`Version ${REQUIRED_VERSION} or later is required.`);
-		if (await promptYes('Update Backboard CLI?')) {
+		if (await promptYes('Update DQuant Lab CLI?')) {
 			if (installBackboardCLI('Update')) {
 				return true;
 			}
@@ -169,7 +169,7 @@ async function pressKeyToExit(message: string = 'Press Enter to exit...'): Promi
 		await validateVersion(info.version);
 	}
 	if (!info) {
-		warn('Error: Could not locate Backboard CLI after update.');
+		warn('Error: Could not locate DQuant Lab CLI after update.');
 		await pressKeyToExit('Try manually reinstalling (https://backboard.io/)');
 	}
 	const args = process.argv.slice(2);

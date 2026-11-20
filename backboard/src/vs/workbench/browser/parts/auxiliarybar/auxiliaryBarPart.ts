@@ -251,7 +251,7 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
 			placeholderViewContainersKey: AuxiliaryBarPart.placeholdeViewContainersKey,
 			viewContainersWorkspaceStateKey: AuxiliaryBarPart.viewContainersWorkspaceStateKey,
 			icon: !this.configuration.showLabels,
-			// The right bar's tabs name an agent — Backboard, Claude Code, Codex — so
+			// The right bar's tabs name an agent — DQuant Lab, Claude Code, Codex — so
 			// they carry the product mark alongside the label rather than instead of it.
 			showIconWithLabel: true,
 			orientation: ActionsOrientation.HORIZONTAL,
@@ -310,7 +310,7 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
 
 	protected shouldShowCompositeBar(): boolean {
 		if (this.configuration.position === ActivityBarPosition.HIDDEN) {
-			// The right bar is Backboard's home and is shared with any agent panel
+			// The right bar is DQuant Lab's home and is shared with any agent panel
 			// installed from the marketplace (Claude Code, Codex). Hiding the activity
 			// bar must not leave those unreachable, so the composite bar stays as the
 			// switcher between them — it is still absent while chat is alone there.

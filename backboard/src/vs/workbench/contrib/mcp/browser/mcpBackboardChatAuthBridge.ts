@@ -14,7 +14,7 @@ import { IPathService } from '../../../services/path/common/pathService.js';
 
 /**
  * Mirrors OAuth tokens acquired by the workbench for MCP servers into the
- * Backboard CLI's token store (~/.backboard/mcp-oauth/<server>.json), so a
+ * DQuant Lab CLI's token store (~/.backboard/mcp-oauth/<server>.json), so a
  * server authorized once — e.g. right after installing it from the
  * marketplace — is also authorized for chat sessions, which run on
  * backboard-cli-ts with its own OAuth state.
@@ -96,7 +96,7 @@ export class McpBackboardChatAuthBridge extends Disposable implements IWorkbench
 				await this._writeChatOAuthState(home, name, e.clientId, latest);
 			}
 		} catch (err) {
-			this._logService.warn('[McpBackboardChatAuthBridge] failed to sync MCP tokens to the Backboard CLI store:', err);
+			this._logService.warn('[McpBackboardChatAuthBridge] failed to sync MCP tokens to the DQuant Lab CLI store:', err);
 		}
 	}
 
@@ -122,13 +122,13 @@ export class McpBackboardChatAuthBridge extends Disposable implements IWorkbench
 			},
 		};
 		await this._fileService.writeFile(stateResource, VSBuffer.fromString(`${JSON.stringify(state, null, 2)}\n`));
-		this._logService.info(`[McpBackboardChatAuthBridge] authorized '${serverName}' for Backboard chat sessions.`);
+		this._logService.info(`[McpBackboardChatAuthBridge] authorized '${serverName}' for DQuant Lab chat sessions.`);
 	}
 }
 
 // --- helpers replicated from cli-ts/src/core/mcp/oauth.ts — keep in sync ---
 
-const CLI_APP_DISPLAY_NAME = 'Backboard R-CLI';
+const CLI_APP_DISPLAY_NAME = 'DQuant Lab CLI';
 const CLI_CALLBACK_PORT_BASE = 7810;
 const CLI_CALLBACK_PORT_RANGE = 50;
 const CLI_CALLBACK_PATH = '/oauth/callback';

@@ -1184,7 +1184,7 @@ export function App({
 			});
 	}, [agent, app, onExit, onLogout]);
 	const login = useCallback(() => {
-		setLoadingLabel("Waiting for Backboard login");
+		setLoadingLabel("Waiting for DQuant Lab login");
 		setMode("loading");
 		void onLogin((response) => {
 			agent.notice(

@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-// Prototype: run the Backboard agent host in a Daytona sandbox and connect the
+// Prototype: run the DQuant Lab agent host in a Daytona sandbox and connect the
 // desktop app to it as a `websocket` remote agent host.
 //
 //   node daytona.mjs up              create/reuse the sandbox, upload the current build, start the agent host
@@ -16,7 +16,7 @@
 //
 // Credentials are read from ~/.config/backboard/daytona.env:
 //   DAYTONA_API_KEY=...   required
-//   BACKBOARD_API_KEY=... optional; copied into the sandbox so the Backboard runtime can call models
+//   BACKBOARD_API_KEY=... optional; copied into the sandbox so the DQuant Lab runtime can call models
 //
 // `up` ships the compiled `out/` tree, so keep the dev watch (or `npm run compile`) current first.
 
@@ -275,7 +275,7 @@ function printAddress(address) {
 	console.log('Remote agent host address (valid 24h, contains credentials; do not share):');
 	console.log(`  ${address}`);
 	console.log('');
-	console.log('In Backboard: enable "chat.remoteAgentHostsEnabled", then add this address as a remote agent host.');
+	console.log('In DQuant Lab: enable "chat.remoteAgentHostsEnabled", then add this address as a remote agent host.');
 	console.log('Run `keepalive` while you work: Daytona does not count preview traffic as activity.');
 }
 

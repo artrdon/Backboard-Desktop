@@ -37,7 +37,7 @@ const MIN_TARGET_PROBABILITY = 0.15;
 const COMPLETE_THRESHOLD = 0.6;
 
 /**
- * TypeSafe Jev through Backboard's System One route. Jev never writes text: it
+ * TypeSafe Jev through DQuant Lab's System One route. Jev never writes text: it
  * picks an operation and a target from lists, and the loop's writer model
  * composes anything to be typed.
  */

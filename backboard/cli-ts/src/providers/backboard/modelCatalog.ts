@@ -63,7 +63,7 @@ const ROUTER_MODELS = new Set([
 ]);
 
 /**
- * True when Backboard admits this model with no credit: the same rule as the
+ * True when DQuant Lab admits this model with no credit: the same rule as the
  * server's `is_free_llm_model` (app/services/billing_service.py). Every price
  * the row carries must be exactly zero, and input and output must be present.
  */

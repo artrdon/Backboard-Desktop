@@ -20,11 +20,11 @@ export interface BackboardConfigJson {
 }
 
 /**
- * Backboard SSO endpoints and client registration shared by the sign-in flow
+ * DQuant Lab SSO endpoints and client registration shared by the sign-in flow
  * and the user-info lookup. See https://docs.backboard.io/concepts/sso.
  *
  * Sign-in uses the OAuth device authorization grant (RFC 8628) via the
- * built-in Backboard extension. The client id is the first-party PUBLIC
+ * built-in DQuant Lab extension. The client id is the first-party PUBLIC
  * device-code client (no secret); token refreshes must use the same client id
  * the tokens were issued to.
  */
@@ -101,7 +101,7 @@ export function backboardConfigApiKey(config: BackboardConfigJson): string | und
 
 /**
  * The device's guest key, minted by the agent host while nobody is signed in.
- * It runs Backboard's free models only, so it never counts as signed in.
+ * It runs DQuant Lab's free models only, so it never counts as signed in.
  */
 export function backboardConfigGuestApiKey(config: BackboardConfigJson): string | undefined {
 	const guest = isObjectRecord(config.guest) ? config.guest : undefined;
@@ -140,7 +140,7 @@ export function normalizeBackboardEnv(env: string | undefined): string {
 }
 
 /**
- * The Backboard REST API base for the configured environment, e.g.
+ * The DQuant Lab REST API base for the configured environment, e.g.
  * `https://app.backboard.io/api`. An explicit URL (setting or config file)
  * wins over the environment default.
  */

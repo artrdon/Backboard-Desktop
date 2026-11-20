@@ -28,7 +28,7 @@ import { IBackboardBillingService, IBillingStatus } from '../../../backboardBill
 import { BackboardAccountMenu, backboardAccountInitials, combineBackboardAccountActions, IBackboardAccountMenuOptions } from '../../browser/backboardAccountMenu.js';
 import { BackboardAuthContextKeys, IBackboardAuthService } from '../../common/backboardAuth.js';
 
-suite('Backboard account menu', () => {
+suite('DQuant Lab account menu', () => {
 	const disposables = ensureNoDisposablesAreLeakedInTestSuite();
 	const action = (id: string, label = id): IAction => toAction({ id, label, run: async () => { } });
 
@@ -231,9 +231,9 @@ suite('Backboard account menu', () => {
 		assert.strictEqual(fixture.button.getAttribute('aria-expanded'), 'false');
 		assert.doesNotMatch(fixture.button.getAttribute('aria-label')!, /Nihal|Scale/);
 		fixture.menu.toggle();
-		assert.ok(labels(fixture.host).includes('Sign in to Backboard'));
+		assert.ok(labels(fixture.host).includes('Sign in to DQuant Lab'));
 		assert.ok(!labels(fixture.host).includes('Sign out'));
-		await activate(fixture.host, 'Sign in to Backboard');
+		await activate(fixture.host, 'Sign in to DQuant Lab');
 		assert.deepStrictEqual(fixture.executed, ['backboard.signIn']);
 		await fixture.files.writeFile(fixture.config, VSBuffer.fromString(JSON.stringify({ oauth: { user_name: 'Erin Test' } })));
 		fixture.setSignedIn(true);
@@ -241,11 +241,11 @@ suite('Backboard account menu', () => {
 		assert.match(fixture.button.getAttribute('aria-label')!, /Erin Test/);
 	});
 
-	test('connected provider users can sign in to Backboard or sign out', async () => {
+	test('connected provider users can sign in to DQuant Lab or sign out', async () => {
 		const fixture = await setup({}, false, true);
 		assert.match(fixture.button.getAttribute('aria-label')!, /Connected subscriptions/);
 		fixture.menu.toggle();
-		assert.ok(labels(fixture.host).includes('Sign in to Backboard'));
+		assert.ok(labels(fixture.host).includes('Sign in to DQuant Lab'));
 		assert.ok(labels(fixture.host).includes('Sign out'));
 	});
 

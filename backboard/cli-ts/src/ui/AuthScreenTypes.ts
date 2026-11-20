@@ -15,7 +15,7 @@ export type AuthLoginHandler = (
 
 export interface AuthScreenProps {
 	onLogin: AuthLoginHandler;
-	/** Drives the BYOK branch; omit to offer Backboard sign-in only. */
+	/** Drives the BYOK branch; omit to offer DQuant Lab sign-in only. */
 	keys?: ProviderKeyController;
 	/** Called once a provider key is saved, so startup can retry with it. */
 	onKeySaved?: () => void;

@@ -52,7 +52,7 @@ export function SessionCard({
 				width={layout.cardWidth}
 			>
 				<Text color={theme.warning} bold>
-					{clipEnd("Backboard CLI needs authentication", contentWidth)}
+					{clipEnd("DQuant Lab CLI needs authentication", contentWidth)}
 				</Text>
 				{layout.showHelpDescription ? (
 					<Text color={theme.subtle}> · Run /login to continue</Text>
@@ -149,7 +149,7 @@ export function SessionCard({
 
 /**
  * The shared card header row: the mascot (when the layout shows it) beside the
- * bold "Backboard CLI is ready" title, with caller-provided lines below the
+ * bold "DQuant Lab CLI is ready" title, with caller-provided lines below the
  * title. Callers clip their own lines to `cardHeaderWidths(layout)`.
  */
 export function CardHeader({
@@ -174,7 +174,7 @@ export function CardHeader({
 			) : null}
 			<Box flexDirection="column" justifyContent="center">
 				<Text color={theme.text} bold>
-					{clipEnd("Backboard CLI is ready", headerTextWidth)}
+					{clipEnd("DQuant Lab CLI is ready", headerTextWidth)}
 				</Text>
 				{children}
 			</Box>

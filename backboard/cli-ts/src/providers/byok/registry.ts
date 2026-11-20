@@ -37,7 +37,7 @@ export function byokAdapter(id: ByokProviderId): ProviderAdapter {
 export function byokAdapterFor(provider: string): ProviderAdapter | null {
 	const normalized = provider.trim().toLowerCase();
 	if (isByokProviderId(normalized)) return BYOK_ADAPTERS[normalized];
-	// Backboard names Gemini's provider "google"; accept the common aliases so
+	// DQuant Lab names Gemini's provider "google"; accept the common aliases so
 	// a model selected from either catalog routes the same way.
 	if (normalized === "gemini" || normalized === "google-gemini") {
 		return BYOK_ADAPTERS.google;

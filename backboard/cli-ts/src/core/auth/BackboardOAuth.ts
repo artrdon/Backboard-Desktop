@@ -78,16 +78,16 @@ export async function runBackboardDeviceLogin(
 				continue;
 			}
 			if (err.code === "access_denied") {
-				throw new Error("Backboard device login was denied.");
+				throw new Error("DQuant Lab device login was denied.");
 			}
 			if (err.code === "expired_token") {
-				throw new Error("Backboard device login code expired.");
+				throw new Error("DQuant Lab device login code expired.");
 			}
 			throw err;
 		}
 	}
 
-	throw new Error("Timed out waiting for Backboard device login.");
+	throw new Error("Timed out waiting for DQuant Lab device login.");
 }
 
 export async function requestDeviceCode(
@@ -185,10 +185,10 @@ function parseDeviceCodeResponse(text: string): BackboardDeviceCodeResponse {
 	try {
 		value = JSON.parse(text) as unknown;
 	} catch {
-		throw new Error("Backboard device-code response was not valid JSON.");
+		throw new Error("DQuant Lab device-code response was not valid JSON.");
 	}
 	if (!isRecord(value)) {
-		throw new Error("Backboard device-code response was not an object.");
+		throw new Error("DQuant Lab device-code response was not an object.");
 	}
 	return {
 		device_code: requiredString(value, "device_code"),
@@ -206,7 +206,7 @@ function parseDeviceCodeResponse(text: string): BackboardDeviceCodeResponse {
 function requiredString(raw: Record<string, unknown>, key: string): string {
 	const value = raw[key];
 	if (typeof value !== "string" || !value) {
-		throw new Error(`Backboard device-code response is missing ${key}.`);
+		throw new Error(`DQuant Lab device-code response is missing ${key}.`);
 	}
 	return value;
 }
@@ -214,7 +214,7 @@ function requiredString(raw: Record<string, unknown>, key: string): string {
 function requiredNumber(raw: Record<string, unknown>, key: string): number {
 	const value = raw[key];
 	if (typeof value !== "number" || !Number.isFinite(value)) {
-		throw new Error(`Backboard device-code response is missing ${key}.`);
+		throw new Error(`DQuant Lab device-code response is missing ${key}.`);
 	}
 	return value;
 }

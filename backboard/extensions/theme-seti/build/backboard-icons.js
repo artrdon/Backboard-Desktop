@@ -5,7 +5,7 @@
 
 'use strict';
 
-// Keep Backboard's visual treatment when refreshing the upstream Seti associations.
+// Keep DQuant Lab's visual treatment when refreshing the upstream Seti associations.
 module.exports = function applyBackboardIcons(theme) {
 	for (const [section, suffix] of [[theme, ''], [theme.light, '_light']]) {
 		for (const name of ['folder', 'file', 'markdown', 'json', 'yaml', 'git', 'package', 'pnpm', 'license']) {
@@ -41,7 +41,7 @@ module.exports = function applyBackboardIcons(theme) {
 			'.gitignore': icon('git'), '.gitattributes': icon('git')
 		});
 	}
-	const note = 'Backboard icon overrides are maintained in build/backboard-icons.js and icons/backboard/.';
+	const note = 'DQuant Lab icon overrides are maintained in build/backboard-icons.js and icons/backboard/.';
 	if (!theme.information_for_contributors.includes(note)) {
 		theme.information_for_contributors.push(note);
 	}

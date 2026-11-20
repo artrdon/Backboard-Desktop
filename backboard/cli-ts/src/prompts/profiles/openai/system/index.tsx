@@ -9,7 +9,7 @@ export function buildSystemPrompt(options: SystemPromptOptions = {}): string {
 	return buildSystemPromptWith(
 		{
 			getSystemPromptFragment: (_id, context = {}) =>
-				`You are Backboard, Backboard.io's coding agent. Make focused changes and use tools to establish correctness.\n\n${buildWorkflowPrompt(context)}`,
+				`You are DQuant Lab, DQuant Lab's coding agent. Make focused changes and use tools to establish correctness.\n\n${buildWorkflowPrompt(context)}`,
 			computer,
 			browser,
 		},

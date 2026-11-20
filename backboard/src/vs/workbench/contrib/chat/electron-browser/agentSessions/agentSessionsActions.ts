@@ -399,7 +399,7 @@ export class AgentsHandoffInputTipContribution extends Disposable implements IWo
 		// session that we shouldn't try to restore on the other side.
 		const commandArgs: unknown[] = eligible && sessionResource ? [sessionResource] : [];
 
-		// Empty-workspace + local Backboard: the local agent host can't
+		// Empty-workspace + local DQuant Lab: the local agent host can't
 		// run without a folder, so frame the tip as the path forward rather
 		// than a generic "continue in agents" upsell.
 		const useEmptyWorkspaceCopy = emptyWorkspaceEligible && !eligible;

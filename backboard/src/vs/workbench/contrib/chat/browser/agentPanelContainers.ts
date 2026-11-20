@@ -47,7 +47,7 @@ export function isAgentPanelContainer(containerId: string): boolean {
 
 /**
  * Moves installed agent panels into the primary sidebar and repairs profiles
- * whose webviews were previously merged into Backboard chat. Migration is
+ * whose webviews were previously merged into DQuant Lab chat. Migration is
  * recorded per container so later explicit layout changes remain user controlled.
  */
 export class AgentPanelContainersContribution extends Disposable implements IWorkbenchContribution {

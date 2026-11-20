@@ -84,11 +84,11 @@ function messageFormData(
 }
 
 /**
- * Backboard transport. JSON helpers keep the simple request/response endpoints
- * available; the run generators consume Backboard's SSE turn streams.
+ * DQuant Lab transport. JSON helpers keep the simple request/response endpoints
+ * available; the run generators consume DQuant Lab's SSE turn streams.
  */
 export class BackboardClient implements AgentClient {
-	/** Backboard holds threads, assistants, and memory server-side. */
+	/** DQuant Lab holds threads, assistants, and memory server-side. */
 	readonly capabilities: AgentClientCapabilities = {
 		assistants: true,
 		threads: true,
@@ -288,7 +288,7 @@ export class BackboardClient implements AgentClient {
 		);
 		const answers = response.system_one?.answers;
 		if (!answers) {
-			throw new Error("Backboard did not return System One answers.");
+			throw new Error("DQuant Lab did not return System One answers.");
 		}
 		return {
 			thread_id: response.thread_id,
@@ -548,7 +548,7 @@ export class BackboardClient implements AgentClient {
 			}
 			if (!res.body) {
 				throw new BackboardError(
-					"Backboard stream response did not include a body",
+					"DQuant Lab stream response did not include a body",
 					status,
 					null,
 				);
@@ -577,7 +577,7 @@ export class BackboardClient implements AgentClient {
 					error = errorMessage(err);
 					const failure: ProviderEvent = {
 						kind: "failed",
-						error: `Malformed Backboard stream event: ${error}`,
+						error: `Malformed DQuant Lab stream event: ${error}`,
 					};
 					events++;
 					lastEvent = failure;
@@ -603,7 +603,7 @@ export class BackboardClient implements AgentClient {
 				throw err;
 			}
 			throw new BackboardTransportError(
-				`Backboard stream failed for ${path}: ${error}`,
+				`DQuant Lab stream failed for ${path}: ${error}`,
 				path,
 				status === 0 ? "request" : "stream",
 				err,

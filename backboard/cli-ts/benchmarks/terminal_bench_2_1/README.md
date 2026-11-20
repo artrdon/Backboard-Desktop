@@ -1,13 +1,13 @@
-# Backboard Terminal-Bench 2.1 smoke test
+# DQuant Lab Terminal-Bench 2.1 smoke test
 
 This integration runs one official Terminal-Bench 2.1 task through the
-Backboard CLI harness with the `openai-subscription/gpt-5.6-sol` backend. It is
+DQuant Lab CLI harness with the `openai-subscription/gpt-5.6-sol` backend. It is
 intentionally scoped to `terminal-bench/fix-git`; it does not launch the full
 benchmark suite.
 
-The Harbor installed-agent adapter uploads a compiled Backboard CLI into the
+The Harbor installed-agent adapter uploads a compiled DQuant Lab CLI into the
 task container, copies only the active ChatGPT access token and account ID into
-a mode-`0600` temporary file, runs the normal Backboard tool scheduler, and
+a mode-`0600` temporary file, runs the normal DQuant Lab tool scheduler, and
 deletes the credential file before Harbor collects logs.
 
 ## Prerequisites
@@ -18,7 +18,7 @@ deletes the credential file before Harbor collects logs.
 - A ChatGPT subscription login
 
 By default the runner uses `${CODEX_HOME:-$HOME/.codex}/auth.json`. To use a
-Backboard-owned login instead, run `backboard subscription login` and set:
+DQuant Lab-owned login instead, run `backboard subscription login` and set:
 
 ```sh
 export BACKBOARD_CHATGPT_SUBSCRIPTION_AUTH_FILE="$HOME/.backboard/chatgpt-auth.json"
@@ -46,7 +46,7 @@ instead of through x86 emulation. Always require the ARM64 oracle to score 1.0
 before treating a model result as valid.
 
 Results are written under
-`artifacts/terminal-bench-2.1/jobs/<job-name>/result.json`. The native Backboard
+`artifacts/terminal-bench-2.1/jobs/<job-name>/result.json`. The native DQuant Lab
 trajectory is saved as `agent/backboard.jsonl` inside the trial directory.
 
 ## Storage

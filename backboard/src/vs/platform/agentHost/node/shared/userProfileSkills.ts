@@ -11,7 +11,7 @@ import { URI } from '../../../../base/common/uri.js';
 export interface IUserProfileSkillLocations {
 	/** Plugin-shaped root consumed by Claude (`<root>/skills/<name>/SKILL.md`). */
 	readonly agentsRoot: URI;
-	/** Skill collection root consumed directly by Codex and Backboard. */
+	/** Skill collection root consumed directly by Codex and DQuant Lab. */
 	readonly skillsRoot: URI;
 }
 

@@ -23,7 +23,7 @@ import { ILanguageModelChatMetadataAndIdentifier, LanguageModelBillingSource, IL
  * available" state when no models are listed. Claude runs on the Claude
  * Agent SDK's default model when none is selected — required for
  * subscription-billed sessions, whose CAPI-sourced model list can be empty
- * (e.g. when signed out of Backboard). Codex requires an explicit model.
+ * (e.g. when signed out of DQuant Lab). Codex requires an explicit model.
  *
  * `provider` is the underlying agent provider id (e.g. `'copilotcli'`,
  * `'claude'`, `'codex'`), not the `agent-host-<provider>` session type.

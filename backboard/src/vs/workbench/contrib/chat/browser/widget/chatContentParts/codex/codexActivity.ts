@@ -16,7 +16,7 @@ import { CodexIconName } from './codexIcons.js';
 
 /**
  * Codex's presentation model for one transcript activity, derived from
- * Backboard's tool data. Labels and grouping follow the Codex desktop app
+ * DQuant Lab's tool data. Labels and grouping follow the Codex desktop app
  * (SPEC §2–§3): finished rows read as `Ran …`, `Read …`, `Searched for …`,
  * `Edited …`; running work only surfaces through the group's live header.
  */

@@ -45,7 +45,7 @@ export interface ClientRouterDeps {
 	/** The live `/model` selection, used to route requests that carry no thread. */
 	getModel: () => ModelRef;
 	/**
-	 * True when a Backboard sign-in is currently active. Checked per request
+	 * True when a DQuant Lab sign-in is currently active. Checked per request
 	 * rather than at construction, so `/login` and `/logout` take effect on the
 	 * next turn. Omit to treat a supplied `backboard` client as always usable.
 	 */
@@ -66,7 +66,7 @@ export interface ClientRouterDeps {
  * Routes each request to the backend that can serve it.
  *
  * The precedence rule is the product one: a saved provider key always wins over
- * a Backboard sign-in for the same vendor, so adding a key silently moves those
+ * a DQuant Lab sign-in for the same vendor, so adding a key silently moves those
  * models onto the user's own billing. Requests that name an existing thread
  * route by that thread's origin instead, so toggling a key mid-conversation
  * can never split one thread across two backends.
@@ -102,7 +102,7 @@ export class ClientRouter implements AgentClient {
 		return this.backboard() ? "backboard" : "byok";
 	}
 
-	/** The Backboard client, or undefined while no sign-in is active. */
+	/** The DQuant Lab client, or undefined while no sign-in is active. */
 	private backboard(): AgentClient | undefined {
 		if (!this.deps.backboard) return undefined;
 		if (this.deps.hasBackboardAuth && !this.deps.hasBackboardAuth()) {
@@ -249,7 +249,7 @@ export class ClientRouter implements AgentClient {
 	}
 
 	/**
-	 * System One decisions (TypeSafe Jev) go to the Backboard backend.
+	 * System One decisions (TypeSafe Jev) go to the DQuant Lab backend.
 	 */
 	async systemOne(
 		request: SystemOneRequest,
@@ -258,7 +258,7 @@ export class ClientRouter implements AgentClient {
 		const backboard = this.backboard();
 		if (!backboard?.systemOne) {
 			throw new Error(
-				"Jev computer use requires a signed-in Backboard account.",
+				"Jev computer use requires a signed-in DQuant Lab account.",
 			);
 		}
 		return backboard.systemOne(request, options);
@@ -342,7 +342,7 @@ export class ClientRouter implements AgentClient {
 	 * Explicit mode: the request's own route decides, and nothing is inferred
 	 * from the live selection, the thread, or which keys are held. A request
 	 * without a route is a runtime bug and is refused; a key-billed request
-	 * whose key is gone fails rather than falling back to Backboard; a thread
+	 * whose key is gone fails rather than falling back to DQuant Lab; a thread
 	 * created on another backend is refused, because the IDE hands off to a
 	 * fresh thread on a route change and failing loudly beats billing the wrong
 	 * account. `model` is the request's own model when it names one; a
@@ -400,7 +400,7 @@ export class ClientRouter implements AgentClient {
 		const backboard = this.backboard();
 		if (!backboard) {
 			throw new Error(
-				`No backend can serve ${described}. Sign in with Backboard to continue.`,
+				`No backend can serve ${described}. Sign in with DQuant Lab to continue.`,
 			);
 		}
 		return backboard;
@@ -440,13 +440,13 @@ export class ClientRouter implements AgentClient {
 					: this.backboard();
 		if (!client) {
 			throw new Error(
-				`No backend can serve ${formatModel(model)}. Sign in with Backboard, connect the required subscription, or add a key with /keys.`,
+				`No backend can serve ${formatModel(model)}. Sign in with DQuant Lab, connect the required subscription, or add a key with /keys.`,
 			);
 		}
 		return client;
 	}
 
-	/** Local clients mint distinct prefixes; Backboard ids never collide. */
+	/** Local clients mint distinct prefixes; DQuant Lab ids never collide. */
 	private forThread(threadId: string): AgentClient {
 		const subscription = this.subscriptionForThread(threadId);
 		if (subscription) return subscription.client;
@@ -543,7 +543,7 @@ function describeSource(source: ClientSource): string {
 		case "subscription":
 			return "a subscription";
 		default:
-			return "Backboard";
+			return "DQuant Lab";
 	}
 }
 

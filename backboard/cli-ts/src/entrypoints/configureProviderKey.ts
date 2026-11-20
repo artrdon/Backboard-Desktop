@@ -9,7 +9,7 @@ import {
 	type ProviderKeyConfig,
 } from "../core/keys/ProviderKeyTypes.ts";
 
-/** Credential setup runs before Config so a fresh install needs no Backboard auth. */
+/** Credential setup runs before Config so a fresh install needs no DQuant Lab auth. */
 export async function configureProviderKey(input: string): Promise<void> {
 	const request = JSON.parse(input) as {
 		provider?: string;

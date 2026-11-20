@@ -1,7 +1,7 @@
 {
   "name": "copilot-chat",
   "displayName": "DQuant Chat",
-  "description": "AI chat features powered by Backboard",
+  "description": "AI chat features powered by DQuant Lab",
   "version": "0.54.0",
   "build": "1",
   "completionsCoreVersion": "1.378.1799",
@@ -57,7 +57,7 @@
   ],
   "badges": [
     {
-      "url": "https://img.shields.io/badge/Backboard-Subscription_Required-orange",
+      "url": "https://img.shields.io/badge/DQuant_Lab-Subscription_Required-orange",
       "href": "",
       "description": "%github.copilot.badge.signUp%"
     },
@@ -1249,7 +1249,7 @@
         "displayName": "Session Store SQL",
         "toolReferenceName": "sessionStoreSql",
         "when": "github.copilot.sessionSearch.enabled",
-        "userDescription": "Query your Backboard session history using SQL",
+        "userDescription": "Query your DQuant Lab session history using SQL",
         "modelDescription": "Query the local session store containing history from past coding sessions. Uses SQLite syntax (NOT DuckDB or Postgres). SQL queries are read-only — only SELECT and WITH are allowed. Use `datetime('now', '-1 day')` for date math (NOT `now() - INTERVAL '1 day'`), FTS5 `MATCH` for text search.\n\nTables: `sessions`, `turns`, `session_files`, `session_refs`, `checkpoints`, `search_index`. For column details and query patterns, use the **chronicle** skill.\n\nActions: 'query' (execute SQL — supports JOINs, FTS5 MATCH, aggregations), 'reindex' (rebuild index from debug logs).",
         "tags": [],
         "canBeReferencedInPrompt": false,
@@ -1372,8 +1372,8 @@
     "chatParticipants": [
       {
         "id": "github.copilot.default",
-        "name": "Backboard",
-        "fullName": "Backboard",
+        "name": "DQuant Lab",
+        "fullName": "DQuant Lab",
         "description": "%copilot.description%",
         "isDefault": true,
         "locations": [
@@ -1489,8 +1489,8 @@
       },
       {
         "id": "github.copilot.editingSession",
-        "name": "Backboard",
-        "fullName": "Backboard",
+        "name": "DQuant Lab",
+        "fullName": "DQuant Lab",
         "description": "%copilot.edits.description%",
         "isDefault": true,
         "locations": [
@@ -1502,8 +1502,8 @@
       },
       {
         "id": "github.copilot.editingSessionEditor",
-        "name": "Backboard",
-        "fullName": "Backboard",
+        "name": "DQuant Lab",
+        "fullName": "DQuant Lab",
         "description": "%copilot.edits.description%",
         "isDefault": true,
         "locations": [
@@ -1514,7 +1514,7 @@
       {
         "id": "github.copilot.editsAgent",
         "name": "agent",
-        "fullName": "Backboard",
+        "fullName": "DQuant Lab",
         "description": "%copilot.agent.description%",
         "locations": [
           "panel"
@@ -1619,8 +1619,8 @@
       },
       {
         "id": "github.copilot.notebook",
-        "name": "Backboard",
-        "fullName": "Backboard",
+        "name": "DQuant Lab",
+        "fullName": "DQuant Lab",
         "description": "%copilot.description%",
         "isDefault": true,
         "locations": [
@@ -1640,8 +1640,8 @@
       },
       {
         "id": "github.copilot.notebookEditorAgent",
-        "name": "Backboard",
-        "fullName": "Backboard",
+        "name": "DQuant Lab",
+        "fullName": "DQuant Lab",
         "description": "%copilot.description%",
         "isDefault": true,
         "locations": [
@@ -1746,11 +1746,11 @@
     "languageModelChatProviders": [
       {
         "vendor": "copilot",
-        "displayName": "Backboard"
+        "displayName": "DQuant Lab"
       },
       {
         "vendor": "copilotcli",
-        "displayName": "Backboard CLI",
+        "displayName": "DQuant Lab CLI",
         "when": "false"
       },
       {
@@ -2284,7 +2284,7 @@
     ],
     "interactiveSession": [
       {
-        "label": "Backboard",
+        "label": "DQuant Lab",
         "id": "copilot",
         "icon": "",
         "when": "!github.copilot.interactiveSession.disabled"
@@ -2328,29 +2328,29 @@
         "command": "github.copilot.cli.sessions.delete",
         "title": "%github.copilot.command.deleteAgentSession%",
         "icon": "$(close)",
-        "category": "Backboard CLI"
+        "category": "DQuant Lab CLI"
       },
       {
         "command": "agents.github.copilot.cli.deleteSessions",
         "title": "%github.copilot.command.deleteAgentSession%",
-        "category": "Backboard CLI"
+        "category": "DQuant Lab CLI"
       },
       {
         "command": "github.copilot.cli.sessions.resumeInTerminal",
         "title": "%github.copilot.command.cli.sessions.resumeInTerminal%",
         "icon": "$(terminal)",
-        "category": "Backboard CLI"
+        "category": "DQuant Lab CLI"
       },
       {
         "command": "github.copilot.cli.sessions.rename",
         "title": "%github.copilot.command.cli.sessions.rename%",
         "icon": "$(edit)",
-        "category": "Backboard CLI"
+        "category": "DQuant Lab CLI"
       },
       {
         "command": "github.copilot.cli.sessions.setTitle",
         "title": "%github.copilot.command.cli.sessions.setTitle%",
-        "category": "Backboard CLI"
+        "category": "DQuant Lab CLI"
       },
       {
         "command": "github.copilot.claude.sessions.rename",
@@ -2362,37 +2362,37 @@
         "command": "github.copilot.cli.sessions.openRepository",
         "title": "%github.copilot.command.cli.sessions.openRepository%",
         "icon": "$(folder-opened)",
-        "category": "Backboard CLI"
+        "category": "DQuant Lab CLI"
       },
       {
         "command": "github.copilot.cli.sessions.openWorktreeInNewWindow",
         "title": "%github.copilot.command.cli.sessions.openWorktreeInNewWindow%",
         "icon": "$(folder-opened)",
-        "category": "Backboard CLI"
+        "category": "DQuant Lab CLI"
       },
       {
         "command": "github.copilot.cli.sessions.openWorktreeInTerminal",
         "title": "%github.copilot.command.cli.sessions.openWorktreeInTerminal%",
         "icon": "$(terminal)",
-        "category": "Backboard CLI"
+        "category": "DQuant Lab CLI"
       },
       {
         "command": "github.copilot.cli.sessions.copyWorktreeBranchName",
         "title": "%github.copilot.command.cli.sessions.copyWorktreeBranchName%",
         "icon": "$(copy)",
-        "category": "Backboard CLI"
+        "category": "DQuant Lab CLI"
       },
       {
         "command": "github.copilot.cli.sessions.commitToWorktree",
         "title": "%github.copilot.command.cli.sessions.commitToWorktree%",
         "icon": "$(git-commit)",
-        "category": "Backboard CLI"
+        "category": "DQuant Lab CLI"
       },
       {
         "command": "github.copilot.cli.sessions.commitToRepository",
         "title": "%github.copilot.command.cli.sessions.commitToRepository%",
         "icon": "$(git-commit)",
-        "category": "Backboard CLI"
+        "category": "DQuant Lab CLI"
       },
       {
         "command": "github.copilot.cli.newSession",
@@ -2410,7 +2410,7 @@
         "command": "github.copilot.cli.openInCopilotCLI",
         "title": "%github.copilot.command.cli.openInCopilotCLI%",
         "icon": "$(terminal)",
-        "category": "Backboard CLI"
+        "category": "DQuant Lab CLI"
       },
       {
         "command": "github.copilot.chat.compact",
@@ -2726,7 +2726,7 @@
       },
       {
         "command": "github.copilot.chat.startCopilotDebugCommand",
-        "title": "Start Backboard Debug"
+        "title": "Start DQuant Lab Debug"
       },
       {
         "command": "github.copilot.chat.clearTemporalContext",
@@ -2840,22 +2840,22 @@
       {
         "command": "github.copilot.nes.captureExpected.start",
         "title": "Record Expected Edit (NES)",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.nes.captureExpected.confirm",
         "title": "Confirm and Save Expected Edit Capture",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.nes.captureExpected.abort",
         "title": "Cancel Expected Edit Capture",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.nes.captureExpected.submit",
         "title": "Submit NES Captures",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.debug.collectWorkspaceIndexDiagnostics",
@@ -2912,132 +2912,132 @@
         "command": "github.copilot.chat.openSuggestionsPanel",
         "title": "Open Completions Panel",
         "enablement": "github.copilot.extensionUnification.activated && !isWeb",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.chat.toggleStatusMenu",
         "title": "Open Status Menu",
         "enablement": "github.copilot.extensionUnification.activated",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.chat.completions.disable",
         "title": "Disable Inline Suggestions",
         "enablement": "github.copilot.extensionUnification.activated && github.copilot.activated && config.editor.inlineSuggest.enabled && github.copilot.completions.enabled",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.chat.completions.enable",
         "title": "Enable Inline Suggestions",
         "enablement": "github.copilot.extensionUnification.activated && github.copilot.activated && !(config.editor.inlineSuggest.enabled && github.copilot.completions.enabled)",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.chat.completions.toggle",
         "title": "Toggle (Enable/Disable) Inline Suggestions",
         "enablement": "github.copilot.extensionUnification.activated && github.copilot.activated",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.chat.openModelPicker",
         "title": "Change Completions Model",
-        "category": "Backboard",
+        "category": "DQuant Lab",
         "enablement": "github.copilot.extensionUnification.activated && !isWeb && github.copilot.completions.hasMultipleModels"
       },
       {
         "command": "github.copilot.chat.applyCopilotCLIAgentSessionChanges",
         "title": "%github.copilot.command.applyCopilotCLIAgentSessionChanges%",
         "enablement": "!chatSessionRequestInProgress",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.chat.applyCopilotCLIAgentSessionChanges.apply",
         "title": "%github.copilot.chat.applyCopilotCLIAgentSessionChanges.apply%",
         "enablement": "!chatSessionRequestInProgress",
         "icon": "$(git-stash-pop)",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.chat.mergeCopilotCLIAgentSessionChanges.merge",
         "title": "%github.copilot.chat.mergeCopilotCLIAgentSessionChanges.merge%",
         "enablement": "!chatSessionRequestInProgress",
         "icon": "$(git-merge)",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.chat.mergeCopilotCLIAgentSessionChanges.mergeAndSync",
         "title": "%github.copilot.chat.mergeCopilotCLIAgentSessionChanges.mergeAndSync%",
         "enablement": "!chatSessionRequestInProgress",
         "icon": "$(sync)",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.sessions.commit",
         "title": "%github.copilot.command.sessions.commit%",
         "enablement": "!chatSessionRequestInProgress && !sessions.hasGitOperationInProgress",
         "icon": "$(git-commit)",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.sessions.commitAndSync",
         "title": "%github.copilot.command.sessions.commitAndSync%",
         "enablement": "!chatSessionRequestInProgress && !sessions.hasGitOperationInProgress",
         "icon": "$(sync)",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.sessions.sync",
         "title": "%github.copilot.command.sessions.sync%",
         "enablement": "!chatSessionRequestInProgress && !sessions.hasGitOperationInProgress",
         "icon": "$(sync)",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.chat.createPullRequestCopilotCLIAgentSession.createPR",
         "title": "%github.copilot.chat.createPullRequestCopilotCLIAgentSession.createPR%",
         "enablement": "!chatSessionRequestInProgress && !sessions.hasGitOperationInProgress",
         "icon": "$(git-pull-request-create)",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.chat.createDraftPullRequestCopilotCLIAgentSession.createDraftPR",
         "title": "%github.copilot.chat.createDraftPullRequestCopilotCLIAgentSession.createDraftPR%",
         "enablement": "!chatSessionRequestInProgress && !sessions.hasGitOperationInProgress",
         "icon": "$(git-pull-request-draft)",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.sessions.discardChanges",
         "title": "%github.copilot.command.sessions.discardChanges%",
         "enablement": "!chatSessionRequestInProgress",
         "icon": "$(discard)",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.chat.copilotCLI.addFileReference",
         "title": "%github.copilot.command.chat.copilotCLI.addFileReference%",
         "enablement": "github.copilot.chat.copilotCLI.hasSession",
-        "category": "Backboard CLI"
+        "category": "DQuant Lab CLI"
       },
       {
         "command": "github.copilot.chat.copilotCLI.addSelection",
         "title": "%github.copilot.command.chat.copilotCLI.addSelection%",
         "enablement": "github.copilot.chat.copilotCLI.hasSession",
-        "category": "Backboard CLI"
+        "category": "DQuant Lab CLI"
       },
       {
         "command": "github.copilot.chat.copilotCLI.acceptDiff",
         "title": "%github.copilot.command.chat.copilotCLI.acceptDiff%",
         "enablement": "github.copilot.chat.copilotCLI.hasActiveDiff",
         "icon": "$(check)",
-        "category": "Backboard CLI"
+        "category": "DQuant Lab CLI"
       },
       {
         "command": "github.copilot.chat.copilotCLI.rejectDiff",
         "title": "%github.copilot.command.chat.copilotCLI.rejectDiff%",
         "enablement": "github.copilot.chat.copilotCLI.hasActiveDiff",
         "icon": "$(close)",
-        "category": "Backboard CLI"
+        "category": "DQuant Lab CLI"
       },
       {
         "command": "github.copilot.chat.checkoutPullRequestReroute",
@@ -3061,53 +3061,53 @@
         "command": "github.copilot.chat.cloudSessions.openRepository",
         "title": "%github.copilot.command.cloudSessions.openRepository.title%",
         "icon": "$(repo)",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.chat.cloudSessions.clearCaches",
         "title": "%github.copilot.command.cloudSessions.clearCaches.title%",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.sessions.refreshChanges",
         "title": "%github.copilot.command.sessions.refreshChanges%",
         "icon": "$(refresh)",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.sessions.initializeRepository",
         "title": "%github.copilot.command.sessions.initializeRepository%",
         "enablement": "!chatSessionRequestInProgress",
         "icon": "$(repo)",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.claude.sessions.commit",
         "title": "%github.copilot.command.claude.sessions.commit%",
         "enablement": "!chatSessionRequestInProgress",
         "icon": "$(git-commit)",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.claude.sessions.commitAndSync",
         "title": "%github.copilot.command.claude.sessions.commitAndSync%",
         "enablement": "!chatSessionRequestInProgress",
         "icon": "$(sync)",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.claude.sessions.sync",
         "title": "%github.copilot.command.claude.sessions.sync%",
         "enablement": "!chatSessionRequestInProgress",
         "icon": "$(sync)",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       },
       {
         "command": "github.copilot.claude.sessions.initializeRepository",
         "title": "%github.copilot.command.claude.sessions.initializeRepository%",
         "enablement": "!chatSessionRequestInProgress",
         "icon": "$(repo)",
-        "category": "Backboard"
+        "category": "DQuant Lab"
       }
     ],
     "configuration": [
@@ -6703,11 +6703,11 @@
       {
         "type": "copilotcli",
         "name": "cli",
-        "displayName": "Backboard CLI",
+        "displayName": "DQuant Lab CLI",
         "icon": "$(copilot)",
-        "welcomeTitle": "Backboard CLI",
-        "welcomeMessage": "Run tasks in the background with the Backboard CLI",
-        "inputPlaceholder": "Run tasks in the background with the Backboard CLI, type `#` for adding context",
+        "welcomeTitle": "DQuant Lab CLI",
+        "welcomeMessage": "Run tasks in the background with the DQuant Lab CLI",
+        "inputPlaceholder": "Run tasks in the background with the DQuant Lab CLI, type `#` for adding context",
         "order": 1,
         "canDelegate": true,
         "description": "%github.copilot.session.providerDescription.background%",

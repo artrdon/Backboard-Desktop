@@ -137,7 +137,7 @@ suite('ChatListRenderer', () => {
 		});
 	});
 
-	suite('Backboard cursor transcript turn folding', () => {
+	suite('DQuant Lab cursor transcript turn folding', () => {
 		test('keeps parallel worker pills visible without a disclosure', () => {
 			const container = mainWindow.document.createElement('div');
 			mainWindow.document.body.appendChild(container);
@@ -395,7 +395,7 @@ suite('ChatListRenderer', () => {
 			], [false, false, true]);
 		});
 
-		test('lists Backboard edits as rows inside the activity group, like Codex', () => {
+		test('lists DQuant Lab edits as rows inside the activity group, like Codex', () => {
 			assert.deepStrictEqual([
 				shouldRenderBackboardEditStandalone('textEditGroup', true),
 				shouldRenderBackboardEditStandalone('externalEdit', true),
@@ -404,7 +404,7 @@ suite('ChatListRenderer', () => {
 			], [false, false, false, false]);
 		});
 
-		test('recognizes only explicitly batched Backboard external edits for mutation grouping', () => {
+		test('recognizes only explicitly batched DQuant Lab external edits for mutation grouping', () => {
 			const batched = {
 				kind: 'externalEdit' as const,
 				uri: URI.file('/workspace/a.ts'),

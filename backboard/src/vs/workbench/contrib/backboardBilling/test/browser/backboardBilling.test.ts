@@ -41,7 +41,7 @@ const creditStatus: IBillingStatus = { ...status, can_purchase_credits: true,
 		auto_reload_threshold_usd: 5, auto_reload_amount_usd: 50 } };
 const response = (body: unknown, code = 200): IRequestContext => ({ res: { statusCode: code, headers: {} }, stream: bufferToStream(VSBuffer.fromString(JSON.stringify(body))) });
 
-suite('Backboard Billing', () => {
+suite('DQuant Lab Billing', () => {
 	const disposables = ensureNoDisposablesAreLeakedInTestSuite();
 
 	async function setup(handler: (options: IRequestOptions) => Promise<IRequestContext>, stored?: unknown) {

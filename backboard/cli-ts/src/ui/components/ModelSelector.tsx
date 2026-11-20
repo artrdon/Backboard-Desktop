@@ -26,7 +26,7 @@ export function ModelSelector({
 			tabs={modelTabs(models)}
 			onSelect={(model) => onSelect(model)}
 			onCancel={onCancel}
-			emptyLabel="No models returned by Backboard."
+			emptyLabel="No models returned by DQuant Lab."
 		/>
 	);
 }

@@ -117,7 +117,7 @@ const CONTROL_ROLES =
  * to those refs over the DevTools protocol.
  *
  * The browser is a separate, driver-owned instance of the requested browser
- * with Backboard's own persistent profile. It shares nothing with the user's
+ * with DQuant Lab's own persistent profile. It shares nothing with the user's
  * everyday profile, and the driver closes it when this surface is disposed.
  */
 export class CuaBrowserSurface implements JevSurface {

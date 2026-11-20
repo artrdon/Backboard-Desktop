@@ -810,7 +810,7 @@ export function renderModelSelectScript(iconBase: string): string {
 			const mimeType = blob.type || 'audio/webm';
 			const extension = mimeType.includes('mp4') ? 'm4a' : mimeType.includes('mpeg') ? 'mp3' : mimeType.includes('wav') ? 'wav' : 'webm';
 			const nextOptions = { ...options(), voiceMode: controls.voiceMode.value === 'stt' ? 'stt' : 'conversation' };
-			updateStatus('Sending voice to Backboard.');
+			updateStatus('Sending voice to DQuant Lab.');
 				vscode.postMessage({
 					type: 'sendVoice',
 					prompt: prompt.value.trim(),

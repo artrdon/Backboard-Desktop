@@ -56,7 +56,7 @@ suite('Sessions - SessionsList Helpers', () => {
 
 	ensureNoDisposablesAreLeakedInTestSuite();
 
-	test('lists Backboard chats, including subscription-billed ones, but never Claude Code or Codex app chats', () => {
+	test('lists DQuant Lab chats, including subscription-billed ones, but never Claude Code or Codex app chats', () => {
 		assert.deepStrictEqual(
 			['agent-host-backboard', 'copilotcli', 'claude-code', 'openai-codex'].map(isListedSessionType),
 			[true, true, false, false],

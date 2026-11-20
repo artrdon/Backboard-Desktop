@@ -1351,7 +1351,7 @@
 	}
 }
 
-/* One corner radius for every Backboard composer (Simple and the editor panel). */
+/* One corner radius for every DQuant Lab composer (Simple and the editor panel). */
 .monaco-workbench {
 	--bb-composer-radius: 18px;
 }

@@ -100,7 +100,7 @@ export class ByokKeysService extends Disposable implements IByokKeysService {
 registerSingleton(IByokKeysService, ByokKeysService, InstantiationType.Delayed);
 
 /**
- * Publishes whether the key store holds any provider key, so the Backboard
+ * Publishes whether the key store holds any provider key, so the DQuant Lab
  * sign-in gates let a key-only user through just like a signed-in one.
  */
 class ByokProviderKeyContextContribution extends Disposable implements IWorkbenchContribution {

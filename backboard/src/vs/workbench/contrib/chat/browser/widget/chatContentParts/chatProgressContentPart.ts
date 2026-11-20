@@ -84,7 +84,7 @@ export class ChatProgressContentPart extends Disposable implements IChatContentP
 		const isLoadingIcon = icon && ThemeIcon.isEqual(icon, ThemeIcon.modify(Codicon.loading, 'spin'));
 		const useCompactCursorIndicator = this.showSpinner && isBackboardCursorTranscript(context.container);
 		// Tool activity follows the tool lifecycle, never the enclosing response.
-		// Use the same ring in both Backboard presentations, without a second animation on the label.
+		// Use the same ring in both DQuant Lab presentations, without a second animation on the label.
 		const useShimmer = !toolInvocation && !context.container.closest('.backboard-clean-chat') &&
 			(shimmer ?? (!icon || isLoadingIcon)) && this.showSpinner && !useCompactCursorIndicator;
 		const codicon = this.showSpinner

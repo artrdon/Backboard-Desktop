@@ -315,7 +315,7 @@ export class SessionsView extends ViewPane {
 			this.createSidebarAction(railTop, Codicon.graphLine, localize('usage', "Usage"), () => {
 				// Simple mode can run without an extension host, so open the built-in
 				// usage view instead of dispatching the extension-owned command.
-				this.logService.info('[Backboard] Opening the Simple mode usage view.');
+				this.logService.info('[DQuant Lab] Opening the Simple mode usage view.');
 				void this.closeFullWindowPages('usage').then(() => {
 					this.usageView ??= this._register(this.instantiationService.createInstance(BackboardUsageView));
 					this.usageView.show();
@@ -516,9 +516,9 @@ export class SessionsView extends ViewPane {
 
 	/**
 	 * Bottom-pinned footer for the sidebar: an "Update available" button (shown
-	 * only while the Backboard update context key is set) sitting directly above
+	 * only while the DQuant Lab update context key is set) sitting directly above
 	 * the signed-in user's identity card (avatar + name + plan/email). Both are
-	 * Backboard-only, so the whole footer is skipped for non-Backboard builds and
+	 * DQuant Lab-only, so the whole footer is skipped for non-DQuant Lab builds and
 	 * on phone layouts (which use their own chrome). With the icon rail, the
 	 * view toggles, Settings and the identity live at the bottom of the rail and
 	 * the panel footer keeps only the update control.

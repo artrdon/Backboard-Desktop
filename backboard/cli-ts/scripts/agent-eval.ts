@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 /**
  * Live evaluation harness for the Agent tool. Runs a few real coding-style
- * tasks against Backboard so the worker and rlm modes can be sanity-checked
+ * tasks against DQuant Lab so the worker and rlm modes can be sanity-checked
  * end to end.
  *
  * Requires BACKBOARD_API_KEY (and optionally BACKBOARD_API_URL) in the

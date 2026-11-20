@@ -2,17 +2,17 @@
 #  Copyright (c) Microsoft Corporation. All rights reserved.
 #---------------------------------------------------------------------------------------------
 
-# Windows Backboard CLI bootstrapper
+# Windows DQuant Lab CLI bootstrapper
 #
 # Responsibilities:
-#   1. Locate the real Backboard CLI binary (avoid recursion if this file shadows it).
+#   1. Locate the real DQuant Lab CLI binary (avoid recursion if this file shadows it).
 #   2. Offer to install if missing.
 #   3. Enforce minimum version (>= REQUIRED_VERSION) with interactive update.
 #   4. Execute the real binary with original arguments and exit with its status.
 #
 # NOTE: This file intentionally keeps logic self‑contained (no external deps) so it can be dropped into PATH directly.
 
-# Minimum required Backboard CLI version
+# Minimum required DQuant Lab CLI version
 $RequiredVersion = "0.0.394"
 
 function Install-BackboardCLI {
@@ -20,7 +20,7 @@ function Install-BackboardCLI {
         Invoke-Expression (Invoke-RestMethod https://app.backboard.io/api/cli/windows)
         return ($LASTEXITCODE -eq 0 -or $null -eq $LASTEXITCODE)
     } catch {
-        Write-Host "Backboard CLI installation failed: $($_.Exception.Message)"
+        Write-Host "DQuant Lab CLI installation failed: $($_.Exception.Message)"
         return $false
     }
 }
@@ -79,8 +79,8 @@ function Test-AndLaunchBackboard {
     # Check if real backboard command exists
     $realBackboard = Find-RealBackboard
     if (-not $realBackboard) {
-        Write-Host "Cannot find Backboard CLI (https://backboard.io/)"
-        $answer = Read-Host "Install Backboard CLI? (y/N)"
+        Write-Host "Cannot find DQuant Lab CLI (https://backboard.io/)"
+        $answer = Read-Host "Install DQuant Lab CLI? (y/N)"
         if ($answer -eq "y" -or $answer -eq "Y") {
             if (Install-BackboardCLI) {
                 Test-AndLaunchBackboard $Arguments
@@ -98,9 +98,9 @@ function Test-AndLaunchBackboard {
     $realBackboard = Find-RealBackboard
     if (-not $realBackboard) {
         Write-Host "Error: Unable to find backboard binary."
-        $answer = Read-Host "Would you like to reinstall Backboard CLI? (y/N)"
+        $answer = Read-Host "Would you like to reinstall DQuant Lab CLI? (y/N)"
         if ($answer -eq "y" -or $answer -eq "Y") {
-            Write-Host "Reinstalling Backboard CLI..."
+            Write-Host "Reinstalling DQuant Lab CLI..."
             if (Install-BackboardCLI) {
                 Test-AndLaunchBackboard $Arguments
                 return
@@ -119,7 +119,7 @@ function Test-AndLaunchBackboard {
             throw "Command failed"
         }
     } catch {
-        $answer = Read-Host "Would you like to reinstall Backboard CLI? (y/N)"
+        $answer = Read-Host "Would you like to reinstall DQuant Lab CLI? (y/N)"
         if ($answer -eq "y" -or $answer -eq "Y") {
             if (Install-BackboardCLI) {
                 Test-AndLaunchBackboard $Arguments
@@ -149,9 +149,9 @@ function Test-AndLaunchBackboard {
 
     # Only check version compatibility if we have a valid version
     if ($version -and -not (Test-VersionCompatibility $version)) {
-        Write-Host "Backboard CLI version $version is not compatible."
+        Write-Host "DQuant Lab CLI version $version is not compatible."
         Write-Host "Version $RequiredVersion or later is required."
-        $answer = Read-Host "Update Backboard CLI? (y/N)"
+        $answer = Read-Host "Update DQuant Lab CLI? (y/N)"
         if ($answer -eq "y" -or $answer -eq "Y") {
             if (Install-BackboardCLI) {
                 Test-AndLaunchBackboard $Arguments
@@ -170,7 +170,7 @@ function Test-AndLaunchBackboard {
     if ($realBackboard -and (Test-Path $realBackboard)) {
         & $realBackboard @Arguments
     } else {
-        Write-Host "Error: Could not find the real Backboard CLI binary"
+        Write-Host "Error: Could not find the real DQuant Lab CLI binary"
         Read-Host "Please ensure it's properly installed (https://backboard.io/)"
         return
     }

@@ -125,7 +125,7 @@ describe("AgentTool schema and flags", () => {
 		).toThrow();
 	});
 
-	it("emits a Backboard-compatible variables object schema", () => {
+	it("emits a DQuant Lab-compatible variables object schema", () => {
 		const { tool } = makeTool();
 		type AgentParameters = OpenAITool["function"]["parameters"] & {
 			properties?: {

@@ -3522,7 +3522,7 @@ export class ChatWidget extends Disposable implements IChatWidget {
 	}
 
 	/**
-	 * Backboard composer hosts float the composer over a conversation. The
+	 * DQuant Lab composer hosts float the composer over a conversation. The
 	 * empty home, compact/minimal hosts, input-on-top layouts, dynamic
 	 * (quick chat) sizing, and visible next-prompt suggestions keep the
 	 * stacked layout.

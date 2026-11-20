@@ -201,7 +201,7 @@ describe("OpenRouter catalog", () => {
 			"Bearer sk-or-v1-test-key-value-long-enough",
 		);
 		expect(captured[0]?.headers["HTTP-Referer"]).toBe("https://backboard.io");
-		expect(captured[0]?.headers["X-OpenRouter-Title"]).toBe("Backboard R-CLI");
+		expect(captured[0]?.headers["X-OpenRouter-Title"]).toBe("DQuant Lab CLI");
 	});
 
 	it("uses the authenticated catalog and keeps text tool models", async () => {
@@ -476,7 +476,7 @@ describe("OpenRouter streaming", () => {
 		);
 		expect(captured[0]?.headers.Authorization).toStartWith("Bearer sk-or-v1-");
 		expect(captured[0]?.headers["HTTP-Referer"]).toBe("https://backboard.io");
-		expect(captured[0]?.headers["X-OpenRouter-Title"]).toBe("Backboard R-CLI");
+		expect(captured[0]?.headers["X-OpenRouter-Title"]).toBe("DQuant Lab CLI");
 		expect(captured[0]?.body).toMatchObject({
 			model: "anthropic/claude-sonnet-4.6",
 			stream: true,

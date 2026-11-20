@@ -17,7 +17,7 @@ import { SelectRow } from "./SelectRow.tsx";
 
 interface Props {
 	controller: ProviderKeyController;
-	/** True when a Backboard sign-in is also active; changes the footer hint. */
+	/** True when a DQuant Lab sign-in is also active; changes the footer hint. */
 	signedIn: boolean;
 	onClose: (message?: string) => void;
 }
@@ -111,7 +111,7 @@ export function ProviderKeyManager({
 			</Text>
 			<Text color={theme.subtle}>
 				{signedIn
-					? "Enabled keys take precedence over your Backboard sign-in."
+					? "Enabled keys take precedence over your DQuant Lab sign-in."
 					: "Keys are the only credentials for this session."}{" "}
 				Encrypted at rest, bound to this machine.
 			</Text>

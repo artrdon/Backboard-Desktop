@@ -51,7 +51,7 @@ const engineVersion = String(packageJson.version);
 if (Number(engineVersion.split('.')[0]) !== 1) {
 	throw new Error(
 		`VS Code engine version must remain on the 1.x line, but found ${engineVersion}. ` +
-		`Backboard's ${version} release version belongs in product branding metadata.`,
+		`DQuant Lab's ${version} release version belongs in product branding metadata.`,
 	);
 }
 

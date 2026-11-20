@@ -108,17 +108,17 @@ Options:
   --cwd <path>               Working directory
   --print <prompt>           Run a single prompt non-interactively
   --runtime-info             Print non-secret build and search capability diagnostics
-  --serve                    Run as Backboard Studio's persistent NDJSON host
+  --serve                    Run as DQuant Lab Studio's persistent NDJSON host
   --permission-mode <mode>   manual | acceptEdits | auto (prompt only for risky) | bypass (default: manual)
   --lsp                      Enable language-server diagnostics for this run
-  --fresh                    Create a new Backboard assistant/thread for this run (isolated)
-  --login                    Sign in with Backboard
-  --logout                   Remove saved Backboard credentials
+  --fresh                    Create a new DQuant Lab assistant/thread for this run (isolated)
+  --login                    Sign in with DQuant Lab
+  --logout                   Remove saved DQuant Lab credentials
   --subscription-login      Connect a ChatGPT subscription
   --subscription-logout     Disconnect the ChatGPT subscription
   --claude-subscription-login   Connect a Claude subscription through Claude Code
   --claude-subscription-enable  Enable an already-authenticated Claude subscription
-  --claude-subscription-logout  Disconnect Claude from Backboard
+  --claude-subscription-logout  Disconnect Claude from DQuant Lab
   --help                     Show this help
   --version                  Show version
 `;
@@ -162,7 +162,7 @@ async function main(): Promise<void> {
 			earlyFlags.claudeSubscriptionEnable)
 	) {
 		process.stderr.write(
-			"BYOS subscriptions are not supported on Windows. Sign in with Backboard or add a provider API key.\n",
+			"BYOS subscriptions are not supported on Windows. Sign in with DQuant Lab or add a provider API key.\n",
 		);
 		process.exitCode = 1;
 		return;
@@ -811,14 +811,14 @@ main().catch((err) => {
 function formatFatalError(err: Error | string): string {
 	if (err instanceof BackboardError && err.status === 401) {
 		return [
-			"Backboard rejected BACKBOARD_API_KEY (HTTP 401).",
+			"DQuant Lab rejected BACKBOARD_API_KEY (HTTP 401).",
 			"",
 			"Check these things:",
 			`- Run \`${APP_COMMAND_NAME} login\` again if the saved key is stale.`,
 			"- BACKBOARD_API_KEY in your shell or `.env` overrides ~/.backboard/config.json.",
 			"- BACKBOARD_API_URL matches where the key was created.",
 			"",
-			"For the normal Backboard app, use:",
+			"For the normal DQuant Lab app, use:",
 			"BACKBOARD_API_URL=https://app.backboard.io/api",
 		].join("\n");
 	}

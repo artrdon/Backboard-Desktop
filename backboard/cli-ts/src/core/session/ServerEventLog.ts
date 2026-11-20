@@ -35,7 +35,7 @@ const SENSITIVE_HEADERS = new Set([
 ]);
 
 /**
- * Records every Backboard HTTP exchange as timestamped JSONL. Sensitive headers
+ * Records every DQuant Lab HTTP exchange as timestamped JSONL. Sensitive headers
  * (API key, auth, session token) are redacted before writing so secrets never
  * land on disk.
  */

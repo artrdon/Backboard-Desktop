@@ -119,6 +119,12 @@ import { isChatPerfLoggingEnabled, logChatPerf } from '../../common/chatPerf.js'
 const $ = dom.$;
 
 const COPILOT_USERNAME = 'Backboard';
+const PRODUCT_USERNAME = 'DQuant Lab';
+
+/** The backend still tags some responses with the legacy product name. */
+function isProductUsername(username: string): boolean {
+	return username === COPILOT_USERNAME || username === PRODUCT_USERNAME;
+}
 const WORKING_CAUGHT_UP_DEBOUNCE_MS = 750;
 
 export interface IChatListItemTemplate {
@@ -537,7 +543,7 @@ export function isBackboardPersistentSubagentContent(content: IChatRendererConte
 	return !!content && (content.kind === 'toolInvocation' || content.kind === 'toolInvocationSerialized') && isSubagentToolInvocation(content);
 }
 
-/** Backboard keeps edit cards legible beside, rather than inside, Thought. */
+/** DQuant Lab keeps edit cards legible beside, rather than inside, Thought. */
 export function shouldRenderBackboardEditStandalone(_kind: IChatRendererContent['kind'], _backboardTranscript: boolean): boolean {
 	// The Codex transcript lists edits as rows inside the turn's activity group
 	// ("Edited foo.ts +3 -6"), so they are never mounted as standalone cards.
@@ -637,7 +643,7 @@ export class ChatListItemRenderer extends Disposable implements ITreeRenderer<Ch
 	private _elementBeingRendered: ChatTreeItem | undefined;
 	private _mostRecentVisibleResponseId: string | undefined;
 	private _currentTurnResponseId: string | undefined;
-	/** Rows render in Backboard's transcript, which uses the Codex presentation. */
+	/** Rows render in DQuant Lab's transcript, which uses the Codex presentation. */
 	private _codexTranscript = false;
 	private _latestTurnRequestId: string | undefined;
 	private _onDidChangeVisibility = this._register(new Emitter<boolean>());
@@ -1362,8 +1368,8 @@ export class ChatListItemRenderer extends Disposable implements ITreeRenderer<Ch
 		const isSystemInitiatedRequest = isRequestVM(element) && !!element.isSystemInitiated;
 
 		templateData.username.textContent = element.username;
-		templateData.username.classList.toggle('hidden', element.username === COPILOT_USERNAME || this.environmentService.isSessionsWindow || isSystemInitiatedRequest);
-		templateData.avatarContainer.classList.toggle('hidden', element.username === COPILOT_USERNAME || this.environmentService.isSessionsWindow || isSystemInitiatedRequest);
+		templateData.username.classList.toggle('hidden', isProductUsername(element.username) || this.environmentService.isSessionsWindow || isSystemInitiatedRequest);
+		templateData.avatarContainer.classList.toggle('hidden', isProductUsername(element.username) || this.environmentService.isSessionsWindow || isSystemInitiatedRequest);
 
 		this.hoverHidden(templateData.requestHover);
 		dom.clearNode(templateData.detail);
@@ -2637,7 +2643,7 @@ export class ChatListItemRenderer extends Disposable implements ITreeRenderer<Ch
 	}
 
 	/**
-	 * Backboard's provider emits commentary, reasoning, and tool calls as several
+	 * DQuant Lab's provider emits commentary, reasoning, and tool calls as several
 	 * native chat parts inside one response. T3 presents those parts as one turn:
 	 * the work log stays expanded after completion, with an optional Activity
 	 * disclosure, while the final assistant message stays outside the fold.
@@ -4341,7 +4347,7 @@ export class ChatListItemRenderer extends Disposable implements ITreeRenderer<Ch
 		}
 		editPart.addDisposable(editPart.onDidChangeHeight(() => this.fireItemHeightChange(templateData)));
 		// Other hosts can pin the pill into Thought so its diff stats bubble up
-		// into that title. Backboard keeps the compact card standalone so the
+		// into that title. DQuant Lab keeps the compact card standalone so the
 		// completed diff is not hidden behind a second nested disclosure.
 		const collapsedToolsMode = this.configService.getValue<CollapsedToolsDisplayMode>('chat.agent.thinking.collapsedTools');
 		const backboardTranscript = isBackboardCursorTranscript(context.container);

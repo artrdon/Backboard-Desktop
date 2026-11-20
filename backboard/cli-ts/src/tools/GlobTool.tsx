@@ -39,7 +39,7 @@ const schema = z
 			.optional()
 			.describe("Deprecated alias for patterns; prefer patterns."),
 		// A bare string is coerced to a one-element array in parseInput; the
-		// schema stays a plain array because the Backboard API rejects
+		// schema stays a plain array because the DQuant Lab API rejects
 		// properties without a top-level "type" (anyOf alone is not accepted).
 		patterns: z
 			.array(

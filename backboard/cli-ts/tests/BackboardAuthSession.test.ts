@@ -13,7 +13,7 @@ async function tempHome(): Promise<string> {
 }
 
 describe("logoutSavedCredentials", () => {
-	it("keeps connected subscriptions when signing out of Backboard", async () => {
+	it("keeps connected subscriptions when signing out of DQuant Lab", async () => {
 		const homeDir = await tempHome();
 		await saveBackboardConfig(
 			{
@@ -42,7 +42,7 @@ describe("logoutSavedCredentials", () => {
 		});
 	});
 
-	it("removes the file when only Backboard credentials were saved", async () => {
+	it("removes the file when only DQuant Lab credentials were saved", async () => {
 		const homeDir = await tempHome();
 		await saveBackboardConfig({ apiKey: "file-key" }, homeDir);
 

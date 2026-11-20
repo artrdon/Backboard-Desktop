@@ -33,7 +33,7 @@ type ImportHarnessObject = {
 	_copySettingsFromSource(source: unknown, selection: { settings: boolean; keybindings: boolean; extensions: boolean }, keepColorTheme?: string): Promise<{ imported: string[]; missing: string[] }>;
 };
 
-suite('Backboard onboarding settings import', () => {
+suite('DQuant Lab onboarding settings import', () => {
 	const disposables = ensureNoDisposablesAreLeakedInTestSuite();
 
 	let fileService: FileService;

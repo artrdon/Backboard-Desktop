@@ -344,7 +344,7 @@ describe("ComputerTool", () => {
 		});
 	});
 
-	it("emits a Backboard-compatible root object schema", () => {
+	it("emits a DQuant Lab-compatible root object schema", () => {
 		const schema = new ComputerTool().toJSONSchema().function.parameters;
 		expect(schema.type).toBe("object");
 		expect(schema).toHaveProperty("properties");
@@ -598,7 +598,7 @@ describe("ComputerTool", () => {
 		expect(result.forLLM).toContain("fresh screenshot is required");
 	});
 
-	it("uses the home Backboard screenshot directory", async () => {
+	it("uses the home DQuant Lab screenshot directory", async () => {
 		const paths = new ComputerPaths("sess_test");
 		expect(paths.screenshotDir).toContain(".backboard/screenshots/sess_test");
 	});

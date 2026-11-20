@@ -179,13 +179,13 @@ echo "Preparing Electron and built-in extensions"
 npm run electron
 node build/lib/builtInExtensions.ts
 
-echo "Compiling Backboard extension"
+echo "Compiling DQuant Lab extension"
 npm --prefix extensions/backboard run compile
 
-echo "Testing Backboard updater release safeguards"
+echo "Testing DQuant Lab updater release safeguards"
 npm --prefix extensions/backboard run test-updater
 
-echo "Compiling Backboard CLI runtime"
+echo "Compiling DQuant Lab CLI runtime"
 # Without an explicit target bun compiles for the host, which puts an arm64 CLI
 # inside an Intel release when cross-building on Apple Silicon.
 BACKBOARD_CLI_TARGET="${CLI_TARGET}" npm --prefix extensions/backboard run package-cli-ts

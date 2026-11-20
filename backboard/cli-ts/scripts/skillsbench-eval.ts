@@ -336,7 +336,7 @@ function loadBackboardCredentials(options: SkillsBenchOptions): void {
 	const backboard = resolveAuth().backboard;
 	if (!backboard) {
 		throw new Error(
-			"A Backboard login is required for a live SkillsBench run. Run `backboard login` or export BACKBOARD_API_KEY.",
+			"A DQuant Lab login is required for a live SkillsBench run. Run `backboard login` or export BACKBOARD_API_KEY.",
 		);
 	}
 	process.env.BACKBOARD_API_KEY = backboard.apiKey;
@@ -970,13 +970,13 @@ async function writeJson(filePath: string, value: object): Promise<void> {
 }
 
 function usage(): string {
-	return `Backboard SkillsBench canary
+	return `DQuant Lab SkillsBench canary
 
 Usage:
   bun run test:skillsbench -- --model <provider/model> [options]
 
 Options:
-  --model <provider/model>  Model routed through Backboard (required for live runs)
+  --model <provider/model>  Model routed through DQuant Lab (required for live runs)
   --task <id>               SkillsBench task (default: ${DEFAULT_TASK})
   --ref <git-ref>           SkillsBench revision (default: ${DEFAULT_REF})
   --condition <mode>        with-skill | no-skill | both (default: with-skill)
@@ -987,8 +987,8 @@ Options:
   --help                    Show this message
 
 The runner builds the official task image without its skills, executes the
-Backboard CLI in the disposable container, adds skills only for with-skill,
-and runs the upstream verifier unchanged. Sign in with Backboard or export
+DQuant Lab CLI in the disposable container, adds skills only for with-skill,
+and runs the upstream verifier unchanged. Sign in with DQuant Lab or export
 BACKBOARD_API_KEY before a live run. Results are canary scores, not official
 SkillsBench leaderboard runs.
 `;

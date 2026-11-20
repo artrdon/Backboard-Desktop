@@ -162,7 +162,7 @@ export class PrivateSnapshotWorkspace {
 			]);
 			await git(repositoryRoot, [
 				"-c",
-				"user.name=Backboard Snapshot",
+				"user.name=DQuant Lab Snapshot",
 				"-c",
 				"user.email=workers@backboard.local",
 				"-c",

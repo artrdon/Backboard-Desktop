@@ -298,7 +298,7 @@ async function main(): Promise<void> {
 		diServices.set(ICodexProxyService, codexProxyService);
 		const agentHostOTelService = disposables.add(instantiationService.createInstance(AgentHostOTelService));
 		diServices.set(IAgentHostOTelService, agentHostOTelService);
-		// The Backboard provider is backed by the cli-ts serve process
+		// The DQuant Lab provider is backed by the cli-ts serve process
 		// (`backboard-cli-ts --serve`), which owns the agent loop and executes
 		// its own tools. It replaced the legacy Rust `backboard-bridge` agent.
 		const cliTsAgent = disposables.add(instantiationService.createInstance(CliTsAgent));
@@ -420,7 +420,7 @@ async function main(): Promise<void> {
 		// undermine the flush or push us past the timeout.
 		wsServer.dispose();
 		// Stop provider runtimes and await their send queues before disposing the
-		// service. In particular, Backboard finalizes and persists an interrupted
+		// service. In particular, DQuant Lab finalizes and persists an interrupted
 		// turn from its provider shutdown hook.
 		await raceTimeout(agentService.shutdown(), 3000, () => {
 			logService.warn('[AgentHostServer] Timed out waiting for agent providers to shut down; exiting anyway.');

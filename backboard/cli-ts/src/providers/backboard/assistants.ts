@@ -43,7 +43,7 @@ export async function ensureAssistant(
 		requestOptions,
 	);
 	if (!created.assistant_id) {
-		throw new Error("Backboard did not return an assistant id.");
+		throw new Error("DQuant Lab did not return an assistant id.");
 	}
 	return created.assistant_id;
 }

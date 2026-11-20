@@ -50,7 +50,7 @@ export interface WorkerWorkspaceRecord {
 	/** Private baseline for plain folders or current dirty repository bytes. */
 	backend?: "snapshot";
 	snapshotNotice?: string;
-	/** Backboard created the local repository/baseline needed for isolation. */
+	/** DQuant Lab created the local repository/baseline needed for isolation. */
 	repositoryInitializedByBackboard?: boolean;
 	repositoryRoot?: string;
 	branch?: string;

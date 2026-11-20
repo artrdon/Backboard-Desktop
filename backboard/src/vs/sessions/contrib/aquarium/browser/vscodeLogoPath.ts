@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-// Backboard logo silhouette path, replacing the old VS Code mark.
+// DQuant Lab logo silhouette path, replacing the old VS Code mark.
 // The aquarium cannot use that SVG file directly because each fish renders the
 // logo as live, same-document SVG geometry: fish.ts stores this path in a
 // shared <symbol>, then renders clipped <use> slices with staggered CSS

@@ -701,7 +701,7 @@ suite('ChatThinkingContentPart', () => {
 		});
 	});
 
-	// Superseded: Backboard's transcript now renders thinking parts as Codex
+	// Superseded: DQuant Lab's transcript now renders thinking parts as Codex
 	// activity units (codex/codexActivityGroup.ts, covered by codexActivity.test.ts).
 	// This suite asserts the previous cursor-transcript DOM and is kept only until
 	// that code path is removed.

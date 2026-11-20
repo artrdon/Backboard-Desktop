@@ -268,7 +268,7 @@ registerWorkbenchContribution2(ChatSuspendThrottlingHandler.ID, ChatSuspendThrot
 registerWorkbenchContribution2(ChatLifecycleHandler.ID, ChatLifecycleHandler, WorkbenchPhase.AfterRestored);
 // The agent-host transport is already started by pre-restore contributions.
 // Register its dynamically discovered session providers in the same phase so
-// the restored Backboard pane does not wait for `AfterRestored` before it can
+// the restored DQuant Lab pane does not wait for `AfterRestored` before it can
 // acquire its default session.
 registerWorkbenchContribution2(AgentHostContribution.ID, AgentHostContribution, WorkbenchPhase.BlockRestore);
 registerWorkbenchContribution2(AgentHostTerminalContribution.ID, AgentHostTerminalContribution, WorkbenchPhase.AfterRestored);

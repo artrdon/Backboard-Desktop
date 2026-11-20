@@ -41,7 +41,7 @@ export type {
 /**
  * Drives one isolated sub-agent to completion and returns only its distilled
  * report. The sub-agent gets its own Session, EventBus, tool registry, and
- * Backboard thread, so its intermediate tool churn never enters the parent's
+ * DQuant Lab thread, so its intermediate tool churn never enters the parent's
  * context. This context isolation is the core property that lets a long coding
  * session delegate work without suffering context rot.
  */
@@ -140,7 +140,7 @@ export class SubAgentRunner {
 					bus,
 					tools: toolSchemas,
 					systemPrompt: params.isolatedWorkspace
-						? `${this.deps.systemPrompt}\n\nYou are running in an isolated native Git worktree at ${params.parentCwd}. This path is authoritative even if delegated prose names a different project directory. Prefer workspace-relative paths and use this worktree as the root for every file and terminal operation. Modify files only with Write, Edit, or ApplyPatch—not shell redirection, mkdir, installers, formatters, or other shell commands that mutate the checkout. Execute is read-only for the checkout; only its private scratch/cache is writable. Never read from or write to the coordinator checkout or another worker worktree. Backboard automatically collects and integrates successful file-tool edits into the coordinator workspace after you finish. In your final report, describe completed edits and verification; never tell the parent to copy, merge, cherry-pick, or open files from this private worktree.`
+						? `${this.deps.systemPrompt}\n\nYou are running in an isolated native Git worktree at ${params.parentCwd}. This path is authoritative even if delegated prose names a different project directory. Prefer workspace-relative paths and use this worktree as the root for every file and terminal operation. Modify files only with Write, Edit, or ApplyPatch—not shell redirection, mkdir, installers, formatters, or other shell commands that mutate the checkout. Execute is read-only for the checkout; only its private scratch/cache is writable. Never read from or write to the coordinator checkout or another worker worktree. DQuant Lab automatically collects and integrates successful file-tool edits into the coordinator workspace after you finish. In your final report, describe completed edits and verification; never tell the parent to copy, merge, cherry-pick, or open files from this private worktree.`
 						: this.deps.systemPrompt,
 					model: { ...activeModel },
 					source: route.source,

@@ -66,7 +66,7 @@ const loop = new AgentLoop({
 	bus,
 	tools,
 	systemPrompt:
-		"You are running inside the Backboard CLI harness. Use the CLI tools exactly as requested and keep the final answer to one sentence.",
+		"You are running inside the DQuant Lab CLI harness. Use the CLI tools exactly as requested and keep the final answer to one sentence.",
 	model: { provider: "openai-subscription", model },
 	memory: "off",
 	memoryProfile: "code",

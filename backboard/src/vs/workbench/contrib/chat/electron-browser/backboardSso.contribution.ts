@@ -11,6 +11,6 @@ registerBackboardSsoActions();
 
 // Resolve the local credential gate while the workbench is restoring. The
 // auxiliary-bar shell is created during restore, so waiting until
-// `AfterRestored` leaves a visible empty Backboard panel even though checking
+// `AfterRestored` leaves a visible empty DQuant Lab panel even though checking
 // the local config file is non-blocking.
 registerWorkbenchContribution2(BackboardCredentialsContribution.ID, BackboardCredentialsContribution, WorkbenchPhase.BlockRestore);

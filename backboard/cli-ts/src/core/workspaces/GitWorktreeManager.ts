@@ -81,7 +81,7 @@ class WorkerIntegrationPreservedError extends Error {}
 
 const INTEGRATION_MARKER = "Backboard-Worker-Integration:";
 const COMMIT_GUARD_FAILURE =
-	"Backboard worker commit refused: coordinator HEAD or staged paths changed; merge and index preserved.";
+	"DQuant Lab worker commit refused: coordinator HEAD or staged paths changed; merge and index preserved.";
 
 /** Native Git worktree operations. Every invocation uses argv, never a shell. */
 export class GitWorktreeManager {
@@ -159,7 +159,7 @@ export class GitWorktreeManager {
 			repositoryRoot,
 			[
 				"-c",
-				"user.name=Backboard",
+				"user.name=DQuant Lab",
 				"-c",
 				"user.email=workers@backboard.local",
 				"commit",
@@ -167,14 +167,14 @@ export class GitWorktreeManager {
 				"--no-gpg-sign",
 				"--no-verify",
 				"-m",
-				"Initialize Backboard parallel workspace",
+				"Initialize DQuant Lab parallel workspace",
 			],
 			signal,
 		);
 		const repository = await this.inspect(repositoryRoot, signal);
 		if (!repository) {
 			throw new Error(
-				`Backboard initialized ${repositoryRoot}, but Git did not expose a usable HEAD commit.`,
+				`DQuant Lab initialized ${repositoryRoot}, but Git did not expose a usable HEAD commit.`,
 			);
 		}
 		return { repository, initialized: true };
@@ -351,14 +351,14 @@ export class GitWorktreeManager {
 			input.worktreePath,
 			[
 				"-c",
-				"user.name=Backboard Worker",
+				"user.name=DQuant Lab Worker",
 				"-c",
 				"user.email=workers@backboard.local",
 				"commit",
 				"--no-gpg-sign",
 				"--no-verify",
 				"-m",
-				`Backboard worker result\n\nBackboard-Worker: ${input.workerId}`,
+				`DQuant Lab worker result\n\nBackboard-Worker: ${input.workerId}`,
 			],
 			input.signal,
 		);
@@ -514,7 +514,7 @@ export class GitWorktreeManager {
 		);
 		if (stagedFiles.length > 0) {
 			throw new Error(
-				`Worker integration is pending because the coordinator index contains staged changes (${stagedFiles.join(", ")}). Commit or unstage those changes, then retry; Backboard did not stash, reset, or modify them.`,
+				`Worker integration is pending because the coordinator index contains staged changes (${stagedFiles.join(", ")}). Commit or unstage those changes, then retry; DQuant Lab did not stash, reset, or modify them.`,
 			);
 		}
 		const headBefore = (
@@ -554,7 +554,7 @@ export class GitWorktreeManager {
 					"--no-ff",
 					"--no-commit",
 					"--message",
-					`Backboard worker integration\n\n${INTEGRATION_MARKER} ${resultCommits.join(" ")}`,
+					`DQuant Lab worker integration\n\n${INTEGRATION_MARKER} ${resultCommits.join(" ")}`,
 					...resultCommits,
 				],
 				input.signal,
@@ -716,7 +716,7 @@ export class GitWorktreeManager {
 				coordinatorCwd,
 				[
 					"-c",
-					"user.name=Backboard Coordinator",
+					"user.name=DQuant Lab Coordinator",
 					"-c",
 					"user.email=workers@backboard.local",
 					"commit-tree",
@@ -726,7 +726,7 @@ export class GitWorktreeManager {
 					headBefore,
 					...resultCommits.flatMap((parent) => ["-p", parent]),
 					"-m",
-					`Backboard worker integration\n\n${INTEGRATION_MARKER} ${resultCommits.join(" ")}`,
+					`DQuant Lab worker integration\n\n${INTEGRATION_MARKER} ${resultCommits.join(" ")}`,
 				],
 				signal,
 			)
@@ -743,7 +743,7 @@ export class GitWorktreeManager {
 				"update-ref",
 				...(branchBefore === null ? ["--no-deref"] : []),
 				"-m",
-				"Backboard worker integration",
+				"DQuant Lab worker integration",
 				branchBefore ?? "HEAD",
 				commit,
 				headBefore,

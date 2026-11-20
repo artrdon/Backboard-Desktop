@@ -109,11 +109,11 @@ suite('AgentLocationPicker', () => {
 		assert.match(ui.messages[0], /Reconnecting/);
 	});
 
-	test('a host without Backboard cannot become the draft location', async () => {
+	test('a host without DQuant Lab cannot become the draft location', async () => {
 		const ui = setup({ noBackboard: true });
 		await ui.click();
 		assert.strictEqual(ui.selections.length, 0);
-		assert.match(ui.messages[0], /does not advertise a Backboard agent/);
+		assert.match(ui.messages[0], /does not advertise a DQuant agent/);
 	});
 
 	test('cancelling Connect EC2 does not enable remotes or save a host', async () => {

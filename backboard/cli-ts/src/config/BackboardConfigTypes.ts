@@ -4,7 +4,7 @@ import type { MemoryMode, MemoryProfile, ThinkingIntent } from "./defaults.ts";
 export interface BackboardConfigFile {
 	apiKey?: string;
 	apiUrl?: string;
-	/** Backboard-owned or explicitly imported ChatGPT subscription token file. */
+	/** DQuant Lab-owned or explicitly imported ChatGPT subscription token file. */
 	chatgptSubscriptionAuthFile?: string;
 	/** Whether Claude Code subscription routing is enabled for this install. */
 	claudeSubscriptionEnabled?: boolean;

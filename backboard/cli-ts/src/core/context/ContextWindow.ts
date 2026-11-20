@@ -3,7 +3,7 @@ import type { ModelRef } from "../../config/defaults.ts";
 /**
  * Context-window sizes for direct vendor models.
  *
- * Backboard reports `context_limit` per model in its catalog and again in the
+ * DQuant Lab reports `context_limit` per model in its catalog and again in the
  * per-turn `context_usage` payload, so this table only covers backends without
  * such an endpoint: BYOK, plus the subscription transports' own model ids as a
  * pre-turn fallback. Patterns are ordered most-specific first and matched

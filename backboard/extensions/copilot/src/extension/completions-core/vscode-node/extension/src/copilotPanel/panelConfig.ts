@@ -7,10 +7,10 @@ import * as constants from '../constants';
 import { CopilotPanelVisible } from '../constants';
 import { PanelConfig } from '../panelShared/basePanelTypes';
 
-// Configuration for the Backboard suggestions panel
+// Configuration for the DQuant Lab suggestions panel
 export const copilotPanelConfig: PanelConfig = {
-	panelTitle: 'Backboard Suggestions',
-	webviewId: 'Backboard Suggestions',
+	panelTitle: 'DQuant Lab Suggestions',
+	webviewId: 'DQuant Lab Suggestions',
 	webviewScriptName: 'suggestionsPanelWebview.js',
 	contextVariable: CopilotPanelVisible,
 	commands: {

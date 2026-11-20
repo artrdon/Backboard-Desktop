@@ -591,7 +591,7 @@ export class ChatViewPane extends ViewPane implements IViewWelcomeDelegate {
 		const sessionsContainer = this.sessionsContainer = parent.appendChild($('.agent-sessions-container'));
 		sessionsContainer.classList.add('backboard-side-chat-sessions');
 
-		// Sessions title: Backboard brand + collapse affordance, matching the side-chat design.
+		// Sessions title: DQuant Lab brand + collapse affordance, matching the side-chat design.
 		const sessionsTitleContainer = this.sessionsTitleContainer = append(sessionsContainer, $('.agent-sessions-title-container'));
 		const sessionsTitle = this.sessionsTitle = append(sessionsTitleContainer, $('span.agent-sessions-title'));
 		sessionsTitle.textContent = localize('backboardSideChatTitle', "DQuant Lab");
@@ -869,7 +869,7 @@ referencesExpandedWhenEmptyResponse: false,
 				// `createBackboardSessionTypePickerDelegate`). `isSessionsWindow`
 				// also suppresses the mode picker, which is the same trade the
 				// Simple window makes: the chip's provider rail replaces it.
-				// Backboard builds only — stock VS Code keeps its own picker.
+				// DQuant Lab builds only — stock VS Code keeps its own picker.
 				isSessionsWindow: isBackboardProduct(),
 				sessionTypePickerDelegate: isBackboardProduct()
 					? createBackboardSessionTypePickerDelegate(
@@ -1556,7 +1556,7 @@ referencesExpandedWhenEmptyResponse: false,
 
 			this.sessionsControlContainer.style.height = `${availableSessionsHeight}px`;
 			if (isBackboardProduct()) {
-				// The Backboard drawer owns its outer width (including padding). Let
+				// The DQuant Lab drawer owns its outer width (including padding). Let
 				// the control fill the content box instead of overflowing that width.
 				this.sessionsControlContainer.style.width = '';
 				this.sessionsControl.layout(availableSessionsHeight, this.sessionsControlContainer.offsetWidth);
@@ -1567,7 +1567,7 @@ referencesExpandedWhenEmptyResponse: false,
 			this.sessionsViewerSash?.layout();
 
 			heightReduction = 0; // side by side to chat widget
-			// The Backboard drawer's width is driven by the same value as its sash.
+			// The DQuant Lab drawer's width is driven by the same value as its sash.
 			// Avoid reading offsetWidth here: during a drag that measurement can still
 			// reflect the previous frame and briefly leaves the chat under the drawer.
 			widthReduction = isBackboardProduct() ? sessionsViewerSidebarWidth : this.sessionsContainer.offsetWidth;
@@ -1602,7 +1602,7 @@ referencesExpandedWhenEmptyResponse: false,
 
 	private createSessionsViewerSash(container: HTMLElement, height: number, width: number): void {
 		const disposables = this.sessionsViewerSashDisposables.value = new DisposableStore();
-		// Backboard's drawer includes the panel header, so its sash must be hosted
+		// DQuant Lab's drawer includes the panel header, so its sash must be hosted
 		// by that same full-height part. Extending a body-owned sash with CSS makes
 		// the line visible above the body but leaves that segment unhittable.
 		const sashContainer = isBackboardProduct()
@@ -1615,7 +1615,7 @@ referencesExpandedWhenEmptyResponse: false,
 				const sessionsViewerSidebarWidth = this.computeEffectiveSideBySideSessionsSidebarWidth(this.lastDimensions?.width ?? width);
 				const { position } = this.getViewPositionAndLocation();
 				if (position === Position.RIGHT) {
-					// The Backboard sash is hosted one level higher than the body so it
+					// The DQuant Lab sash is hosted one level higher than the body so it
 					// reaches the header. Position it in that host's coordinate space.
 					const sashHostWidth = isBackboardProduct()
 						? sashContainer.clientWidth
