@@ -150,19 +150,23 @@
 	position: absolute;
 	top: 16px;
 	right: 16px;
-	z-index: 1;
+	z-index: 2;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	min-width: 54px;
+	width: 30px;
 	height: 30px;
-	padding: 0 12px;
+	padding: 0;
 	font: inherit;
 	color: var(--vscode-descriptionForeground);
 	background: transparent;
 	border: 0;
 	border-radius: 6px;
 	cursor: pointer;
+}
+
+.onboarding-a-close-btn .codicon {
+	font-size: 16px;
 }
 
 .onboarding-a-close-btn:hover {

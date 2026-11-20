@@ -275,8 +275,9 @@ export class OnboardingVariationA extends Disposable implements IOnboardingServi
 
 		this.closeButton = append(this.card, $<HTMLButtonElement>('button.onboarding-a-close-btn'));
 		this.closeButton.type = 'button';
-		this.closeButton.setAttribute('aria-label', localize('onboarding.skip', "Skip Onboarding"));
-		this.closeButton.textContent = localize('onboarding.skipButton', "Skip");
+		this.closeButton.title = localize('onboarding.close', "Close onboarding");
+		this.closeButton.setAttribute('aria-label', localize('onboarding.close', "Close onboarding"));
+		append(this.closeButton, $('span.codicon.codicon-close'));
 
 		const header = append(this.card, $('.onboarding-a-header'));
 		this.progressContainer = append(header, $('.onboarding-a-progress'));

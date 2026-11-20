@@ -9,8 +9,7 @@
  */
 
 .onboarding-a-overlay-launch .onboarding-a-card .onboarding-a-header,
-.onboarding-a-overlay-launch .onboarding-a-card .onboarding-a-footer,
-.onboarding-a-overlay-launch .onboarding-a-close-btn {
+.onboarding-a-overlay-launch .onboarding-a-card .onboarding-a-footer {
 	display: none;
 }
 

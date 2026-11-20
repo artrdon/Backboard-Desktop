@@ -144,6 +144,18 @@ The MQL4/MQL5 integration lives in dedicated modules on top of the existing sess
 | [`backboard/src/vs/workbench/contrib/dquant/prompts/`](backboard/src/vs/workbench/contrib/dquant/prompts/) | MQL4 and MQL5 agent instructions. |
 | [`backboard/src/vs/platform/agentHost/node/dquant/`](backboard/src/vs/platform/agentHost/node/dquant/) | Session context injected into the agent system prompt. |
 
+### Re-branding the app icons
+
+Every platform icon is generated from one square PNG (1024x1024 recommended, transparent background):
+
+```bash
+scripts/rebrand-icons.sh path/to/logo-1024.png                    # platform icons only
+scripts/rebrand-icons.sh path/to/logo-1024.png --dock             # + macOS Dock variants
+scripts/rebrand-icons.sh path/to/logo-1024.png --dock --in-app    # + the in-app SVG logos
+```
+
+The script rewrites the `backboard/resources/{darwin,linux,win32,server}` assets, rebuilds `code.icns` (via `iconutil`, `png2icns` or a bundled Python writer), and verifies every size it produced. With `--in-app` it also rewrites the UI logos under `backboard/src/**/media` as 256px PNGs embedded in SVG, using the colour each surface expects (black silhouettes for the mark and title icons, `#D9D9D9` for the dark-theme sessions logo, brand blue for the blue mark), and refreshes the matching `backboard/out` copies so a running dev build picks them up after a window reload.
+
 ### Repository layout
 
 | Path | Contents |

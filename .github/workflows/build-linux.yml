@@ -15,6 +15,7 @@ jobs:
 
     env:
       BACKBOARD_KEEP_COPILOT_SHIM_MARKER: "1"
+      BACKBOARD_CLI_TARGET: bun-linux-x64
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
@@ -98,7 +99,16 @@ jobs:
 
       - name: Install CLI dependencies
         working-directory: backboard/cli-ts
-        run: bun install
+        run: bun install --frozen-lockfile
+
+      # The packaged app loads the Backboard extension from extensions/backboard,
+      # and its runtime binary from extensions/backboard/bin. Both are generated
+      # artifacts, so they must exist before gulp packs the built-in extensions;
+      # otherwise the installer ships an extension without out/ and bin/ and
+      # every key validation fails with "cli-ts binary not found".
+      - name: Build the Backboard extension and CLI runtime
+        working-directory: backboard
+        run: npm --prefix extensions/backboard run compile
 
       - name: Build Linux application
         working-directory: backboard
@@ -107,6 +117,29 @@ jobs:
             --experimental-strip-types \
             ./node_modules/gulp/bin/gulp.js \
             vscode-linux-x64
+
+      # Fail the build instead of publishing an installer whose Backboard
+      # extension or CLI runtime is missing; the packaged app cannot validate
+      # provider keys or start agent sessions without them.
+      - name: Verify the packaged Backboard extension
+        working-directory: backboard
+        run: |
+          set -euo pipefail
+          PACKAGED="../VSCode-linux-x64/resources/app/extensions/backboard"
+          for required in \
+            "${PACKAGED}/package.json" \
+            "${PACKAGED}/out/extension.js" \
+            "${PACKAGED}/bin/backboard-cli-ts"; do
+            if [[ ! -e "${required}" ]]; then
+              echo "Missing packaged path: ${required}" >&2
+              exit 1
+            fi
+          done
+          CLI_INFO="$(file -b "${PACKAGED}/bin/backboard-cli-ts")"
+          if [[ "${CLI_INFO}" != *ELF* || "${CLI_INFO}" != *x86-64* ]]; then
+            echo "Packaged CLI has the wrong architecture: ${CLI_INFO}" >&2
+            exit 1
+          fi
 
       - name: Prepare Debian package
         working-directory: backboard
