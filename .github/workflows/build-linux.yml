@@ -31,15 +31,56 @@ jobs:
 
       - name: Install system dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            build-essential pkg-config python3 \
-            fakeroot dpkg-dev \
-            libx11-dev libxkbfile-dev \
-            libsecret-1-dev libkrb5-dev \
-            libgtk-3-dev libnss3 libasound2t64 \
-            libxss1 libu2f-udev dbus-x11 \
+          set -euo pipefail
+
+          # These headers are the only thing the build needs from apt; every
+          # runtime library below already ships in the ubuntu-24.04 image.
+          PACKAGES=(
+            build-essential pkg-config python3
+            fakeroot dpkg-dev
+            libx11-dev libxkbfile-dev
+            libsecret-1-dev libkrb5-dev
+            libgtk-3-dev libnss3 libasound2t64
+            libxss1 libu2f-udev dbus-x11
             xdg-utils libxrandr2
+          )
+          # The runner resolves apt through
+          # `URIs: mirror+file:/etc/apt/apt-mirrors.txt`, and that list ranks
+          # mirrors that regularly misbehave: security.ubuntu.com is IPv6-first
+          # (the runner has no IPv6 route: "Network is unreachable") and answers
+          # 503 over IPv4, while us-east-2.ec2.archive.ubuntu.com silently drops
+          # package fetches. Pin the plain IPv4 archive mirror first and keep
+          # security only as a fallback, then retry hard: apt's own Acquire
+          # retries cover per-file 503s, the loop covers a mirror that dies
+          # mid-run.
+          APT_OPTS=(
+            -o Acquire::ForceIPv4=true
+            -o Acquire::Retries=5
+            -o Acquire::http::Timeout=30
+            -o Acquire::https::Timeout=30
+          )
+          if [[ -f /etc/apt/apt-mirrors.txt ]]; then
+            echo "Runner apt mirrorlist before rewrite:"
+            cat /etc/apt/apt-mirrors.txt
+            printf 'http://archive.ubuntu.com/ubuntu/\nhttp://security.ubuntu.com/ubuntu/\n' \
+              | sudo tee /etc/apt/apt-mirrors.txt >/dev/null
+          fi
+
+          # A failed index refresh must not fail the job: the image ships valid
+          # package lists, and the install below fails loudly if it cannot
+          # resolve a package anyway.
+          sudo apt-get update "${APT_OPTS[@]}" \
+            || echo "apt-get update failed; continuing with the runner's cached package lists."
+
+          for attempt in 1 2 3 4 5; do
+            if sudo apt-get install -y --fix-missing "${APT_OPTS[@]}" "${PACKAGES[@]}"; then
+              exit 0
+            fi
+            echo "apt-get install failed (attempt ${attempt}); retrying in $((attempt * 15))s." >&2
+            sleep $((attempt * 15))
+          done
+          echo "Unable to install the Linux build dependencies after 5 attempts." >&2
+          exit 1
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

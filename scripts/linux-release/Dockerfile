@@ -8,8 +8,14 @@ ENV PATH=/opt/node/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ENV ELECTRON_SKIP_BINARY_DOWNLOAD=1
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 
-RUN apt-get update \
-	&& apt-get install -y --no-install-recommends \
+# security.ubuntu.com is IPv6-first and the build hosts have no IPv6 route
+# ("Network is unreachable"), while the archive mirrors answer 503 in
+# bursts. Force IPv4, retry the index refresh and the install, so a flaky
+# mirror does not fail the image build.
+RUN set -eu; \
+	apt-get update -o Acquire::ForceIPv4=true -o Acquire::Retries=5 \
+		|| { sleep 15; apt-get update -o Acquire::ForceIPv4=true -o Acquire::Retries=5; }; \
+	apt-get install -y --no-install-recommends -o Acquire::ForceIPv4=true -o Acquire::Retries=5 \
 		build-essential \
 		bubblewrap \
 		ca-certificates \
@@ -53,7 +59,7 @@ RUN apt-get update \
 		xvfb \
 		xz-utils \
 		zip \
-	&& rm -rf /var/lib/apt/lists/*
+	; rm -rf /var/lib/apt/lists/*
 
 RUN set -eux; \
 	archive="node-v${NODE_VERSION}-linux-x64.tar.xz"; \
