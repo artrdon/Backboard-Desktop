@@ -11,6 +11,7 @@ const BUILTIN_AGENT_NAMES: Record<string, string> = {
 	WebSearch: "web_search",
 	AskUser: "ask_user",
 	TodoWrite: "todo_write",
+	CompileMql5: "compile_mql5",
 	Computer: "computer",
 	Browser: "browser",
 	Agent: "agent",

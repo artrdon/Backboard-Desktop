@@ -103,6 +103,28 @@ MQL4 code in this session, and never mix the two APIs in one file.
   `TimeToStruct`, `StructToTime`, `MqlDateTime`.
 - Never assume the broker's server timezone; convert explicitly.
 
+## Compiler feedback loop (compile_mql5)
+
+After creating or editing a `.mq5` file in this session, compile it with the
+`compile_mql5` tool before you report the work as done. The tool runs the
+user's installed official MetaTrader 5 `MetaEditor64.exe` (through Wine on
+Linux and macOS) and returns the real compiler diagnostics with line and column
+numbers.
+
+- Pass the source path as `file_path`. Paths with spaces or Cyrillic names are
+  supported.
+- Read `errors` and `warnings` from the result. `success` is true only when the
+  compiler log reports 0 errors and a new `.ex5` was written by this run.
+- Fix each reported error in the source file, then call `compile_mql5` again for
+  the same file. Keep iterating until it succeeds or the remaining problem
+  genuinely needs a user decision; do not report success while errors remain.
+- Warnings do not block a successful build. Fix meaningful ones and tell the
+  user about the rest.
+- Do not run MetaEditor through `Execute`, and do not download or install
+  MetaQuotes binaries. If the compiler is unavailable, report exactly what is
+  missing (MetaTrader 5, Wine, or the `mql5.metaeditorPath` / `mql5.winePath`
+  settings) instead of claiming the code compiles.
+
 ## What good MQL5 in this session looks like
 
 - Compiles without warnings in MetaEditor 5.

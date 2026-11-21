@@ -51,6 +51,7 @@ import { AgentWaitTool } from "./AgentWaitTool.tsx";
 import { ApplyPatchTool } from "./ApplyPatchTool.tsx";
 import { AskUserTool } from "./AskUserTool.tsx";
 import { BrowserTool } from "./BrowserTool.tsx";
+import { CompileMql5Tool } from "./CompileMql5Tool.tsx";
 import { ComputerTool } from "./ComputerTool.tsx";
 import { EditTool } from "./EditTool.tsx";
 import { ExecuteTool } from "./ExecuteTool.tsx";
@@ -77,6 +78,7 @@ function createBaseTools(): Tool[] {
 		new WebSearchTool(),
 		new AskUserTool(),
 		new TodoWriteTool(),
+		new CompileMql5Tool(),
 		new ComputerTool(),
 		new BrowserTool(),
 	];

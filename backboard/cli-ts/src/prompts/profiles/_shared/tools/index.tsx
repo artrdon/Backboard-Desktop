@@ -9,6 +9,7 @@ import { agentWait } from "../../../tools/agentWait.tsx";
 import { applyPatch } from "../../../tools/applyPatch.tsx";
 import { askUser } from "../../../tools/askUser.tsx";
 import { browser } from "../../../tools/browser.tsx";
+import { compileMql5 } from "../../../tools/compileMql5.tsx";
 import { computer } from "../../../tools/computer.tsx";
 import { edit } from "../../../tools/edit.tsx";
 import { execute } from "../../../tools/execute.tsx";
@@ -33,6 +34,7 @@ export const toolPrompts: Record<string, PromptModule> = {
 	web_search: webSearch,
 	ask_user: askUser,
 	todo_write: todoWrite,
+	compile_mql5: compileMql5,
 	computer,
 	browser,
 	agent,

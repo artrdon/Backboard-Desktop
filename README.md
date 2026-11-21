@@ -32,7 +32,26 @@ A session created for MQL5 stays MQL5 when you switch back to it. Sessions creat
 - **Bring your own subscription (BYOS):** run agents on your Claude Pro/Max or ChatGPT Plus/Pro plan.
 - **Hosted models:** Claude, GPT, Gemini, Kimi, DeepSeek, Qwen, GLM and more from one model picker.
 - **Parallel agent sessions:** organize work by project, branch and session; run agents side by side in isolated git worktrees.
+- **Real MQL5 compilation:** the agent compiles `.mq5` files with the MetaTrader 5 MetaEditor64 you already installed (through Wine on Linux and macOS), reads the real errors and warnings with line numbers, fixes the file and compiles again.
 - **A real editor:** the Code - OSS editing experience with files, terminals, debugging and extensions, in the same window.
+
+### MQL5 compiler
+
+The agent tool `compile_mql5` uses the official `metaeditor64.exe` from your MetaTrader 5 installation. It never downloads or bundles MetaQuotes binaries.
+
+Detection is automatic: Linux and macOS scan the usual Wine/CrossOver prefixes, Windows scans the program-files roots, and macOS also checks the MetaTrader 5 app bundle. To point at a custom installation, add a `mql5` block to `.backboard/settings.json` in the project or to `~/.backboard/settings.json`:
+
+```json
+{
+  "mql5": {
+    "metaeditorPath": "/home/you/.wine/drive_c/Program Files/MetaTrader 5/MetaEditor64.exe",
+    "winePath": "/usr/bin/wine",
+    "winePrefix": "/home/you/.wine"
+  }
+}
+```
+
+`metaeditorPath` is required for an override; `winePath` and `winePrefix` apply to Linux and macOS. Compiler logs are kept in `~/.backboard/logs/mql5/`.
 
 Agent integrations require the credentials or accounts for the services you choose. Access to hosted services is separate from this repository's source-code license.
 
